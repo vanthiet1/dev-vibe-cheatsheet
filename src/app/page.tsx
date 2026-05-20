@@ -127,6 +127,12 @@ const getCategoryIcon = (slug: string, color?: string) => {
           <path strokeLinecap="round" strokeLinejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
         </svg>
       );
+    case 'antigravity-ide':
+      return (
+        <svg className="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke={c} strokeWidth={2.2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      );
     case 'antigravity-cli':
       return (
         <svg className="h-4.5 w-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke={c} strokeWidth={2.2}>
@@ -911,6 +917,34 @@ export default function Home() {
                             </div>
                             {activeCommand.examples.map((ex, idx) => {
                               const exCopied = copiedId === `${activeCommand._id}-ex-${idx}`;
+                              
+                              if (ex.command.includes('\n')) {
+                                return (
+                                  <div
+                                    key={idx}
+                                    className="bg-zinc-950/30 border border-zinc-900 hover:border-zinc-800 p-4 flex flex-col gap-3 text-sm rounded-md transition-all relative group"
+                                  >
+                                    <div className="flex justify-between items-start gap-4">
+                                      <div className="space-y-1">
+                                        <div className="font-medium text-zinc-200">{ex.title}</div>
+                                        {ex.description && <div className="text-zinc-500 text-xs font-normal leading-relaxed">{ex.description}</div>}
+                                      </div>
+                                      <button
+                                        onClick={() => handleCopy(`${activeCommand._id}-ex-${idx}`, ex.command)}
+                                        className={`px-3 py-1.5 rounded text-xs font-medium uppercase font-mono transition-all duration-150 shrink-0 border ${exCopied ? isAntigravity ? 'border-cyan-500/40 bg-cyan-500/5 text-cyan-400' : 'border-blue-500/40 bg-blue-500/5 text-blue-400' : 'border-zinc-800 bg-zinc-900 hover:bg-zinc-800 text-zinc-300'}`}
+                                      >
+                                        {exCopied ? 'Copied' : 'Copy'}
+                                      </button>
+                                    </div>
+                                    <div className="relative rounded bg-zinc-950 p-4 border border-zinc-900 overflow-hidden">
+                                      <pre className="overflow-x-auto text-xs font-mono text-zinc-300 whitespace-pre scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
+                                        {ex.command}
+                                      </pre>
+                                    </div>
+                                  </div>
+                                );
+                              }
+
                               return (
                                 <div
                                   key={idx}

@@ -132,6 +132,14 @@ export async function GET() {
         icon: 'ThunderboltOutlined',
         color: '#13c2c2',
         order: 15
+      },
+      {
+        name: 'Antigravity IDE',
+        slug: 'antigravity-ide',
+        description: 'Quản lý, cấu hình và phát triển Kỹ năng (Skills) của các Agent trong Antigravity.',
+        icon: 'CodeOutlined',
+        color: '#00f2fe',
+        order: 16
       }
     ]);
 
@@ -1982,6 +1990,40 @@ export async function GET() {
       },
       {
         categoryId: catMap['antigravity-cli'],
+        title: 'Đặt mục tiêu cốt lõi của phiên chat (Goal Selection)',
+        slug: 'cli-slash-goal',
+        command: '/goal [goal_description]',
+        description: 'Khai báo và hiển thị mục tiêu cốt lõi của phiên làm việc hiện tại, giúp định hình hướng đi và giữ cho các Agent tập trung hoàn thành đúng yêu cầu chính.',
+        explanations: [
+          { param: '[goal_description]', description: 'Mô tả tóm tắt mục tiêu cụ thể mà bạn muốn định hướng cho phiên hội thoại.' }
+        ],
+        examples: [
+          { title: 'Thiết lập mục tiêu sửa lỗi Hydration', command: '/goal Fix React hydration error in layout component' },
+          { title: 'Xem mục tiêu hiện tại của phiên chat', command: '/goal' }
+        ],
+        platforms: ['CMD', 'PowerShell', 'GitBash'],
+        tags: ['utility', 'goal', 'context', 'focus'],
+        viewCount: 190
+      },
+      {
+        categoryId: catMap['antigravity-cli'],
+        title: 'Đính kèm tệp tin/thư mục làm ngữ cảnh (Context Attachment)',
+        slug: 'cli-slash-file-context',
+        command: '@[file_path]',
+        description: 'Đính kèm nhanh nội dung của một file hoặc thư mục trực tiếp vào tin nhắn nhắc nhở (prompt) gửi cho AI để làm dữ liệu đầu vào.',
+        explanations: [
+          { param: '@[file_path]', description: 'Đường dẫn tới file hoặc folder bạn muốn truyền nội dung làm ngữ cảnh (Context).' }
+        ],
+        examples: [
+          { title: 'Truyền nội dung file component làm context', command: '@src/app/page.tsx' },
+          { title: 'Truyền nội dung file cấu hình làm context', command: '@package.json' }
+        ],
+        platforms: ['CMD', 'PowerShell', 'GitBash'],
+        tags: ['utility', 'file', 'context', 'prompt', 'attachment'],
+        viewCount: 250
+      },
+      {
+        categoryId: catMap['antigravity-cli'],
         title: 'Tua ngược / hoàn tác mốc lịch sử chat (Rewind / Undo)',
         slug: 'cli-slash-rewind',
         command: '/rewind',
@@ -2150,6 +2192,303 @@ export async function GET() {
         platforms: ['CMD', 'PowerShell', 'GitBash'],
         tags: ['account', 'logout', 'google', 'token', 'auth'],
         viewCount: 220
+      },
+      {
+        categoryId: catMap['antigravity-cli'],
+        title: 'Cài đặt quy chuẩn Agent cho dự án (Project Agent Rules)',
+        slug: 'cli-setup-agent-rules',
+        command: '/setup-agent-rules',
+        description: 'Hiển thị nội dung cấu hình hệ thống settings.json và các quy tắc tự trị (Rules) cho Frontend React/TypeScript, Backend .NET C#, và Git workflow để dễ dàng khởi tạo thư mục dự án nhanh chóng.',
+        explanations: [],
+        examples: [
+          {
+            title: 'Cấu trúc thư mục Plugin (~/.gemini/antigravity-cli/)',
+            description: 'Hướng dẫn thiết lập cấu trúc cây thư mục plugins, subagents, skills và rules trong Antigravity CLI để kích hoạt và mở rộng tính năng hệ thống.',
+            command: `~/.gemini/antigravity-cli/
+├── settings.json               # File cấu hình hệ thống chính (bao gồm {"enableTerminalSandbox": true})
+├── global-rules/               # Thư mục chứa quy tắc chung của dự án
+│   ├── global.antigravityrules
+│   ├── frontend.antigravityrules
+│   └── backend.antigravityrules
+└── plugins/                    # Thư mục lưu trữ các phần mở rộng (plugins)
+    └── <plugin_name>/          # Tên thư mục plugin tự định nghĩa
+        ├── plugin.json         # File đánh dấu bắt buộc (Required marker file)
+        ├── mcp_config.json     # Khai báo MCP server mở rộng (Tùy chọn)
+        ├── hooks.json          # Định nghĩa sự kiện hook hooks (Tùy chọn)
+        ├── skills/             # Thư mục lưu trữ kỹ năng skills (Tùy chọn)
+        ├── agents/             # Thư mục lưu trữ subagents (Tùy chọn)
+        └── rules/              # Thư mục lưu trữ các quy tắc riêng (Tùy chọn)`
+          },
+          {
+            title: '~/.gemini/antigravity-cli/settings.json',
+            description: 'Cấu hình hệ thống Antigravity CLI, tích hợp lệnh build/typecheck dự án npx tsc --noEmit trước khi sinh code, khai báo đường dẫn tới các file rules và kích hoạt chế độ sandbox cô lập dòng lệnh bảo mật (enableTerminalSandbox).',
+            command: `{
+  "system": {
+    "engine": "gemini-2.5-pro",
+    "temperature": 0.2,
+    "maxTokens": 8192,
+    "typescriptcheck": "npx tsc --noEmit",
+    "enableTerminalSandbox": true
+  },
+  "rules": {
+    "global": "./global-rules/global.antigravityrules",
+    "frontend": "./global-rules/frontend.antigravityrules",
+    "backend": "./global-rules/backend.antigravityrules"
+  }
+}`
+          },
+          {
+            title: 'global-rules/global.antigravityrules',
+            description: 'Quy chuẩn chung của dự án bao gồm định dạng Git commit message, quy tắc đặt tên nhánh (feat/nvt/EAS-...), bảo mật thông tin nhạy cảm, tuyệt đối không hardcode thuế suất/dữ liệu tài chính, bắt buộc kiểm thử logic không phát sinh lỗi compile.',
+            command: `# ==========================================
+# GLOBAL RULES - ANTIGRAVITY AGENT
+# ==========================================
+
+[GIT_BRANCH_NAMING]
+- Nhánh phát triển tính năng bắt buộc tuân thủ định dạng: feat/nvt/EAS-[ticket_number]
+- Nhánh sửa lỗi nóng bắt buộc tuân thủ: hotfix/nvt/EAS-[ticket_number]
+- Nhánh tái cấu trúc hoặc tối ưu: refactor/nvt/EAS-[ticket_number]
+
+[GIT_COMMIT_CONVENTIONS]
+- Định dạng commit message chuẩn: <type>(<scope>): <subject>
+- Ví dụ:
+  * feat(auth): tích hợp đăng nhập qua Google Identity Services
+  * fix(tax): sửa lỗi làm tròn số thập phân hóa đơn VAT
+- Loại commit được chấp nhận: feat, fix, refactor, docs, style, test, chore.
+
+[DATA_SECURITY_AND_PRIVACY]
+- Nghiêm cấm lưu trữ trực tiếp API Keys, Passwords, Connection Strings, SSH keys vào mã nguồn.
+- Mọi dữ liệu cấu hình nhạy cảm phải được khai báo trong tệp tin môi trường (.env, appsettings.json) và đưa vào danh sách bỏ qua (.gitignore).
+- Mã hóa dữ liệu người dùng cá nhân (PII) khi lưu trữ xuống cơ sở dữ liệu.
+
+[FINANCIAL_LOGIC_AND_TAXATION]
+- Tuyệt đối nghiêm cấm hardcode thuế suất hoặc công thức tính toán tài chính vào code logic.
+- Thuế suất và công thức tính toán dòng tiền phải được lấy động qua API cấu hình hoặc lưu trữ trong bảng Cấu hình Hệ thống tại Database.
+
+[TESTING_AND_ZERO_EMIT_POLICY]
+- Luôn kiểm thử logic trước khi đẩy lên nhánh chính.
+- Bắt buộc chạy kiểm tra lỗi TypeScript/Compile: npx tsc --noEmit hoặc các trình biên dịch tương ứng.
+- Tuyệt đối không chấp nhận mã nguồn phát sinh lỗi cảnh báo (warnings/errors) ở môi trường phát triển cục bộ.`
+          },
+          {
+            title: 'global-rules/frontend.antigravityrules',
+            description: 'Quy chuẩn phát triển Frontend sử dụng React + TypeScript + Ant Design, tối ưu hóa state bộ lọc để tránh xung đột dữ liệu, và nguyên tắc đóng gói component độc lập.',
+            command: `# ==========================================
+# FRONTEND RULES - REACT + TS + ANT DESIGN
+# ==========================================
+
+[REACT_TYPESCRIPT_STANDARDS]
+- Sử dụng Functional Component kết hợp React Hooks.
+- Định nghĩa kiểu dữ liệu (TypeScript interfaces/types) rõ ràng cho tất cả Props và State.
+- Tránh sử dụng kiểu dữ liệu "any" ở mọi cấp độ; sử dụng "unknown" hoặc generic khi cần linh hoạt.
+
+[ANT_DESIGN_INTEGRATION]
+- Sử dụng trực tiếp hệ thống Component của Ant Design (antd) để đảm bảo đồng nhất UI/UX.
+- Tùy biến CSS hoặc Theme Tokens qua ConfigProvider để giữ tính nhất quán, không lạm dụng ghi đè class CSS gốc của thư viện.
+- Sử dụng Form component của antd cho việc kiểm tra (validation) và quản lý state form dữ liệu đầu vào.
+
+[FILTER_STATE_MANAGEMENT]
+- Tránh việc đồng bộ chồng chéo state filter (ví dụ: vừa lưu local state, vừa lưu URL search params gây xung đột tải lại trang).
+- Ưu tiên quản lý bộ lọc danh sách (Filter, Search, Pagination) qua URL Search Params làm Single Source of Truth giúp người dùng có thể chia sẻ liên kết trực tiếp (direct link sharing).
+- Sử dụng kỹ thuật debounce (tối thiểu 300ms) khi người dùng nhập dữ liệu ô tìm kiếm trước khi thực hiện gửi request API lên server.
+
+[COMPONENT_ENCAPSULATION]
+- Đóng gói component chặt chẽ theo nguyên tắc Single Responsibility Principle (mỗi component chỉ làm một nhiệm vụ duy nhất).
+- Các component con dùng chung phải được đưa vào thư mục src/components/shared.
+- Bọc toàn bộ các tương tác không ổn định hoặc lỗi có thể xảy ra trong React Error Boundaries để ngăn chặn hiện tượng sập trắng trang (White Screen of Death).`
+          },
+          {
+            title: 'global-rules/backend.antigravityrules',
+            description: 'Quy chuẩn phát triển Backend sử dụng .NET C# theo Clean Architecture, tối ưu hóa truy vấn LINQ cho MySQL, và quản lý Transaction chặt chẽ cho dòng tiền tài chính.',
+            command: `# ==========================================
+# BACKEND RULES - .NET C# + CLEAN ARCHITECTURE
+# ==========================================
+
+[CLEAN_ARCHITECTURE]
+- Phân chia dự án thành 4 phân lớp rõ ràng:
+  * Domain: Thực thể nghiệp vụ cốt lõi (Entities, Value Objects), không phụ thuộc vào bất kỳ thư viện ngoài nào.
+  * Application: Chứa business logic (Services, Commands, Queries, DTOs).
+  * Infrastructure: Triển khai các interface như DBContext, External APIs, Email Service.
+  * WebAPI: Cổng tiếp nhận HTTP Request, xử lý định tuyến (Routing) và xác thực (Authentication).
+
+[MYSQL_LINQ_OPTIMIZATION]
+- Chỉ truy vấn những trường dữ liệu thực sự cần thiết bằng cách sử dụng .Select() để mapping trực tiếp sang DTO. Tránh lấy nguyên thực thể Entity bằng .ToList().
+- Sử dụng .AsNoTracking() cho tất cả các truy vấn chỉ đọc (read-only queries) để bỏ qua bộ nhớ đệm theo dõi thay đổi của Entity Framework Core, cải thiện tốc độ và giảm bộ nhớ RAM.
+- Tránh thực hiện truy vấn N+1. Hãy tải trước các mối quan hệ (Eager Loading) thông qua .Include() và .ThenInclude() thay vị sử dụng Lazy Loading.
+- Thiết lập chỉ mục (Indexes) trên các cột thường xuyên nằm trong mệnh đề .Where() hoặc .Join().
+
+[TRANSACTION_FOR_CASH_FLOW]
+- Mọi nghiệp vụ liên quan đến dòng tiền, bút toán kế toán, nạp rút tiền bắt buộc phải chạy trong một Transaction (giao dịch nguyên tử).
+- Sử dụng cấu trúc using var transaction = await _context.Database.BeginTransactionAsync() để tự động rollback khi xảy ra bất kỳ lỗi ngoại lệ (exception) nào trong quá trình xử lý.
+- Đảm bảo tính nhất quán dữ liệu ở cả hai bên: tăng số dư tài khoản A và giảm số dư tài khoản B phải thực hiện thành công đồng thời, không chấp nhận việc thực thi một nửa.
+- Áp dụng cơ chế Optimistic Concurrency Control (OCC) bằng trường RowVersion/ConcurrencyToken để tránh ghi đè dữ liệu dòng tiền khi có 2 request gửi đồng thời.`
+          }
+        ],
+        platforms: ['CMD', 'PowerShell', 'GitBash'],
+        tags: ['antigravity', 'rules', 'setup', 'config', 'agent'],
+        viewCount: 350
+      },
+      {
+        categoryId: catMap['antigravity-ide'],
+        title: 'Thiết lập và quản lý Kỹ năng (Skills Architecture)',
+        slug: 'ide-skills-architecture',
+        command: 'skills',
+        description: 'Định cấu hình nơi lưu trữ, phạm vi hoạt động của Kỹ năng (Skills) và cách tổ chức thư mục chuẩn hóa theo hướng dẫn phát triển của Google Antigravity.',
+        explanations: [],
+        examples: [
+          {
+            title: 'Vị trí lưu trữ Kỹ năng (Where skills live)',
+            description: 'Antigravity hỗ trợ hai phạm vi hoạt động (Scope) dựa trên đường dẫn lưu trữ thư mục Skill.',
+            command: `+-----------------------------------------------+-----------------------------------------+
+| Đường dẫn lưu trữ (Location)                   | Phạm vi hoạt động (Scope)               |
++-----------------------------------------------+-----------------------------------------+
+| <workspace-root>/.agents/skills/<skill-name>/ | Chỉ áp dụng trong workspace hiện tại     |
+|                                               | (Workspace-specific)                    |
++-----------------------------------------------+-----------------------------------------+
+| ~/.gemini/antigravity/skills/<skill-name>/    | Áp dụng trên toàn bộ hệ thống           |
+|                                               | (Global - all workspaces)               |
++-----------------------------------------------+-----------------------------------------+`
+          },
+          {
+            title: 'Cấu trúc thư mục của một Skill chuẩn (~/.agents/skills/<skill-name>/)',
+            description: 'Các thư mục con và file đánh dấu bắt buộc theo đặc tả tiêu chuẩn tại https://www.antigravity.google/docs/skills.',
+            command: `<skill-name>/                   # Thư mục chứa kỹ năng tự định nghĩa
+├── SKILL.md                    # File quy chuẩn/hướng dẫn cốt lõi (Bắt buộc)
+├── scripts/                    # Thư mục chứa các kịch bản/scripts bổ trợ (Tùy chọn)
+│   ├── build.py                # Kịch bản build dự án mẫu
+│   └── test.py                 # Kịch bản chạy test tự động
+├── resources/                  # Chứa tài liệu, file tĩnh hoặc config (Tùy chọn)
+│   └── templates/              # Các templates mẫu phục vụ sinh code
+└── examples/                   # Ví dụ minh họa thực tế sử dụng (Tùy chọn)
+    └── demo.js                 # File ví dụ mẫu`
+          },
+          {
+            title: 'Cấu trúc file đặc tả kỹ năng (SKILL.md)',
+            description: 'File SKILL.md bắt buộc phải khai báo Frontmatter YAML ở trên cùng để Antigravity nhận diện các kỹ năng tương ứng.',
+            command: `---
+skills:
+  - name: my-custom-skill
+    description: "Kỹ năng tùy chỉnh hỗ trợ tối ưu hóa quy trình kiểm thử và deploy"
+    author: "Văn Thiết"
+    version: "1.0.0"
+---
+
+# Hướng dẫn Kỹ năng Custom
+
+Cung cấp các quy tắc hướng dẫn chi tiết dành cho Agent ở đây...
+1. Quy tắc 1...
+2. Quy tắc 2...`
+          }
+        ],
+        platforms: ['CMD', 'PowerShell', 'GitBash'],
+        tags: ['antigravity', 'skills', 'setup', 'config', 'ide'],
+        viewCount: 420
+      },
+      {
+        categoryId: catMap['antigravity-ide'],
+        title: 'Thiết lập và phân vùng Quy tắc (Rules Architecture)',
+        slug: 'ide-rules-architecture',
+        command: 'rules',
+        description: 'Định cấu hình vị trí lưu trữ, phạm vi hoạt động của các quy tắc tự trị (Rules) cho Agent và quy chuẩn viết file quy tắc (.antigravityrules).',
+        explanations: [],
+        examples: [
+          {
+            title: 'Vị trí lưu trữ Quy tắc (Where rules live)',
+            description: 'Antigravity hỗ trợ hai phạm vi áp dụng quy tắc dựa trên đường dẫn tệp tin quy tắc.',
+            command: `+-----------------------------------------------+-----------------------------------------+
+| Đường dẫn lưu trữ (Location)                   | Phạm vi hoạt động (Scope)               |
++-----------------------------------------------+-----------------------------------------+
+| <workspace-root>/.agents/rules/               | Áp dụng cục bộ trong dự án hiện tại     |
+| <workspace-root>/*.antigravityrules           | (Workspace-specific)                    |
++-----------------------------------------------+-----------------------------------------+
+| ~/.gemini/antigravity/rules/                  | Áp dụng toàn cục trên mọi dự án         |
+|                                               | (Global - all workspaces)               |
++-----------------------------------------------+-----------------------------------------+`
+          },
+          {
+            title: 'Cấu trúc định dạng file quy tắc (*.antigravityrules)',
+            description: 'File rules sử dụng định dạng INI-like kết hợp Markdown để chia nhóm và định nghĩa các luật cụ thể.',
+            command: `# ==========================================
+# [TÊN_NHÓM_QUY_TẮC]
+# ==========================================
+
+[RULE_IDENTIFIER]
+- Mô tả quy tắc phát triển phần mềm số 1.
+- Mô tả quy tắc phát triển phần mềm số 2.
+- Ví dụ:
+  * Cách viết đúng:
+    \`\`\`typescript
+    const taxRate = getTaxRateFromDatabase();
+    \`\`\`
+  * Cách viết sai (Tránh):
+    \`\`\`typescript
+    const taxRate = 0.1; // Hardcoded tax rate!
+    \`\`\`
+
+[ANOTHER_RULE]
+- Quy định tiếp theo dành cho Agent...`
+          }
+        ],
+        platforms: ['CMD', 'PowerShell', 'GitBash'],
+        tags: ['antigravity', 'rules', 'setup', 'config', 'ide'],
+        viewCount: 450
+      },
+      {
+        categoryId: catMap['antigravity-ide'],
+        title: 'Cấu hình Model Context Protocol (MCP Config)',
+        slug: 'ide-mcp-config',
+        command: 'mcp',
+        description: 'Định cấu hình kết nối các MCP servers mở rộng giúp Agent giao tiếp với cơ sở dữ liệu, API bên ngoài, hoặc các dịch vụ hệ thống khác.',
+        explanations: [
+          { param: 'args (string[])', description: 'Các đối số dòng lệnh để khởi chạy stdio server.' },
+          { param: 'env (object)', description: 'Các biến môi trường truyền cho tiến trình stdio server.' },
+          { param: 'cwd (string)', description: 'Thư mục làm việc hiện tại của stdio server.' },
+          { param: 'headers (object)', description: 'Các HTTP headers tùy chỉnh khi kết nối tới remote server.' },
+          { param: 'authProviderType (string)', description: 'Phương thức xác thực. Hỗ trợ "google_credentials" cho ADC.' },
+          { param: 'oauth (object)', description: 'Thông tin xác thực OAuth client (clientId, clientSecret).' },
+          { param: 'disabled (boolean)', description: 'Tạm thời vô hiệu hóa server mà không cần xóa cấu hình.' },
+          { param: 'disabledTools (string[])', description: 'Danh sách tên các công cụ của server này không cấp cho model.' }
+        ],
+        examples: [
+          {
+            title: 'Vị trí tệp cấu hình MCP (mcp_config.json)',
+            description: 'Tệp cấu hình chính của MCP được cấu trúc lại và lưu trữ toàn cục tại thư mục cá nhân.',
+            command: '~/.gemini/antigravity/mcp_config.json'
+          },
+          {
+            title: 'Định dạng cấu hình MCP Server mẫu đầy đủ',
+            description: 'Ví dụ khai báo cấu hình đa dạng các tham số tùy chọn (args, env, cwd, disabled, disabledTools) cho cả stdio và remote server.',
+            command: `{
+  "mcpServers": {
+    "my-postgres-db": {
+      "command": "node",
+      "args": ["dist/index.js"],
+      "env": {
+        "DB_URI": "postgresql://localhost/mydb"
+      },
+      "cwd": "/users/antigravity/mcp-postgres",
+      "disabled": false,
+      "disabledTools": ["unsafe_query", "delete_all"]
+    },
+    "custom-remote-server": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-remote-api"],
+      "headers": {
+        "X-API-Version": "v2"
+      },
+      "authProviderType": "google_credentials",
+      "oauth": {
+        "clientId": "your-client-id",
+        "clientSecret": "your-client-secret"
+      }
+    }
+  }
+}`
+          }
+        ],
+        platforms: ['CMD', 'PowerShell', 'GitBash'],
+        tags: ['antigravity', 'mcp', 'setup', 'config', 'ide'],
+        viewCount: 480
       }
     ]);
 
