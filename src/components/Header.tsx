@@ -1,3 +1,4 @@
+import Image from "next/image";
 interface HeaderProps {
   seeding: boolean;
   onRunSeeding: () => void;
@@ -9,9 +10,13 @@ export default function Header({ seeding, onRunSeeding }: HeaderProps) {
       <div className="max-w-8xl mx-auto flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <h1 className="text-zinc-50 before:-inset-x-1 before:-rotate-1 relative z-4 before:pointer-events-none before:absolute before:inset-y-0 before:z-4 before:from-blue-500 before:via-cyan-500 before:to-blue-600 before:opacity-15 before:mix-blend-hard-light font-semibold text-base tracking-tight flex items-center gap-2">
-            <span className="text-blue-500 font-extrabold font-mono">
-              &gt;_
-            </span>{" "}
+            <Image
+              src="/logo_web.png"
+              alt="Logo"
+              width={50}
+              height={50}
+              className="object-contain rounded-full"
+            />
             DEV-VIBE-CHEATSHEET
           </h1>
           <span className="text-xs uppercase tracking-wider bg-zinc-900 border border-zinc-800 text-zinc-400 px-2 py-0.5 rounded font-medium">
