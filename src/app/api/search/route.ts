@@ -7,7 +7,6 @@ export async function GET(request: Request) {
     await dbConnect();
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('q');
-    const platform = searchParams.get('platform');
 
     // If query is empty, return top 10 most viewed/popular commands
     if (!query || query.trim() === '') {
@@ -21,10 +20,6 @@ export async function GET(request: Request) {
     const filter: Record<string, unknown> = {
       $text: { $search: query }
     };
-
-    if (platform) {
-      filter.platforms = platform;
-    }
 
     // Perform text search, fetch textScore and sort by score and popularity
     const results = await Command.find(

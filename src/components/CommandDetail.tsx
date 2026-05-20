@@ -2,6 +2,7 @@ import type { ICommand, ICategory } from "@/types";
 import { isAntigravityCategory } from "@/utils/categoryHelpers";
 import CommandCodeBlock from "./CommandCodeBlock";
 import ExampleCard from "./ExampleCard";
+import TerminalSimulator from "./TerminalSimulator";
 
 interface CommandDetailProps {
   command: ICommand;
@@ -67,7 +68,7 @@ export default function CommandDetail({
             : "border-zinc-800/80 hover:border-zinc-800"
         }`}
       >
-        {/* Top bar: Tags and Platform tags */}
+        {/* Top bar: Tags */}
         <div className="flex items-center justify-between border-b border-zinc-900 pb-3 flex-wrap gap-2">
           <div className="flex items-center gap-2">
             {command.tags.slice(0, 4).map((tag) => (
@@ -76,20 +77,6 @@ export default function CommandDetail({
                 className={`text-xs font-medium font-mono ${isAntigravity ? "text-cyan-500/80" : "text-zinc-400"}`}
               >
                 #{tag}
-              </span>
-            ))}
-          </div>
-          <div className="flex items-center gap-1">
-            {command.platforms.map((plat) => (
-              <span
-                key={plat}
-                className={`text-[10px] font-semibold px-2 py-0.5 rounded uppercase border ${
-                  plat === "PowerShell"
-                    ? "bg-blue-950/30 text-blue-400 border-blue-900/40"
-                    : "bg-zinc-900 text-zinc-400 border-zinc-800"
-                }`}
-              >
-                {plat}
               </span>
             ))}
           </div>
@@ -153,6 +140,40 @@ export default function CommandDetail({
                 />
               );
             })}
+          </div>
+        )}
+
+        {/* Workflows and Animated Terminal Simulator */}
+        {command.workflows && command.workflows.length > 0 && (
+          <div className="space-y-4 mt-2">
+            <div className="text-xs text-zinc-500 uppercase tracking-wider font-semibold border-t border-zinc-900 pt-4">
+              Quy trình làm việc (Workflows)
+            </div>
+            {command.workflows.map((wf, idx) => (
+              <div key={idx} className="space-y-3 bg-zinc-950/30 border border-zinc-900 rounded-md p-4 animate-fade-in">
+                <div className="space-y-1">
+                  <p className="text-sm font-semibold text-zinc-200">
+                    {wf.description}
+                  </p>
+                </div>
+                
+                {/* Workflow Content / Code */}
+                <div className="relative group/code font-mono text-[13px] bg-zinc-950 border border-zinc-850 rounded p-3 text-zinc-300 overflow-x-auto leading-relaxed">
+                  <pre>{wf.content}</pre>
+                </div>
+
+                {/* Animated Terminal Simulator */}
+                {wf.terminalScript && wf.terminalScript.length > 0 && (
+                  <div className="pt-1">
+                    <div className="text-[11px] text-zinc-500 mb-1.5 font-semibold font-mono flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                      GIẢ LẬP TERMINAL CHẠY LỆNH:
+                    </div>
+                    <TerminalSimulator script={wf.terminalScript} />
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         )}
       </article>

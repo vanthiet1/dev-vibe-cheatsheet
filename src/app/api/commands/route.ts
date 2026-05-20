@@ -12,7 +12,6 @@ export async function GET(request: Request) {
 
     const filter: Record<string, unknown> = {};
     if (categoryId) filter.categoryId = categoryId;
-    if (platform) filter.platforms = platform;
     if (tag) filter.tags = tag;
 
     const commands = await Command.find(filter).sort({ createdAt: -1 }).lean();
@@ -28,7 +27,7 @@ export async function POST(request: Request) {
     await dbConnect();
     const body = await request.json();
 
-    const requiredFields = ['categoryId', 'title', 'slug', 'command', 'description', 'platforms'];
+    const requiredFields = ['categoryId', 'title', 'slug', 'command', 'description'];
     for (const field of requiredFields) {
       if (!body[field]) {
         return NextResponse.json({ success: false, error: `Field '${field}' is required.` }, { status: 400 });

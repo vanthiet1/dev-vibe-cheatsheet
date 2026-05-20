@@ -12,7 +12,6 @@ export function useCheatsheetData() {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [commands, setCommands] = useState<ICommand[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [seeding, setSeeding] = useState(false);
@@ -26,7 +25,7 @@ export function useCheatsheetData() {
     Record<string, boolean>
   >({});
 
-  // Filtered commands by scope, platform, and search query
+  // Filtered commands by scope and search query
   const filteredCommands = useMemo(() => {
     return commands.filter((cmd) => {
       const cat = categories.find((c) => c._id === cmd.categoryId);
@@ -39,13 +38,6 @@ export function useCheatsheetData() {
       if (selectedGroup === "terminal" && (isGit || isAntigravity))
         return false;
       if (selectedGroup === "antigravity" && !isAntigravity) return false;
-
-      // Platform filter
-      if (
-        selectedPlatform &&
-        !cmd.platforms.includes(selectedPlatform as "CMD" | "PowerShell" | "GitBash")
-      )
-        return false;
 
       // Search query filter
       if (searchQuery.trim() !== "") {
@@ -80,7 +72,7 @@ export function useCheatsheetData() {
 
       return true;
     });
-  }, [commands, categories, selectedGroup, selectedPlatform, searchQuery]);
+  }, [commands, categories, selectedGroup, searchQuery]);
 
   // Group filtered commands by categoryId
   const commandsByCategory = useMemo(() => {
@@ -236,7 +228,6 @@ export function useCheatsheetData() {
   }, []);
 
   const resetFilters = useCallback(() => {
-    setSelectedPlatform(null);
     setSearchQuery("");
     setSelectedGroup("all");
     setSelectedCommandId(null);
@@ -255,7 +246,6 @@ export function useCheatsheetData() {
   }, []);
 
   const hasActiveFilters =
-    selectedPlatform !== null ||
     searchQuery !== "" ||
     selectedGroup !== "all";
 
@@ -264,7 +254,6 @@ export function useCheatsheetData() {
     categories,
     commands,
     searchQuery,
-    selectedPlatform,
     copiedId,
     loading,
     seeding,
@@ -285,7 +274,6 @@ export function useCheatsheetData() {
 
     // Actions
     setSearchQuery,
-    setSelectedPlatform,
     setSelectedGroup: selectGroup,
     setSelectedCommandId: selectCommand,
     handleSearchChange,

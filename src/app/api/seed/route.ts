@@ -146,7 +146,8 @@ export async function GET() {
     const catMap = categories.reduce((acc: Record<string, string>, cat: ICategory) => {
       acc[cat.slug] = String(cat._id);
       return acc;
-    }, {} as Record<string, string>);
+    },
+      {} as Record<string, string>);
 
     // 3. Create commands
     const seededCommands = await Command.create([
@@ -161,7 +162,6 @@ export async function GET() {
         examples: [
           { title: 'Kiểm tra phiên bản', command: 'git --version' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'version', 'info', 'setup'],
         viewCount: 92
       },
@@ -175,7 +175,6 @@ export async function GET() {
         examples: [
           { title: 'Khởi tạo Git tại thư mục hiện tại', command: 'git init' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'setup', 'init', 'basics'],
         viewCount: 150
       },
@@ -191,7 +190,6 @@ export async function GET() {
         examples: [
           { title: 'Clone dự án qua HTTPS', command: 'git clone https://github.com/facebook/react.git' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'setup', 'clone', 'download'],
         viewCount: 280
       },
@@ -205,7 +203,6 @@ export async function GET() {
         examples: [
           { title: 'Kiểm tra trạng thái thay đổi', command: 'git status' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'status', 'info', 'basics'],
         viewCount: 310
       },
@@ -220,9 +217,8 @@ export async function GET() {
         ],
         examples: [
           { title: 'Thêm toàn bộ thay đổi', command: 'git add .' },
-          { title: 'Chỉ thêm một file cụ thể', command: 'git add src/index.js' }
+      { title: 'Chỉ thêm một file cụ thể', command: 'git add src/index.js' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'add', 'stage', 'basics'],
         viewCount: 295
       },
@@ -238,7 +234,6 @@ export async function GET() {
         examples: [
           { title: 'Tạo commit cơ bản', command: 'git commit -m "feat: add user login component"' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'commit', 'save', 'basics'],
         viewCount: 320
       },
@@ -250,12 +245,11 @@ export async function GET() {
         description: 'Cập nhật các commit từ kho chứa cục bộ (local branch) lên kho chứa từ xa (remote branch) trên GitHub/GitLab.',
         explanations: [
           { param: '[remote_name]', description: 'Tên định danh của remote server, mặc định thường là origin.' },
-          { param: '[branch_name]', description: 'Tên nhánh muốn đẩy code lên, ví dụ main, develop.' }
+      { param: '[branch_name]', description: 'Tên nhánh muốn đẩy code lên, ví dụ main, develop.' }
         ],
         examples: [
           { title: 'Đẩy commit lên nhánh main', command: 'git push origin main' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'push', 'upload', 'basics'],
         viewCount: 275
       },
@@ -269,7 +263,6 @@ export async function GET() {
         examples: [
           { title: 'Kéo code mới nhất từ origin main', command: 'git pull origin main' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'pull', 'sync', 'download', 'basics'],
         viewCount: 260
       },
@@ -283,7 +276,6 @@ export async function GET() {
         examples: [
           { title: 'Kiểm tra trạng thái rút gọn', command: 'git status -s' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'status', 'short', 'basics'],
         viewCount: 165
       },
@@ -299,7 +291,6 @@ export async function GET() {
         examples: [
           { title: 'Commit nhanh các sửa đổi', command: 'git commit -am "fix: correct typo in footer component"' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'commit', 'quick', 'basics'],
         viewCount: 220
       },
@@ -313,7 +304,6 @@ export async function GET() {
         examples: [
           { title: 'Kéo code nhánh hiện tại', command: 'git pull' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'pull', 'sync', 'basics'],
         viewCount: 245
       },
@@ -327,7 +317,6 @@ export async function GET() {
         examples: [
           { title: 'Đẩy code nhánh hiện tại', command: 'git push' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'push', 'upload', 'basics'],
         viewCount: 250
       },
@@ -341,12 +330,11 @@ export async function GET() {
         description: 'Cấu hình tên tác giả (username) toàn cục cho tất cả các kho chứa Git trên máy tính hiện tại.',
         explanations: [
           { param: '--global', description: 'Áp dụng cấu hình cho toàn bộ Repository của người dùng OS hiện tại.' },
-          { param: 'user.name', description: 'Khóa cấu hình định nghĩa tên người viết mã nguồn (Author).' }
+      { param: 'user.name', description: 'Khóa cấu hình định nghĩa tên người viết mã nguồn (Author).' }
         ],
         examples: [
           { title: 'Thiết lập tên thông dụng', command: 'git config --global user.name "Nguyen Van A"' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'config', 'setup', 'username'],
         viewCount: 125
       },
@@ -362,7 +350,6 @@ export async function GET() {
         examples: [
           { title: 'Thiết lập email cá nhân', command: 'git config --global user.email "nguyenvana@gmail.com"' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'config', 'setup', 'email'],
         viewCount: 110
       },
@@ -378,7 +365,6 @@ export async function GET() {
         examples: [
           { title: 'Cấu hình HTTP Proxy cục bộ', command: 'git config --global http.proxy http://127.0.0.1:1080' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'proxy', 'config', 'network'],
         viewCount: 98
       },
@@ -390,12 +376,11 @@ export async function GET() {
         description: 'Liệt kê tất cả các thiết lập Git đang hoạt động kèm theo đường dẫn file chứa cấu hình đó.',
         explanations: [
           { param: '--list', description: 'Hiển thị tất cả giá trị cấu hình.' },
-          { param: '--show-origin', description: 'Hiện rõ cấu hình đó nằm ở file local, global hay system.' }
+      { param: '--show-origin', description: 'Hiện rõ cấu hình đó nằm ở file local, global hay system.' }
         ],
         examples: [
           { title: 'Xem nhanh danh sách config', command: 'git config --list' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'config', 'list', 'info'],
         viewCount: 84
       },
@@ -411,7 +396,6 @@ export async function GET() {
         examples: [
           { title: 'Gỡ bỏ cấu hình Proxy', command: 'git config --global --unset http.proxy' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'config', 'unset', 'remove'],
         viewCount: 75
       },
@@ -427,7 +411,6 @@ export async function GET() {
         examples: [
           { title: 'Đăng nhập CLI', command: 'gh auth login' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['github', 'auth', 'login', 'cli'],
         viewCount: 145
       },
@@ -443,7 +426,6 @@ export async function GET() {
         examples: [
           { title: 'Bật Credential Manager', command: 'git config --global credential.helper manager' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'auth', 'token', 'credential'],
         viewCount: 160
       },
@@ -459,7 +441,6 @@ export async function GET() {
         examples: [
           { title: 'Xóa thông tin đăng nhập GitHub', command: 'cmdkey /delete:LegacyGeneric:target=git:https://github.com' }
         ],
-        platforms: ['CMD', 'PowerShell'],
         tags: ['github', 'logout', 'credential', 'windows'],
         viewCount: 180
       },
@@ -475,7 +456,6 @@ export async function GET() {
         examples: [
           { title: 'Kiểm tra kết nối SSH', command: 'ssh -T git@github.com' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['github', 'auth', 'ssh', 'check'],
         viewCount: 135
       },
@@ -489,7 +469,6 @@ export async function GET() {
         examples: [
           { title: 'Xóa token GitHub khỏi manager', command: 'echo url=https://github.com | git credential-manager reject' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'auth', 'credential', 'logout'],
         viewCount: 115
       },
@@ -503,7 +482,6 @@ export async function GET() {
         examples: [
           { title: 'Tắt credential helper', command: 'git config --global --unset credential.helper' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'auth', 'credential', 'unset'],
         viewCount: 100
       },
@@ -521,7 +499,6 @@ export async function GET() {
         examples: [
           { title: 'Xem các remote', command: 'git remote -v' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'remote', 'info', 'url'],
         viewCount: 95
       },
@@ -537,7 +514,6 @@ export async function GET() {
         examples: [
           { title: 'Thêm remote origin', command: 'git remote add origin https://github.com/user/repo.git' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'remote', 'add', 'origin'],
         viewCount: 140
       },
@@ -551,7 +527,6 @@ export async function GET() {
         examples: [
           { title: 'Thay đổi URL origin', command: 'git remote set-url origin https://github.com/user/new-repo.git' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'remote', 'set-url', 'fix'],
         viewCount: 175
       },
@@ -567,7 +542,6 @@ export async function GET() {
         examples: [
           { title: 'Xóa remote origin', command: 'git remote remove origin' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'remote', 'remove', 'delete'],
         viewCount: 110
       },
@@ -583,7 +557,6 @@ export async function GET() {
         examples: [
           { title: 'Tạo nhánh feature-login', command: 'git branch feature-login' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'branch', 'create'],
         viewCount: 110
       },
@@ -597,7 +570,6 @@ export async function GET() {
         examples: [
           { title: 'Chuyển sang nhánh develop', command: 'git checkout develop' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'checkout', 'branch', 'switch'],
         viewCount: 105
       },
@@ -613,7 +585,6 @@ export async function GET() {
         examples: [
           { title: 'Tạo và chuyển sang nhánh feature-payment', command: 'git checkout -b feature-payment' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'checkout', 'branch', 'create'],
         viewCount: 220
       },
@@ -627,7 +598,6 @@ export async function GET() {
         examples: [
           { title: 'Gộp feature-login vào develop', command: 'git merge feature-login' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'merge', 'branch'],
         viewCount: 150
       },
@@ -641,7 +611,6 @@ export async function GET() {
         examples: [
           { title: 'Rebase nhánh hiện tại lên develop', command: 'git rebase develop' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'rebase', 'branch', 'history'],
         viewCount: 130
       },
@@ -657,7 +626,6 @@ export async function GET() {
         examples: [
           { title: 'Đổi tên nhánh hiện tại thành main', command: 'git branch -m main' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'branch', 'rename'],
         viewCount: 115
       },
@@ -673,7 +641,6 @@ export async function GET() {
         examples: [
           { title: 'Xóa nhánh feature-done', command: 'git branch -d feature-done' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'branch', 'delete'],
         viewCount: 95
       },
@@ -689,7 +656,6 @@ export async function GET() {
         examples: [
           { title: 'Push nhánh feature lên origin', command: 'git push -u origin feature-auth' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'push', 'upstream', 'branch'],
         viewCount: 205
       },
@@ -705,7 +671,6 @@ export async function GET() {
         examples: [
           { title: 'Liệt kê mọi nhánh', command: 'git branch -a' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'branch', 'list', 'all'],
         viewCount: 142
       },
@@ -717,12 +682,11 @@ export async function GET() {
         description: 'Tải toàn bộ thông tin lịch sử và các nhánh mới từ remote server về nhưng không tự động gộp (merge) vào code hiện tại của bạn.',
         explanations: [
           { param: '--all', description: 'Lấy dữ liệu từ tất cả các remote đã cấu hình.' },
-          { param: '--prune', description: 'Tự động dọn dẹp, xóa bỏ liên kết theo dõi tới các nhánh remote đã bị xóa trên server.' }
+      { param: '--prune', description: 'Tự động dọn dẹp, xóa bỏ liên kết theo dõi tới các nhánh remote đã bị xóa trên server.' }
         ],
         examples: [
           { title: 'Fetch và dọn dẹp các nhánh cũ', command: 'git fetch --all --prune' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'fetch', 'sync', 'remote'],
         viewCount: 180
       },
@@ -736,7 +700,6 @@ export async function GET() {
         examples: [
           { title: 'Xem các nhánh local', command: 'git branch' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'branch', 'list', 'local'],
         viewCount: 130
       },
@@ -750,7 +713,6 @@ export async function GET() {
         examples: [
           { title: 'Chuyển sang nhánh develop', command: 'git switch develop' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'switch', 'checkout', 'branch'],
         viewCount: 215
       },
@@ -766,7 +728,6 @@ export async function GET() {
         examples: [
           { title: 'Buộc xóa nhánh nháp', command: 'git branch -D feature-draft' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'branch', 'delete', 'force'],
         viewCount: 160
       },
@@ -781,9 +742,8 @@ export async function GET() {
         ],
         examples: [
           { title: 'Tạo tag phiên bản 1.0.0', command: 'git tag v1.0.0' },
-          { title: 'Liệt kê toàn bộ tag hiện có', command: 'git tag' }
+      { title: 'Liệt kê toàn bộ tag hiện có', command: 'git tag' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'tag', 'version', 'release'],
         viewCount: 175
       },
@@ -796,9 +756,8 @@ export async function GET() {
         explanations: [],
         examples: [
           { title: 'Đẩy tag v1.0.0 lên origin', command: 'git push origin v1.0.0' },
-          { title: 'Đẩy tất cả tag local lên remote', command: 'git push origin --tags' }
+      { title: 'Đẩy tất cả tag local lên remote', command: 'git push origin --tags' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'tag', 'push', 'upload'],
         viewCount: 145
       },
@@ -814,7 +773,6 @@ export async function GET() {
         examples: [
           { title: 'Lưu tạm nhanh', command: 'git stash' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'stash', 'save', 'temp'],
         viewCount: 190
       },
@@ -828,7 +786,6 @@ export async function GET() {
         examples: [
           { title: 'Lưu tạm thời công việc', command: 'git stash save "dang lam do feature thanh toan"' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'stash', 'save', 'temp'],
         viewCount: 170
       },
@@ -842,7 +799,6 @@ export async function GET() {
         examples: [
           { title: 'Liệt kê các stash', command: 'git stash list' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'stash', 'list'],
         viewCount: 112
       },
@@ -856,7 +812,6 @@ export async function GET() {
         examples: [
           { title: 'Lấy và xóa stash', command: 'git stash pop' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'stash', 'pop', 'restore'],
         viewCount: 195
       },
@@ -870,7 +825,6 @@ export async function GET() {
         examples: [
           { title: 'Áp dụng stash số 1', command: 'git stash apply stash@{1}' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'stash', 'apply'],
         viewCount: 120
       },
@@ -884,7 +838,6 @@ export async function GET() {
         examples: [
           { title: 'Xóa stash số 0', command: 'git stash drop stash@{0}' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'stash', 'drop', 'remove'],
         viewCount: 88
       },
@@ -898,7 +851,6 @@ export async function GET() {
         examples: [
           { title: 'Xóa sạch mọi stash', command: 'git stash clear' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'stash', 'clear', 'delete'],
         viewCount: 110
       },
@@ -914,7 +866,6 @@ export async function GET() {
         examples: [
           { title: 'Kiểm tra trạng thái conflict', command: 'git status' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'stash', 'conflict', 'status'],
         viewCount: 130
       },
@@ -928,7 +879,6 @@ export async function GET() {
         examples: [
           { title: 'Mở công cụ giải quyết conflict', command: 'git mergetool' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'merge', 'conflict', 'resolve'],
         viewCount: 115
       },
@@ -942,7 +892,6 @@ export async function GET() {
         examples: [
           { title: 'Hủy bỏ quá trình merge', command: 'git merge --abort' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'merge', 'conflict', 'abort'],
         viewCount: 165
       },
@@ -956,7 +905,6 @@ export async function GET() {
         examples: [
           { title: 'Ưu tiên code bên ngoài (theirs)', command: 'git checkout --theirs .' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'conflict', 'resolve', 'theirs'],
         viewCount: 140
       },
@@ -970,7 +918,6 @@ export async function GET() {
         examples: [
           { title: 'Ưu tiên code local của mình (ours)', command: 'git checkout --ours .' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'conflict', 'resolve', 'ours'],
         viewCount: 135
       },
@@ -988,7 +935,6 @@ export async function GET() {
         examples: [
           { title: 'Thu hồi 1 commit gần nhất', command: 'git reset --soft HEAD~1' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'reset', 'soft', 'undo'],
         viewCount: 165
       },
@@ -1002,7 +948,6 @@ export async function GET() {
         examples: [
           { title: 'Hủy 2 commit gần nhất và giữ code ở local', command: 'git reset HEAD~2' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'reset', 'mixed', 'unstaged'],
         viewCount: 140
       },
@@ -1018,7 +963,6 @@ export async function GET() {
         examples: [
           { title: 'Hủy commit gần nhất và xóa sạch code', command: 'git reset --hard HEAD~1' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'reset', 'hard', 'delete-code'],
         viewCount: 260
       },
@@ -1032,7 +976,6 @@ export async function GET() {
         examples: [
           { title: 'Đảo ngược commit a1b2c3d', command: 'git revert a1b2c3d' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'revert', 'undo', 'safe'],
         viewCount: 155
       },
@@ -1048,7 +991,6 @@ export async function GET() {
         examples: [
           { title: 'Sửa thông điệp commit', command: 'git commit --amend -m "feat: validate form correctly"' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'commit', 'amend', 'undo'],
         viewCount: 185
       },
@@ -1064,7 +1006,6 @@ export async function GET() {
         examples: [
           { title: 'Force push nhánh cá nhân', command: 'git push -f origin feature-fix' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'push', 'force', 'overwrite'],
         viewCount: 190
       },
@@ -1078,7 +1019,6 @@ export async function GET() {
         examples: [
           { title: 'Khôi phục tệp index.js', command: 'git restore src/index.js' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'restore', 'undo', 'discard'],
         viewCount: 175
       },
@@ -1092,7 +1032,6 @@ export async function GET() {
         examples: [
           { title: 'Hủy toàn bộ thay đổi', command: 'git restore .' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'restore', 'undo', 'discard-all'],
         viewCount: 210
       },
@@ -1106,7 +1045,6 @@ export async function GET() {
         examples: [
           { title: 'Hoàn tác file config.json', command: 'git checkout -- config.json' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'checkout', 'undo', 'legacy'],
         viewCount: 95
       },
@@ -1118,12 +1056,11 @@ export async function GET() {
         description: 'Dọn sạch thư mục làm việc bằng cách xóa bỏ hoàn toàn tất cả các tệp tin (-f) và thư mục con (-d) chưa được đưa vào Git theo dõi (untracked).',
         explanations: [
           { param: '-f', description: 'Force, bắt buộc xóa.' },
-          { param: '-d', description: 'Xóa cả các thư mục không được theo dõi.' }
+      { param: '-d', description: 'Xóa cả các thư mục không được theo dõi.' }
         ],
         examples: [
           { title: 'Xóa mọi tệp untracked', command: 'git clean -fd' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'clean', 'delete', 'untracked'],
         viewCount: 155
       },
@@ -1139,7 +1076,6 @@ export async function GET() {
         examples: [
           { title: 'Dọn sạch hoàn toàn dự án', command: 'git clean -fdx' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'clean', 'purge', 'ignore'],
         viewCount: 180
       },
@@ -1155,7 +1091,6 @@ export async function GET() {
         examples: [
           { title: 'Áp dụng commit a1b2c3d', command: 'git cherry-pick a1b2c3d' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'cherry-pick', 'commit', 'copy'],
         viewCount: 225
       },
@@ -1167,14 +1102,13 @@ export async function GET() {
         description: 'Các lệnh điều khiển quy trình cherry-pick khi gặp xung đột (conflict): tiếp tục áp dụng sau khi sửa conflict, hủy bỏ hoặc bỏ qua.',
         explanations: [
           { param: '--continue', description: 'Tiếp tục tiến trình sau khi đã giải quyết xung đột bằng tay và staged.' },
-          { param: '--abort', description: 'Hủy bỏ hoàn toàn tiến trình cherry-pick và quay về trạng thái ban đầu.' },
-          { param: '--skip', description: 'Bỏ qua commit xung đột hiện tại và tiếp tục với các commit tiếp theo (nếu có nhiều).' }
+      { param: '--abort', description: 'Hủy bỏ hoàn toàn tiến trình cherry-pick và quay về trạng thái ban đầu.' },
+      { param: '--skip', description: 'Bỏ qua commit xung đột hiện tại và tiếp tục với các commit tiếp theo (nếu có nhiều).' }
         ],
         examples: [
           { title: 'Hủy bỏ cherry-pick', command: 'git cherry-pick --abort' },
-          { title: 'Tiếp tục sau khi sửa lỗi', command: 'git cherry-pick --continue' }
+      { title: 'Tiếp tục sau khi sửa lỗi', command: 'git cherry-pick --continue' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'cherry-pick', 'conflict', 'control'],
         viewCount: 140
       },
@@ -1188,7 +1122,6 @@ export async function GET() {
         examples: [
           { title: 'Force push an toàn', command: 'git push --force-with-lease' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'push', 'force', 'safe'],
         viewCount: 165
       },
@@ -1206,7 +1139,6 @@ export async function GET() {
         examples: [
           { title: 'Hủy theo dõi file .env', command: 'git rm --cached .env' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'ignore', 'remove', 'cached'],
         viewCount: 145
       },
@@ -1220,7 +1152,6 @@ export async function GET() {
         examples: [
           { title: 'Cập nhật lại quy tắc ignore', command: 'git rm -r --cached . && git add . && git commit -m "Apply gitignore changes"' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'ignore', 'cache', 'fix'],
         viewCount: 230
       },
@@ -1234,12 +1165,11 @@ export async function GET() {
         description: 'Hiển thị toàn bộ lịch sử commit của tất cả các nhánh dưới dạng cây sơ đồ trực quan và thông điệp rút gọn trên một dòng.',
         explanations: [
           { param: '--oneline', description: 'Thu gọn mỗi commit hiển thị trên một dòng duy nhất.' },
-          { param: '--graph', description: 'Vẽ sơ đồ nhánh (ASCII graph) biểu thị sự rẽ nhánh gộp nhánh.' }
+      { param: '--graph', description: 'Vẽ sơ đồ nhánh (ASCII graph) biểu thị sự rẽ nhánh gộp nhánh.' }
         ],
         examples: [
           { title: 'Xem sơ đồ commit', command: 'git log --oneline --graph --all' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'log', 'graph', 'history'],
         viewCount: 160
       },
@@ -1253,7 +1183,6 @@ export async function GET() {
         examples: [
           { title: 'So sánh develop và main', command: 'git diff develop..main' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'diff', 'compare'],
         viewCount: 105
       },
@@ -1269,7 +1198,6 @@ export async function GET() {
         examples: [
           { title: 'Kiểm tra dòng 10 đến 20 file index.js', command: 'git blame -L 10,20 src/index.js' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'blame', 'inspect', 'author'],
         viewCount: 95
       },
@@ -1283,7 +1211,6 @@ export async function GET() {
         examples: [
           { title: 'Xem lịch sử commit', command: 'git log' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'log', 'history'],
         viewCount: 155
       },
@@ -1296,9 +1223,8 @@ export async function GET() {
         explanations: [],
         examples: [
           { title: 'Xem chi tiết commit', command: 'git show a1b2c3d' },
-          { title: 'Xem commit gần nhất', command: 'git show' }
+      { title: 'Xem commit gần nhất', command: 'git show' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'show', 'commit', 'inspect'],
         viewCount: 140
       },
@@ -1312,7 +1238,6 @@ export async function GET() {
         examples: [
           { title: 'Xem khác biệt code', command: 'git diff' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'diff', 'changes'],
         viewCount: 185
       },
@@ -1328,7 +1253,6 @@ export async function GET() {
         examples: [
           { title: 'Cấu hình Settings JSON', command: '"git.enabled": true' }
         ],
-        platforms: ['CMD', 'PowerShell'],
         tags: ['vscode', 'config', 'setup', 'detect'],
         viewCount: 110
       },
@@ -1342,7 +1266,6 @@ export async function GET() {
         examples: [
           { title: 'Cấu hình terminal VSCode', command: '"terminal.integrated.defaultProfile.windows": "Git Bash"' }
         ],
-        platforms: ['CMD', 'PowerShell'],
         tags: ['vscode', 'terminal', 'gitbash', 'setup'],
         viewCount: 150
       },
@@ -1358,7 +1281,6 @@ export async function GET() {
         examples: [
           { title: 'Khởi tạo Git', command: 'git init' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'error', 'init', 'fix'],
         viewCount: 185
       },
@@ -1374,7 +1296,6 @@ export async function GET() {
         examples: [
           { title: 'Giải quyết push rejected nhánh develop', command: 'git pull origin develop --rebase' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'error', 'pull', 'rebase', 'fix'],
         viewCount: 245
       },
@@ -1390,7 +1311,6 @@ export async function GET() {
         examples: [
           { title: 'Tạo nhánh cứu hộ code', command: 'git switch -c temp-save-head' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'error', 'head', 'branch', 'fix'],
         viewCount: 140
       },
@@ -1406,7 +1326,6 @@ export async function GET() {
         examples: [
           { title: 'Cập nhật từ nhánh main', command: 'git pull origin main' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'workflow', 'pull', 'sync'],
         viewCount: 195
       },
@@ -1420,7 +1339,6 @@ export async function GET() {
         examples: [
           { title: 'Commit sửa lỗi giao diện', command: 'git commit -m "fix(ui): adjust responsiveness of navigation bar"' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'convention', 'commit', 'best-practice'],
         viewCount: 225
       },
@@ -1434,7 +1352,6 @@ export async function GET() {
         examples: [
           { title: 'Tạo nhánh vá lỗi đăng nhập', command: 'git checkout main && git checkout -b hotfix/login-crash' }
         ],
-        platforms: ['GitBash', 'CMD', 'PowerShell'],
         tags: ['git', 'workflow', 'hotfix', 'production'],
         viewCount: 155
       },
@@ -1448,12 +1365,11 @@ export async function GET() {
         description: 'Liệt kê các tiến trình mạng đang lắng nghe (Listen) trên một cổng cụ thể bằng PowerShell.',
         explanations: [
           { param: '-State Listen', description: 'Lọc và chỉ hiển thị các kết nối có trạng thái Lắng nghe.' },
-          { param: '-LocalPort', description: 'Số hiệu cổng mạng cần rà soát kiểm tra.' }
+      { param: '-LocalPort', description: 'Số hiệu cổng mạng cần rà soát kiểm tra.' }
         ],
         examples: [
           { title: 'Kiểm tra cổng Web 8080', command: 'Get-NetTCPConnection -State Listen -LocalPort 8080' }
         ],
-        platforms: ['PowerShell'],
         tags: ['network', 'port', 'powershell', 'listen'],
         viewCount: 240
       },
@@ -1465,12 +1381,11 @@ export async function GET() {
         description: 'Xóa hoàn toàn một thư mục chứa đầy đủ thư mục con và tệp tin bên trong một cách nhanh chóng và không yêu cầu xác nhận.',
         explanations: [
           { param: '/s', description: 'Xóa toàn bộ cây thư mục bên trong thư mục mục tiêu.' },
-          { param: '/q', description: 'Chế độ im lặng (Quiet Mode), không hiển thị câu hỏi xác nhận Y/N trước khi xóa.' }
+      { param: '/q', description: 'Chế độ im lặng (Quiet Mode), không hiển thị câu hỏi xác nhận Y/N trước khi xóa.' }
         ],
         examples: [
           { title: 'Xóa thư mục tạm thời', command: 'rmdir /s /q C:\\\\temp' }
         ],
-        platforms: ['CMD'],
         tags: ['cmd', 'delete', 'directory', 'recursive'],
         viewCount: 155
       },
@@ -1483,9 +1398,8 @@ export async function GET() {
         explanations: [],
         examples: [
           { title: 'Chuyển vào thư mục Dự án', command: 'cd D:\\\\dev\\\\my-project' },
-          { title: 'Quay lại thư mục cha', command: 'cd ..' }
+      { title: 'Quay lại thư mục cha', command: 'cd ..' }
         ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
         tags: ['terminal', 'cd', 'navigation'],
         viewCount: 90
       },
@@ -1498,9 +1412,8 @@ export async function GET() {
         explanations: [],
         examples: [
           { title: 'Liệt kê trên Windows CMD', command: 'dir' },
-          { title: 'Liệt kê chi tiết trên Bash', command: 'ls -la' }
+      { title: 'Liệt kê chi tiết trên Bash', command: 'ls -la' }
         ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
         tags: ['terminal', 'list', 'ls', 'dir'],
         viewCount: 88
       },
@@ -1514,7 +1427,6 @@ export async function GET() {
         examples: [
           { title: 'Tạo thư mục src', command: 'mkdir src' }
         ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
         tags: ['terminal', 'mkdir', 'folder'],
         viewCount: 80
       },
@@ -1527,9 +1439,8 @@ export async function GET() {
         explanations: [],
         examples: [
           { title: 'Xóa trên CMD/PowerShell', command: 'cls' },
-          { title: 'Xóa trên Git Bash', command: 'clear' }
+      { title: 'Xóa trên Git Bash', command: 'clear' }
         ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
         tags: ['terminal', 'clear', 'cls'],
         viewCount: 110
       },
@@ -1542,9 +1453,8 @@ export async function GET() {
         explanations: [],
         examples: [
           { title: 'Xem cấu hình mạng nhanh', command: 'ipconfig' },
-          { title: 'Xem chi tiết tất cả card mạng', command: 'ipconfig /all' }
+      { title: 'Xem chi tiết tất cả card mạng', command: 'ipconfig /all' }
         ],
-        platforms: ['CMD', 'PowerShell'],
         tags: ['network', 'ipconfig', 'ip', 'system'],
         viewCount: 220
       },
@@ -1559,9 +1469,8 @@ export async function GET() {
         ],
         examples: [
           { title: 'Kiểm tra kết nối tới Google', command: 'ping google.com' },
-          { title: 'Ping liên tục không dừng', command: 'ping google.com -t' }
+      { title: 'Ping liên tục không dừng', command: 'ping google.com -t' }
         ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
         tags: ['network', 'ping', 'latency', 'check'],
         viewCount: 195
       },
@@ -1575,7 +1484,6 @@ export async function GET() {
         examples: [
           { title: 'Xem thông tin hệ thống', command: 'systeminfo' }
         ],
-        platforms: ['CMD', 'PowerShell'],
         tags: ['system', 'hardware', 'os', 'info'],
         viewCount: 120
       },
@@ -1589,7 +1497,6 @@ export async function GET() {
         examples: [
           { title: 'Xem danh sách tiến trình', command: 'tasklist' }
         ],
-        platforms: ['CMD', 'PowerShell'],
         tags: ['system', 'process', 'tasklist', 'pid'],
         viewCount: 160
       },
@@ -1601,13 +1508,12 @@ export async function GET() {
         description: 'Buộc đóng ngay lập tức một tiến trình ứng dụng đang bị treo hoặc chạy ngầm trên Windows bằng tên hoặc Process ID.',
         explanations: [
           { param: '/f', description: 'Force, buộc đóng tiến trình bất chấp tiến trình đang treo.' },
-          { param: '/im', description: 'Image Name, chỉ định tiến trình bằng tên tệp tin thực thi (.exe).' }
+      { param: '/im', description: 'Image Name, chỉ định tiến trình bằng tên tệp tin thực thi (.exe).' }
         ],
         examples: [
           { title: 'Buộc tắt trình duyệt Chrome', command: 'taskkill /f /im chrome.exe' },
-          { title: 'Tắt bằng Process ID (PID)', command: 'taskkill /f /pid 1234' }
+      { title: 'Tắt bằng Process ID (PID)', command: 'taskkill /f /pid 1234' }
         ],
-        platforms: ['CMD', 'PowerShell'],
         tags: ['system', 'process', 'taskkill', 'kill'],
         viewCount: 235
       },
@@ -1619,13 +1525,12 @@ export async function GET() {
         description: 'Liệt kê chi tiết mọi kết nối mạng đang hoạt động, các cổng đang lắng nghe (listening ports) kèm theo PID quản lý kết nối đó.',
         explanations: [
           { param: '-a', description: 'Hiển thị tất cả các kết nối hoạt động và các cổng TCP/UDP đang lắng nghe.' },
-          { param: '-n', description: 'Hiển thị địa chỉ và số cổng dưới dạng số thay vì tên máy chủ.' },
-          { param: '-o', description: 'Hiển thị mã ID của tiến trình (PID) liên kết với mỗi kết nối.' }
+      { param: '-n', description: 'Hiển thị địa chỉ và số cổng dưới dạng số thay vì tên máy chủ.' },
+      { param: '-o', description: 'Hiển thị mã ID của tiến trình (PID) liên kết với mỗi kết nối.' }
         ],
         examples: [
           { title: 'Xem danh sách cổng mạng', command: 'netstat -ano' }
         ],
-        platforms: ['CMD', 'PowerShell'],
         tags: ['network', 'port', 'netstat', 'pid'],
         viewCount: 270
       },
@@ -1638,10 +1543,9 @@ export async function GET() {
         explanations: [],
         examples: [
           { title: 'Đọc tệp tin trên CMD', command: 'type config.json' },
-          { title: 'Đọc tệp tin trên Git Bash', command: 'cat config.json' },
-          { title: 'Đọc tệp tin trên PowerShell', command: 'Get-Content config.json' }
+      { title: 'Đọc tệp tin trên Git Bash', command: 'cat config.json' },
+      { title: 'Đọc tệp tin trên PowerShell', command: 'Get-Content config.json' }
         ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
         tags: ['terminal', 'read', 'cat', 'type'],
         viewCount: 140
       },
@@ -1655,7 +1559,6 @@ export async function GET() {
         examples: [
           { title: 'In thư mục hiện tại', command: 'pwd' }
         ],
-        platforms: ['GitBash', 'PowerShell'],
         tags: ['terminal', 'pwd', 'directory', 'path'],
         viewCount: 120
       },
@@ -1668,9 +1571,8 @@ export async function GET() {
         explanations: [],
         examples: [
           { title: 'Xóa file trên CMD/PowerShell', command: 'del app.log' },
-          { title: 'Xóa file trên Git Bash', command: 'rm app.log' }
+      { title: 'Xóa file trên Git Bash', command: 'rm app.log' }
         ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
         tags: ['terminal', 'delete', 'rm', 'file'],
         viewCount: 165
       },
@@ -1683,9 +1585,8 @@ export async function GET() {
         explanations: [],
         examples: [
           { title: 'Sao chép trên CMD/PowerShell', command: 'copy config.json backup.json' },
-          { title: 'Sao chép trên Git Bash', command: 'cp config.json backup.json' }
+      { title: 'Sao chép trên Git Bash', command: 'cp config.json backup.json' }
         ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
         tags: ['terminal', 'copy', 'cp', 'file'],
         viewCount: 130
       },
@@ -1698,10 +1599,9 @@ export async function GET() {
         explanations: [],
         examples: [
           { title: 'Di chuyển tệp tin', command: 'move config.json src/config.json' },
-          { title: 'Đổi tên tệp tin', command: 'move old.txt new.txt' },
-          { title: 'Di chuyển trên Git Bash', command: 'mv old.txt new.txt' }
+      { title: 'Đổi tên tệp tin', command: 'move old.txt new.txt' },
+      { title: 'Di chuyển trên Git Bash', command: 'mv old.txt new.txt' }
         ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
         tags: ['terminal', 'move', 'mv', 'rename'],
         viewCount: 145
       },
@@ -1715,7 +1615,6 @@ export async function GET() {
         examples: [
           { title: 'Đổi tên tệp text', command: 'ren draft.txt final.txt' }
         ],
-        platforms: ['CMD'],
         tags: ['cmd', 'rename', 'ren', 'file'],
         viewCount: 110
       },
@@ -1727,13 +1626,12 @@ export async function GET() {
         description: 'Xóa bỏ hoàn toàn một thư mục bao gồm tất cả các thư mục con và tệp tin bên trong mà không hỏi xác nhận.',
         explanations: [
           { param: '/s', description: 'Xóa toàn bộ cây thư mục bên trong thư mục đích.' },
-          { param: '/q', description: 'Quiet mode, không yêu cầu xác nhận trước khi xóa.' }
+      { param: '/q', description: 'Quiet mode, không yêu cầu xác nhận trước khi xóa.' }
         ],
         examples: [
           { title: 'Xóa thư mục trên CMD', command: 'rmdir /s /q temp_build' },
-          { title: 'Xóa trên Git Bash / PowerShell', command: 'rm -rf temp_build' }
+      { title: 'Xóa trên Git Bash / PowerShell', command: 'rm -rf temp_build' }
         ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
         tags: ['terminal', 'rmdir', 'delete', 'folder'],
         viewCount: 220
       },
@@ -1747,7 +1645,6 @@ export async function GET() {
         examples: [
           { title: 'Mở thư mục hiện tại trong VSCode', command: 'code .' }
         ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
         tags: ['editor', 'vscode', 'open', 'shortcut'],
         viewCount: 295
       },
@@ -1760,9 +1657,8 @@ export async function GET() {
         explanations: [],
         examples: [
           { title: 'Mở explorer từ CMD/PowerShell', command: 'explorer .' },
-          { title: 'Mở explorer từ Git Bash', command: 'start .' }
+      { title: 'Mở explorer từ Git Bash', command: 'start .' }
         ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
         tags: ['explorer', 'open', 'folder', 'windows'],
         viewCount: 240
       },
@@ -1776,7 +1672,6 @@ export async function GET() {
         examples: [
           { title: 'Làm sạch cache DNS', command: 'ipconfig /flushdns' }
         ],
-        platforms: ['CMD', 'PowerShell'],
         tags: ['network', 'dns', 'flush', 'fix'],
         viewCount: 185
       },
@@ -1789,10 +1684,9 @@ export async function GET() {
         explanations: [],
         examples: [
           { title: 'Xem PATH trên CMD', command: 'echo %PATH%' },
-          { title: 'Xem PATH trên PowerShell', command: '$env:PATH' },
-          { title: 'Xem PATH trên Git Bash', command: 'echo $PATH' }
+      { title: 'Xem PATH trên PowerShell', command: '$env:PATH' },
+      { title: 'Xem PATH trên Git Bash', command: 'echo $PATH' }
         ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
         tags: ['system', 'environment', 'path', 'variable'],
         viewCount: 150
       },
@@ -1805,9 +1699,8 @@ export async function GET() {
         explanations: [],
         examples: [
           { title: 'Thêm thư mục bin trên CMD', command: 'set PATH=%PATH%;C:\\tools\\bin' },
-          { title: 'Thêm tạm thời trên PowerShell', command: '$env:PATH += ";C:\\tools\\bin"' }
+      { title: 'Thêm tạm thời trên PowerShell', command: '$env:PATH += ";C:\\tools\\bin"' }
         ],
-        platforms: ['CMD', 'PowerShell'],
         tags: ['system', 'environment', 'path', 'set'],
         viewCount: 115
       },
@@ -1821,7 +1714,6 @@ export async function GET() {
         examples: [
           { title: 'Kiểm tra phiên bản Node và NPM', command: 'node -v && npm -v' }
         ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
         tags: ['node', 'npm', 'version', 'check'],
         viewCount: 280
       },
@@ -1834,9 +1726,8 @@ export async function GET() {
         explanations: [],
         examples: [
           { title: 'Cài đặt toàn bộ thư viện', command: 'npm install' },
-          { title: 'Cài đặt một thư viện cụ thể', command: 'npm install lodash' }
+      { title: 'Cài đặt một thư viện cụ thể', command: 'npm install lodash' }
         ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
         tags: ['npm', 'install', 'setup', 'dependencies'],
         viewCount: 260
       },
@@ -1849,10 +1740,9 @@ export async function GET() {
         explanations: [],
         examples: [
           { title: 'Chạy môi trường dev', command: 'npm run dev' },
-          { title: 'Build sản phẩm', command: 'npm run build' },
-          { title: 'Chạy server sản phẩm', command: 'npm start' }
+      { title: 'Build sản phẩm', command: 'npm run build' },
+      { title: 'Chạy server sản phẩm', command: 'npm start' }
         ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
         tags: ['npm', 'run', 'dev', 'build', 'start'],
         viewCount: 290
       },
@@ -1866,7 +1756,6 @@ export async function GET() {
         examples: [
           { title: 'Khởi tạo app my-app', command: 'npx create-react-app my-app' }
         ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
         tags: ['react', 'create-react-app', 'setup', 'npx'],
         viewCount: 205
       },
@@ -1880,7 +1769,6 @@ export async function GET() {
         examples: [
           { title: 'Xem dung lượng ổ đĩa', command: 'wmic logicaldisk get size,freespace,caption' }
         ],
-        platforms: ['CMD', 'PowerShell'],
         tags: ['system', 'disk', 'space', 'hardware'],
         viewCount: 140
       },
@@ -1893,10 +1781,9 @@ export async function GET() {
         explanations: [],
         examples: [
           { title: 'Tạo file trống trên Git Bash', command: 'touch index.html' },
-          { title: 'Tạo file trống trên PowerShell', command: 'New-Item index.html' },
-          { title: 'Tạo file trống trên CMD', command: 'type nul > index.html' }
+      { title: 'Tạo file trống trên PowerShell', command: 'New-Item index.html' },
+      { title: 'Tạo file trống trên CMD', command: 'type nul > index.html' }
         ],
-        platforms: ['GitBash', 'PowerShell', 'CMD'],
         tags: ['terminal', 'touch', 'create', 'file'],
         viewCount: 175
       },
@@ -1910,7 +1797,6 @@ export async function GET() {
         examples: [
           { title: 'Mở file để sửa đổi', command: 'nano .env' }
         ],
-        platforms: ['GitBash'],
         tags: ['terminal', 'editor', 'nano', 'write'],
         viewCount: 160
       },
@@ -1924,7 +1810,6 @@ export async function GET() {
         examples: [
           { title: 'Xem lịch sử các lệnh', command: 'history' }
         ],
-        platforms: ['GitBash', 'PowerShell'],
         tags: ['terminal', 'history', 'logs', 'command'],
         viewCount: 195
       },
@@ -1937,9 +1822,8 @@ export async function GET() {
         explanations: [],
         examples: [
           { title: 'Tìm PORT trong file .env trên CMD', command: 'findstr "PORT" .env' },
-          { title: 'Tìm PORT trong file .env trên Git Bash', command: 'grep "PORT" .env' }
+      { title: 'Tìm PORT trong file .env trên Git Bash', command: 'grep "PORT" .env' }
         ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
         tags: ['terminal', 'find', 'search', 'text'],
         viewCount: 180
       },
@@ -1952,9 +1836,8 @@ export async function GET() {
         explanations: [],
         examples: [
           { title: 'Tìm file exe của git trên CMD', command: 'where git' },
-          { title: 'Tìm file exe của git trên Git Bash', command: 'which git' }
+      { title: 'Tìm file exe của git trên Git Bash', command: 'which git' }
         ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
         tags: ['system', 'where', 'command', 'executable'],
         viewCount: 130
       },
@@ -1968,231 +1851,10 @@ export async function GET() {
         examples: [
           { title: 'Tìm PID cổng 3000', command: 'netstat -ano | findstr :3000' }
         ],
-        platforms: ['CMD', 'PowerShell'],
         tags: ['network', 'port', 'netstat', 'pid'],
         viewCount: 285
       },
       // --- Antigravity CLI ---
-      {
-        categoryId: catMap['antigravity-cli'],
-        title: 'Mở lại / chuyển đổi phiên hội thoại (Resume / Switch)',
-        slug: 'cli-slash-resume',
-        command: '/resume',
-        description: 'Mở danh sách để chọn và quay lại các phiên chat cũ nhằm tiếp tục cuộc hội thoại trước đó.',
-        explanations: [],
-        examples: [
-          { title: 'Hiển thị danh sách phiên chat cũ', command: '/resume' },
-          { title: 'Lệnh thay thế tương đương', command: '/switch' }
-        ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
-        tags: ['conversation', 'chat', 'switch', 'resume', 'history'],
-        viewCount: 120
-      },
-      {
-        categoryId: catMap['antigravity-cli'],
-        title: 'Đặt mục tiêu cốt lõi của phiên chat (Goal Selection)',
-        slug: 'cli-slash-goal',
-        command: '/goal [goal_description]',
-        description: 'Khai báo và hiển thị mục tiêu cốt lõi của phiên làm việc hiện tại, giúp định hình hướng đi và giữ cho các Agent tập trung hoàn thành đúng yêu cầu chính.',
-        explanations: [
-          { param: '[goal_description]', description: 'Mô tả tóm tắt mục tiêu cụ thể mà bạn muốn định hướng cho phiên hội thoại.' }
-        ],
-        examples: [
-          { title: 'Thiết lập mục tiêu sửa lỗi Hydration', command: '/goal Fix React hydration error in layout component' },
-          { title: 'Xem mục tiêu hiện tại của phiên chat', command: '/goal' }
-        ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
-        tags: ['utility', 'goal', 'context', 'focus'],
-        viewCount: 190
-      },
-      {
-        categoryId: catMap['antigravity-cli'],
-        title: 'Đính kèm tệp tin/thư mục làm ngữ cảnh (Context Attachment)',
-        slug: 'cli-slash-file-context',
-        command: '@[file_path]',
-        description: 'Đính kèm nhanh nội dung của một file hoặc thư mục trực tiếp vào tin nhắn nhắc nhở (prompt) gửi cho AI để làm dữ liệu đầu vào.',
-        explanations: [
-          { param: '@[file_path]', description: 'Đường dẫn tới file hoặc folder bạn muốn truyền nội dung làm ngữ cảnh (Context).' }
-        ],
-        examples: [
-          { title: 'Truyền nội dung file component làm context', command: '@src/app/page.tsx' },
-          { title: 'Truyền nội dung file cấu hình làm context', command: '@package.json' }
-        ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
-        tags: ['utility', 'file', 'context', 'prompt', 'attachment'],
-        viewCount: 250
-      },
-      {
-        categoryId: catMap['antigravity-cli'],
-        title: 'Tua ngược / hoàn tác mốc lịch sử chat (Rewind / Undo)',
-        slug: 'cli-slash-rewind',
-        command: '/rewind',
-        description: 'Quay xe! Rollback lịch sử chat về một mốc checkpoint phía trước (rất tiện khi AI viết sai và bạn muốn làm lại).',
-        explanations: [],
-        examples: [
-          { title: 'Tua ngược về mốc checkpoint trước đó', command: '/rewind' },
-          { title: 'Lệnh hoàn tác tương đương', command: '/undo' }
-        ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
-        tags: ['conversation', 'chat', 'rewind', 'undo', 'rollback'],
-        viewCount: 135
-      },
-      {
-        categoryId: catMap['antigravity-cli'],
-        title: 'Đổi tên phiên chat hiện tại (Rename)',
-        slug: 'cli-slash-rename',
-        command: '/rename',
-        description: 'Đổi tên phiên chat hiện tại để bạn dễ dàng quản lý, tìm kiếm và phân loại các cuộc hội thoại.',
-        explanations: [],
-        examples: [
-          { title: 'Đổi tên phiên chat hiện tại', command: '/rename' }
-        ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
-        tags: ['conversation', 'chat', 'rename', 'manage'],
-        viewCount: 95
-      },
-      {
-        categoryId: catMap['antigravity-cli'],
-        title: 'Chọn cấp độ tự trị của AI (Permissions)',
-        slug: 'cli-slash-permissions',
-        command: '/permissions',
-        description: 'Cấu hình và kiểm soát mức độ tự trị của AI (request-review: hỏi trước khi làm, always-proceed: tự động thực thi, strict: nghiêm ngặt).',
-        explanations: [],
-        examples: [
-          { title: 'Mở cấu hình quyền hạn và tự trị của AI', command: '/permissions' }
-        ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
-        tags: ['config', 'permissions', 'autonomy', 'safety'],
-        viewCount: 145
-      },
-      {
-        categoryId: catMap['antigravity-cli'],
-        title: 'Chọn mô hình AI mặc định (Model Selection)',
-        slug: 'cli-slash-model',
-        command: '/model',
-        description: 'Chọn model AI mặc định (ví dụ chuyển đổi nhanh giữa Gemini Flash và Gemini Pro) và duy trì cấu hình này cho các phiên sau.',
-        explanations: [],
-        examples: [
-          { title: 'Thay đổi model AI mặc định', command: '/model' }
-        ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
-        tags: ['config', 'model', 'gemini', 'flash', 'pro'],
-        viewCount: 160
-      },
-      {
-        categoryId: catMap['antigravity-cli'],
-        title: 'Tự do tùy chỉnh phím tắt hệ thống (Keybindings)',
-        slug: 'cli-slash-keybindings',
-        command: '/keybindings',
-        description: 'Mở giao diện tương tác trực tiếp để tự thay đổi và tùy chỉnh các phím tắt theo sở thích của bạn.',
-        explanations: [],
-        examples: [
-          { title: 'Mở cài đặt phím tắt tương tác', command: '/keybindings' }
-        ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
-        tags: ['config', 'keybindings', 'shortcuts', 'ui'],
-        viewCount: 80
-      },
-      {
-        categoryId: catMap['antigravity-cli'],
-        title: 'Tùy biến thanh trạng thái (Statusline)',
-        slug: 'cli-slash-statusline',
-        command: '/statusline',
-        description: 'Cấu hình và tùy biến thanh trạng thái hiển thị thông tin real-time dưới đáy giao diện CLI.',
-        explanations: [],
-        examples: [
-          { title: 'Mở giao diện tùy biến thanh trạng thái', command: '/statusline' }
-        ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
-        tags: ['config', 'statusline', 'ui', 'statusbar'],
-        viewCount: 90
-      },
-      {
-        categoryId: catMap['antigravity-cli'],
-        title: 'Quản lý các tác vụ nền đang chạy (Tasks Monitor)',
-        slug: 'cli-slash-tasks',
-        command: '/tasks',
-        description: 'Xem logs trực tiếp, theo dõi tiến độ hoặc ép dừng cưỡng bức (Kill) các tác vụ (tasks) đang chạy ngầm.',
-        explanations: [],
-        examples: [
-          { title: 'Xem danh sách và quản lý các tác vụ ngầm', command: '/tasks' }
-        ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
-        tags: ['monitor', 'tasks', 'kill', 'logs', 'background'],
-        viewCount: 180
-      },
-      {
-        categoryId: catMap['antigravity-cli'],
-        title: 'Xem danh sách các quy trình tự động đóng gói (Skills List)',
-        slug: 'cli-slash-skills',
-        command: '/skills',
-        description: 'Xem chi tiết các quy trình đóng gói (workflows/skills) tự động hóa đang có sẵn trên hệ thống của bạn.',
-        explanations: [],
-        examples: [
-          { title: 'Xem danh sách các workflow/skills', command: '/skills' }
-        ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
-        tags: ['monitor', 'skills', 'workflows', 'list'],
-        viewCount: 110
-      },
-      {
-        categoryId: catMap['antigravity-cli'],
-        title: 'Cấu hình và quản lý Model Context Protocol (MCP Servers)',
-        slug: 'cli-slash-mcp',
-        command: '/mcp',
-        description: 'Mở bảng điều khiển cấu hình và quản lý các kết nối server Model Context Protocol (MCP) để mở rộng chức năng.',
-        explanations: [],
-        examples: [
-          { title: 'Quản lý các kết nối MCP server', command: '/mcp' }
-        ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
-        tags: ['monitor', 'mcp', 'servers', 'config'],
-        viewCount: 150
-      },
-      {
-        categoryId: catMap['antigravity-cli'],
-        title: 'Mở nhanh file bằng editor bên ngoài (Open File)',
-        slug: 'cli-slash-open',
-        command: '/open [file_path]',
-        description: 'Khởi chạy và mở nhanh một file mã nguồn bất kỳ bằng trình soạn thảo/editor bên ngoài (chẳng hạn như VS Code).',
-        explanations: [
-          { param: '[file_path]', description: 'Đường dẫn tuyệt đối hoặc tương đối dẫn tới tệp tin bạn cần mở.' }
-        ],
-        examples: [
-          { title: 'Mở file package.json bằng editor mặc định', command: '/open package.json' }
-        ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
-        tags: ['utility', 'open', 'editor', 'vscode', 'file'],
-        viewCount: 200
-      },
-      {
-        categoryId: catMap['antigravity-cli'],
-        title: 'Xem cuốn sách tài liệu hướng dẫn trực tiếp (CLI Usage)',
-        slug: 'cli-slash-usage',
-        command: '/usage',
-        description: 'Mở và đọc tài liệu hướng dẫn sử dụng và cài đặt chi tiết trực tiếp ngay trong Terminal/CLI.',
-        explanations: [],
-        examples: [
-          { title: 'Hiển thị sách hướng dẫn cài đặt và sử dụng CLI', command: '/usage' }
-        ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
-        tags: ['utility', 'usage', 'docs', 'manual'],
-        viewCount: 130
-      },
-      {
-        categoryId: catMap['antigravity-cli'],
-        title: 'Đăng xuất tài khoản Google hiện tại (Logout)',
-        slug: 'cli-slash-logout',
-        command: '/logout',
-        description: 'Đăng xuất tài khoản Google đang sử dụng và xóa sạch hoàn toàn các token đã được lưu trữ (rất hữu ích khi bạn cần đổi sang Gmail mới!).',
-        explanations: [],
-        examples: [
-          { title: 'Đăng xuất và xóa token lưu trữ', command: '/logout' }
-        ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
-        tags: ['account', 'logout', 'google', 'token', 'auth'],
-        viewCount: 220
-      },
       {
         categoryId: catMap['antigravity-cli'],
         title: 'Cài đặt quy chuẩn Agent cho dự án (Project Agent Rules)',
@@ -2201,6 +1863,21 @@ export async function GET() {
         description: 'Hiển thị nội dung cấu hình hệ thống settings.json và các quy tắc tự trị (Rules) cho Frontend React/TypeScript, Backend .NET C#, và Git workflow để dễ dàng khởi tạo thư mục dự án nhanh chóng.',
         explanations: [],
         examples: [
+          {
+            title: 'Cài đặt Antigravity CLI (Mac/Linux)',
+            description: 'Tải và cài đặt tự động Antigravity CLI trên hệ điều hành macOS hoặc Linux.',
+            command: 'curl -fsSL https://antigravity.google/cli/install.sh | bash'
+          },
+          {
+            title: 'Cài đặt Antigravity CLI (Windows PowerShell)',
+            description: 'Chạy lệnh PowerShell quyền User để tải và cấu hình cài đặt CLI trên Windows.',
+            command: 'irm https://antigravity.google/cli/install.ps1 | iex'
+          },
+          {
+            title: 'Cài đặt Antigravity CLI (Windows CMD)',
+            description: 'Tải, thực thi script cấu hình install.cmd và tự động dọn dẹp file cài đặt.',
+            command: 'curl -fsSL https://antigravity.google/cli/install.cmd -o install.cmd && install.cmd && del install.cmd'
+          },
           {
             title: 'Cấu trúc thư mục Plugin (~/.gemini/antigravity-cli/)',
             description: 'Hướng dẫn thiết lập cấu trúc cây thư mục plugins, subagents, skills và rules trong Antigravity CLI để kích hoạt và mở rộng tính năng hệ thống.',
@@ -2324,9 +2001,213 @@ export async function GET() {
 - Áp dụng cơ chế Optimistic Concurrency Control (OCC) bằng trường RowVersion/ConcurrencyToken để tránh ghi đè dữ liệu dòng tiền khi có 2 request gửi đồng thời.`
           }
         ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
         tags: ['antigravity', 'rules', 'setup', 'config', 'agent'],
         viewCount: 350
+      },
+      {
+        categoryId: catMap['antigravity-cli'],
+        title: 'Mở lại / chuyển đổi phiên hội thoại (Resume / Switch)',
+        slug: 'cli-slash-resume',
+        command: '/resume',
+        description: 'Mở danh sách để chọn và quay lại các phiên chat cũ nhằm tiếp tục cuộc hội thoại trước đó.',
+        explanations: [],
+        examples: [
+          { title: 'Hiển thị danh sách phiên chat cũ', command: '/resume' },
+      { title: 'Lệnh thay thế tương đương', command: '/switch' }
+        ],
+        tags: ['conversation', 'chat', 'switch', 'resume', 'history'],
+        viewCount: 120
+      },
+      {
+        categoryId: catMap['antigravity-cli'],
+        title: 'Đặt mục tiêu cốt lõi của phiên chat (Goal Selection)',
+        slug: 'cli-slash-goal',
+        command: '/goal [goal_description]',
+        description: 'Khai báo và hiển thị mục tiêu cốt lõi của phiên làm việc hiện tại, giúp định hình hướng đi và giữ cho các Agent tập trung hoàn thành đúng yêu cầu chính.',
+        explanations: [
+          { param: '[goal_description]', description: 'Mô tả tóm tắt mục tiêu cụ thể mà bạn muốn định hướng cho phiên hội thoại.' }
+        ],
+        examples: [
+          { title: 'Thiết lập mục tiêu sửa lỗi Hydration', command: '/goal Fix React hydration error in layout component' },
+      { title: 'Xem mục tiêu hiện tại của phiên chat', command: '/goal' }
+        ],
+        tags: ['utility', 'goal', 'context', 'focus'],
+        viewCount: 190
+      },
+      {
+        categoryId: catMap['antigravity-cli'],
+        title: 'Đính kèm tệp tin/thư mục làm ngữ cảnh (Context Attachment)',
+        slug: 'cli-slash-file-context',
+        command: '@[file_path]',
+        description: 'Đính kèm nhanh nội dung của một file hoặc thư mục trực tiếp vào tin nhắn nhắc nhở (prompt) gửi cho AI để làm dữ liệu đầu vào.',
+        explanations: [
+          { param: '@[file_path]', description: 'Đường dẫn tới file hoặc folder bạn muốn truyền nội dung làm ngữ cảnh (Context).' }
+        ],
+        examples: [
+          { title: 'Truyền nội dung file component làm context', command: '@src/app/page.tsx' },
+      { title: 'Truyền nội dung file cấu hình làm context', command: '@package.json' }
+        ],
+        tags: ['utility', 'file', 'context', 'prompt', 'attachment'],
+        viewCount: 250
+      },
+      {
+        categoryId: catMap['antigravity-cli'],
+        title: 'Tua ngược / hoàn tác mốc lịch sử chat (Rewind / Undo)',
+        slug: 'cli-slash-rewind',
+        command: '/rewind',
+        description: 'Quay xe! Rollback lịch sử chat về một mốc checkpoint phía trước (rất tiện khi AI viết sai và bạn muốn làm lại).',
+        explanations: [],
+        examples: [
+          { title: 'Tua ngược về mốc checkpoint trước đó', command: '/rewind' },
+      { title: 'Lệnh hoàn tác tương đương', command: '/undo' }
+        ],
+        tags: ['conversation', 'chat', 'rewind', 'undo', 'rollback'],
+        viewCount: 135
+      },
+      {
+        categoryId: catMap['antigravity-cli'],
+        title: 'Đổi tên phiên chat hiện tại (Rename)',
+        slug: 'cli-slash-rename',
+        command: '/rename',
+        description: 'Đổi tên phiên chat hiện tại để bạn dễ dàng quản lý, tìm kiếm và phân loại các cuộc hội thoại.',
+        explanations: [],
+        examples: [
+          { title: 'Đổi tên phiên chat hiện tại', command: '/rename' }
+        ],
+        tags: ['conversation', 'chat', 'rename', 'manage'],
+        viewCount: 95
+      },
+      {
+        categoryId: catMap['antigravity-cli'],
+        title: 'Chọn cấp độ tự trị của AI (Permissions)',
+        slug: 'cli-slash-permissions',
+        command: '/permissions',
+        description: 'Cấu hình và kiểm soát mức độ tự trị của AI (request-review: hỏi trước khi làm, always-proceed: tự động thực thi, strict: nghiêm ngặt).',
+        explanations: [],
+        examples: [
+          { title: 'Mở cấu hình quyền hạn và tự trị của AI', command: '/permissions' }
+        ],
+        tags: ['config', 'permissions', 'autonomy', 'safety'],
+        viewCount: 145
+      },
+      {
+        categoryId: catMap['antigravity-cli'],
+        title: 'Chọn mô hình AI mặc định (Model Selection)',
+        slug: 'cli-slash-model',
+        command: '/model',
+        description: 'Chọn model AI mặc định (ví dụ chuyển đổi nhanh giữa Gemini Flash và Gemini Pro) và duy trì cấu hình này cho các phiên sau.',
+        explanations: [],
+        examples: [
+          { title: 'Thay đổi model AI mặc định', command: '/model' }
+        ],
+        tags: ['config', 'model', 'gemini', 'flash', 'pro'],
+        viewCount: 160
+      },
+      {
+        categoryId: catMap['antigravity-cli'],
+        title: 'Tự do tùy chỉnh phím tắt hệ thống (Keybindings)',
+        slug: 'cli-slash-keybindings',
+        command: '/keybindings',
+        description: 'Mở giao diện tương tác trực tiếp để tự thay đổi và tùy chỉnh các phím tắt theo sở thích của bạn.',
+        explanations: [],
+        examples: [
+          { title: 'Mở cài đặt phím tắt tương tác', command: '/keybindings' }
+        ],
+        tags: ['config', 'keybindings', 'shortcuts', 'ui'],
+        viewCount: 80
+      },
+      {
+        categoryId: catMap['antigravity-cli'],
+        title: 'Tùy biến thanh trạng thái (Statusline)',
+        slug: 'cli-slash-statusline',
+        command: '/statusline',
+        description: 'Cấu hình và tùy biến thanh trạng thái hiển thị thông tin real-time dưới đáy giao diện CLI.',
+        explanations: [],
+        examples: [
+          { title: 'Mở giao diện tùy biến thanh trạng thái', command: '/statusline' }
+        ],
+        tags: ['config', 'statusline', 'ui', 'statusbar'],
+        viewCount: 90
+      },
+      {
+        categoryId: catMap['antigravity-cli'],
+        title: 'Quản lý các tác vụ nền đang chạy (Tasks Monitor)',
+        slug: 'cli-slash-tasks',
+        command: '/tasks',
+        description: 'Xem logs trực tiếp, theo dõi tiến độ hoặc ép dừng cưỡng bức (Kill) các tác vụ (tasks) đang chạy ngầm.',
+        explanations: [],
+        examples: [
+          { title: 'Xem danh sách và quản lý các tác vụ ngầm', command: '/tasks' }
+        ],
+        tags: ['monitor', 'tasks', 'kill', 'logs', 'background'],
+        viewCount: 180
+      },
+      {
+        categoryId: catMap['antigravity-cli'],
+        title: 'Xem danh sách các quy trình tự động đóng gói (Skills List)',
+        slug: 'cli-slash-skills',
+        command: '/skills',
+        description: 'Xem chi tiết các quy trình đóng gói (workflows/skills) tự động hóa đang có sẵn trên hệ thống của bạn.',
+        explanations: [],
+        examples: [
+          { title: 'Xem danh sách các workflow/skills', command: '/skills' }
+        ],
+        tags: ['monitor', 'skills', 'workflows', 'list'],
+        viewCount: 110
+      },
+      {
+        categoryId: catMap['antigravity-cli'],
+        title: 'Cấu hình và quản lý Model Context Protocol (MCP Servers)',
+        slug: 'cli-slash-mcp',
+        command: '/mcp',
+        description: 'Mở bảng điều khiển cấu hình và quản lý các kết nối server Model Context Protocol (MCP) để mở rộng chức năng.',
+        explanations: [],
+        examples: [
+          { title: 'Quản lý các kết nối MCP server', command: '/mcp' }
+        ],
+        tags: ['monitor', 'mcp', 'servers', 'config'],
+        viewCount: 150
+      },
+      {
+        categoryId: catMap['antigravity-cli'],
+        title: 'Mở nhanh file bằng editor bên ngoài (Open File)',
+        slug: 'cli-slash-open',
+        command: '/open [file_path]',
+        description: 'Khởi chạy và mở nhanh một file mã nguồn bất kỳ bằng trình soạn thảo/editor bên ngoài (chẳng hạn như VS Code).',
+        explanations: [
+          { param: '[file_path]', description: 'Đường dẫn tuyệt đối hoặc tương đối dẫn tới tệp tin bạn cần mở.' }
+        ],
+        examples: [
+          { title: 'Mở file package.json bằng editor mặc định', command: '/open package.json' }
+        ],
+        tags: ['utility', 'open', 'editor', 'vscode', 'file'],
+        viewCount: 200
+      },
+      {
+        categoryId: catMap['antigravity-cli'],
+        title: 'Xem cuốn sách tài liệu hướng dẫn trực tiếp (CLI Usage)',
+        slug: 'cli-slash-usage',
+        command: '/usage',
+        description: 'Mở và đọc tài liệu hướng dẫn sử dụng và cài đặt chi tiết trực tiếp ngay trong Terminal/CLI.',
+        explanations: [],
+        examples: [
+          { title: 'Hiển thị sách hướng dẫn cài đặt và sử dụng CLI', command: '/usage' }
+        ],
+        tags: ['utility', 'usage', 'docs', 'manual'],
+        viewCount: 130
+      },
+      {
+        categoryId: catMap['antigravity-cli'],
+        title: 'Đăng xuất tài khoản Google hiện tại (Logout)',
+        slug: 'cli-slash-logout',
+        command: '/logout',
+        description: 'Đăng xuất tài khoản Google đang sử dụng và xóa sạch hoàn toàn các token đã được lưu trữ (rất hữu ích khi bạn cần đổi sang Gmail mới!).',
+        explanations: [],
+        examples: [
+          { title: 'Đăng xuất và xóa token lưu trữ', command: '/logout' }
+        ],
+        tags: ['account', 'logout', 'google', 'token', 'auth'],
+        viewCount: 220
       },
       {
         categoryId: catMap['antigravity-ide'],
@@ -2349,7 +2230,7 @@ export async function GET() {
 |                                               | (Global - all workspaces)               |
 +-----------------------------------------------+-----------------------------------------+`
           },
-          {
+      {
             title: 'Cấu trúc thư mục của một Skill chuẩn (~/.agents/skills/<skill-name>/)',
             description: 'Các thư mục con và file đánh dấu bắt buộc theo đặc tả tiêu chuẩn tại https://www.antigravity.google/docs/skills.',
             command: `<skill-name>/                   # Thư mục chứa kỹ năng tự định nghĩa
@@ -2362,7 +2243,7 @@ export async function GET() {
 └── examples/                   # Ví dụ minh họa thực tế sử dụng (Tùy chọn)
     └── demo.js                 # File ví dụ mẫu`
           },
-          {
+      {
             title: 'Cấu trúc file đặc tả kỹ năng (SKILL.md)',
             description: 'File SKILL.md bắt buộc phải khai báo Frontmatter YAML ở trên cùng để Antigravity nhận diện các kỹ năng tương ứng.',
             command: `---
@@ -2380,7 +2261,33 @@ Cung cấp các quy tắc hướng dẫn chi tiết dành cho Agent ở đây...
 2. Quy tắc 2...`
           }
         ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
+        workflows: [
+          {
+            description: 'Tạo Kỹ năng mới (Create custom skill) và cấu hình tệp đặc tả',
+            content: 'npx antigravity skill create my-custom-skill\n# Chạy CLI khởi tạo thư mục .agents/skills/my-custom-skill/\n# Tạo file SKILL.md với Frontmatter và file scripts/run.py',
+            terminalScript: [
+              '$ npx antigravity skill create my-custom-skill',
+              'Initializing new custom skill: my-custom-skill...',
+              '✓ Created folder: .agents/skills/my-custom-skill',
+              '✓ Created file: .agents/skills/my-custom-skill/SKILL.md',
+              '✓ Created folder: .agents/skills/my-custom-skill/scripts',
+              '✓ Created file: .agents/skills/my-custom-skill/scripts/run.py',
+              'Skill my-custom-skill created successfully! Now you can edit SKILL.md to configure its rules.'
+            ]
+          },
+          {
+            description: 'Kiểm thử chạy thử nghiệm Kỹ năng (Test custom skill)',
+            content: 'npx antigravity skill test my-custom-skill --input "hello test"',
+            terminalScript: [
+              '$ npx antigravity skill test my-custom-skill --input "hello test"',
+              'Running verification tests for skill: my-custom-skill...',
+              'ℹ Loading skill rules from .agents/skills/my-custom-skill/SKILL.md',
+              'ℹ Executing script: python .agents/skills/my-custom-skill/scripts/run.py',
+              '✓ Test passed: output matches expected schema!',
+              '✓ Skill validation completed without any compile warnings.'
+            ]
+          }
+        ],
         tags: ['antigravity', 'skills', 'setup', 'config', 'ide'],
         viewCount: 420
       },
@@ -2405,7 +2312,7 @@ Cung cấp các quy tắc hướng dẫn chi tiết dành cho Agent ở đây...
 |                                               | (Global - all workspaces)               |
 +-----------------------------------------------+-----------------------------------------+`
           },
-          {
+      {
             title: 'Cấu trúc định dạng file quy tắc (*.antigravityrules)',
             description: 'File rules sử dụng định dạng INI-like kết hợp Markdown để chia nhóm và định nghĩa các luật cụ thể.',
             command: `# ==========================================
@@ -2429,7 +2336,33 @@ Cung cấp các quy tắc hướng dẫn chi tiết dành cho Agent ở đây...
 - Quy định tiếp theo dành cho Agent...`
           }
         ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
+        workflows: [
+          {
+            description: 'Tạo tệp quy chuẩn phát triển tự trị cho Frontend và Backend',
+            content: 'npx antigravity rules init\n# Tạo file global.antigravityrules chứa định dạng commit/branch\n# Tạo file frontend.antigravityrules chứa quy tắc React/TypeScript',
+            terminalScript: [
+              '$ npx antigravity rules init',
+              'Generating project-level agent rules...',
+              '✓ Created file: global-rules/global.antigravityrules',
+              '✓ Created file: global-rules/frontend.antigravityrules',
+              '✓ Created file: global-rules/backend.antigravityrules',
+              'ℹ Added rules mappings to ~/.gemini/antigravity-cli/settings.json',
+              'Project rules initialized successfully! Next time you run Antigravity, the Agent will read these files to audit your commits and pull requests.'
+            ]
+          },
+          {
+            description: 'Quét và kiểm tra sự tuân thủ quy tắc trong mã nguồn (Scan rules compliance)',
+            content: 'npx antigravity rules check --target src/app/page.tsx',
+            terminalScript: [
+              '$ npx antigravity rules check --target src/app/page.tsx',
+              'Auditing files against global.antigravityrules and frontend.antigravityrules...',
+              'ℹ Checking src/app/page.tsx...',
+              '⚠ Warning: Hardcoded financial constant found in React component (line 42).',
+              '✗ Error: Missing TypeScript interface definitions for component props (line 12).',
+              'Rules check failed with 1 error, 1 warning. Please fix code or configure bypass.'
+            ]
+          }
+        ],
         tags: ['antigravity', 'rules', 'setup', 'config', 'ide'],
         viewCount: 450
       },
@@ -2441,13 +2374,13 @@ Cung cấp các quy tắc hướng dẫn chi tiết dành cho Agent ở đây...
         description: 'Định cấu hình kết nối các MCP servers mở rộng giúp Agent giao tiếp với cơ sở dữ liệu, API bên ngoài, hoặc các dịch vụ hệ thống khác.',
         explanations: [
           { param: 'args (string[])', description: 'Các đối số dòng lệnh để khởi chạy stdio server.' },
-          { param: 'env (object)', description: 'Các biến môi trường truyền cho tiến trình stdio server.' },
-          { param: 'cwd (string)', description: 'Thư mục làm việc hiện tại của stdio server.' },
-          { param: 'headers (object)', description: 'Các HTTP headers tùy chỉnh khi kết nối tới remote server.' },
-          { param: 'authProviderType (string)', description: 'Phương thức xác thực. Hỗ trợ "google_credentials" cho ADC.' },
-          { param: 'oauth (object)', description: 'Thông tin xác thực OAuth client (clientId, clientSecret).' },
-          { param: 'disabled (boolean)', description: 'Tạm thời vô hiệu hóa server mà không cần xóa cấu hình.' },
-          { param: 'disabledTools (string[])', description: 'Danh sách tên các công cụ của server này không cấp cho model.' }
+      { param: 'env (object)', description: 'Các biến môi trường truyền cho tiến trình stdio server.' },
+      { param: 'cwd (string)', description: 'Thư mục làm việc hiện tại của stdio server.' },
+      { param: 'headers (object)', description: 'Các HTTP headers tùy chỉnh khi kết nối tới remote server.' },
+      { param: 'authProviderType (string)', description: 'Phương thức xác thực. Hỗ trợ "google_credentials" cho ADC.' },
+      { param: 'oauth (object)', description: 'Thông tin xác thực OAuth client (clientId, clientSecret).' },
+      { param: 'disabled (boolean)', description: 'Tạm thời vô hiệu hóa server mà không cần xóa cấu hình.' },
+      { param: 'disabledTools (string[])', description: 'Danh sách tên các công cụ của server này không cấp cho model.' }
         ],
         examples: [
           {
@@ -2455,7 +2388,7 @@ Cung cấp các quy tắc hướng dẫn chi tiết dành cho Agent ở đây...
             description: 'Tệp cấu hình chính của MCP được cấu trúc lại và lưu trữ toàn cục tại thư mục cá nhân.',
             command: '~/.gemini/antigravity/mcp_config.json'
           },
-          {
+      {
             title: 'Định dạng cấu hình MCP Server mẫu đầy đủ',
             description: 'Ví dụ khai báo cấu hình đa dạng các tham số tùy chọn (args, env, cwd, disabled, disabledTools) cho cả stdio và remote server.',
             command: `{
@@ -2486,7 +2419,35 @@ Cung cấp các quy tắc hướng dẫn chi tiết dành cho Agent ở đây...
 }`
           }
         ],
-        platforms: ['CMD', 'PowerShell', 'GitBash'],
+        workflows: [
+          {
+            description: 'Đăng ký MCP Server mới dạng stdio',
+            content: 'npx antigravity mcp add postgres --command "node" --args "dist/index.js" --env DB_URI="postgresql://localhost/mydb"',
+            terminalScript: [
+              '$ npx antigravity mcp add postgres --command "node" --args "dist/index.js" --env DB_URI="postgresql://localhost/mydb"',
+              'Registering stdio MCP Server: postgres...',
+              'ℹ Reading config: ~/.gemini/antigravity/mcp_config.json',
+              '✓ Added "my-postgres-db" server config successfully!',
+              '✓ Validated connection: Server started in stdio mode and returned 14 active tools.',
+              'MCP server postgres is now active!'
+            ]
+          },
+          {
+            description: 'Liệt kê danh sách các MCP Server đang hoạt động và tình trạng sức khỏe (Healthcheck)',
+            content: 'npx antigravity mcp list',
+            terminalScript: [
+              '$ npx antigravity mcp list',
+              'Fetching configured MCP servers status...',
+              '+----------------------+----------+---------+-------------+',
+              '| Server Name          | Protocol | Status  | Tools Count |',
+              '+----------------------+----------+---------+-------------+',
+              '| my-postgres-db       | stdio    | ONLINE  | 14 tools    |',
+              '| custom-remote-server | remote   | ONLINE  | 5 tools     |',
+              '+----------------------+----------+---------+-------------+',
+              '✓ All 2 servers are healthy and responding in under 120ms.'
+            ]
+          }
+        ],
         tags: ['antigravity', 'mcp', 'setup', 'config', 'ide'],
         viewCount: 480
       }
@@ -2502,6 +2463,7 @@ Cung cấp các quy tắc hướng dẫn chi tiết dành cho Agent ở đây...
     });
   } catch (error) {
     const err = error as Error;
-    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+    return NextResponse.json({ success: false, error: err.message },
+      { status: 500 });
   }
 }

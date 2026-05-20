@@ -11,6 +11,12 @@ export interface IExample {
   description?: string;
 }
 
+export interface IWorkflow {
+  description: string;
+  content: string;
+  terminalScript?: string[];
+}
+
 export interface ICommand extends Document {
   categoryId: mongoose.Types.ObjectId;
   title: string;
@@ -19,7 +25,7 @@ export interface ICommand extends Document {
   description: string;
   explanations: IParameterExplanation[];
   examples: IExample[];
-  platforms: ('CMD' | 'PowerShell' | 'GitBash')[];
+  workflows?: IWorkflow[];
   tags: string[];
   viewCount: number;
   createdAt: Date;
@@ -42,7 +48,11 @@ const CommandSchema: Schema = new Schema(
       command: { type: String, required: true },
       description: { type: String }
     }],
-    platforms: [{ type: String, enum: ['CMD', 'PowerShell', 'GitBash'], required: true }],
+    workflows: [{
+      description: { type: String, required: true },
+      content: { type: String, required: true },
+      terminalScript: [{ type: String }]
+    }],
     tags: [{ type: String, index: true }], // Multikey index for tag filtration
     viewCount: { type: Number, default: 0, index: true }
   },

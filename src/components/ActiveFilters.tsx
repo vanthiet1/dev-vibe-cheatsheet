@@ -1,13 +1,11 @@
 interface ActiveFiltersProps {
   selectedGroup: string;
-  selectedPlatform: string | null;
   searchQuery: string;
   onResetFilters: () => void;
 }
 
 export default function ActiveFilters({
   selectedGroup,
-  selectedPlatform,
   searchQuery,
   onResetFilters,
 }: ActiveFiltersProps) {
@@ -23,11 +21,6 @@ export default function ActiveFilters({
               : selectedGroup === "terminal"
                 ? "CMD/Terminal"
                 : "Antigravity"}
-          </span>
-        )}
-        {selectedPlatform && (
-          <span className="bg-zinc-900 border border-zinc-800 text-zinc-300 px-2 py-0.5 rounded text-xs font-medium">
-            platform:{selectedPlatform}
           </span>
         )}
         {searchQuery && (

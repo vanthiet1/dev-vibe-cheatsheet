@@ -14,7 +14,6 @@ export default function Home() {
   const {
     categories,
     searchQuery,
-    selectedPlatform,
     copiedId,
     loading,
     seeding,
@@ -100,7 +99,6 @@ export default function Home() {
             {hasActiveFilters && (
               <ActiveFilters
                 selectedGroup={selectedGroup}
-                selectedPlatform={selectedPlatform}
                 searchQuery={searchQuery}
                 onResetFilters={resetFilters}
               />

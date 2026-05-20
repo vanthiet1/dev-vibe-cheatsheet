@@ -19,6 +19,12 @@ export interface IExample {
   description?: string;
 }
 
+export interface IWorkflow {
+  description: string;
+  content: string;
+  terminalScript?: string[];
+}
+
 export interface ICommand {
   _id: string;
   categoryId: string;
@@ -28,9 +34,10 @@ export interface ICommand {
   description: string;
   explanations: IParameterExplanation[];
   examples: IExample[];
-  platforms: ("CMD" | "PowerShell" | "GitBash")[];
+  workflows?: IWorkflow[];
   tags: string[];
   viewCount: number;
 }
 
 export type ScopeGroup = "all" | "git" | "terminal" | "antigravity";
+
