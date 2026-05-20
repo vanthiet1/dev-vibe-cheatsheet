@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 dev-vibe-cheatsheet
 
-## Getting Started
+Một nền tảng tra cứu nhanh (Quick Reference) toàn diện, giúp lập trình viên đập tan nỗi lo "não cá vàng", tối ưu hóa 200% hiệu suất gõ lệnh và làm chủ không gian làm việc (Workspace) với một "vibe" cực kỳ mượt mà.
 
-First, run the development server:
+👉 **Trải nghiệm ngay tại:** [https://dev-vibe-cheatsheet.vercel.app/](https://dev-vibe-cheatsheet.vercel.app/)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛑 Bài Toán & Nỗi Đau Thực Tế (Tại sao dự án này ra đời?)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Là một lập trình viên, chúng ta liên tục phải làm việc với hàng tá công nghệ từ Frontend, Backend, Database cho đến Docker, Git, CLI... Và đây là những nỗi đau mà ai cũng gặp phải hàng ngày:
+* **Mất thời gian "Google dạo":** Mỗi lần quên một cú pháp lệnh Git nâng cao, lệnh check ổ đĩa CMD, hay cấu hình IMAP Mail... chúng ta lại phải mò lên StackOverflow hoặc lội lại đống tài liệu cũ.
+* **Xao nhãng mạch Code (Context Switching):** Việc liên tục phải thoát khỏi Terminal/IDE để bật trình duyệt lên tìm câu lệnh làm gãy mạch tư duy logic, giảm sâu hiệu suất làm việc.
+* **Tài liệu phân mảnh:** Các mẹo config hay, các đoạn code mẫu thực chiến thường bị lưu rải rác ở Note, Bookmark trình duyệt hoặc tin nhắn tự gửi, rất khó để tìm lại khi cần gấp.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 💡 Giải Pháp Đột Phá: Một Điểm Đến Duy Nhất
 
-## Learn More
+`dev-vibe-cheatsheet` ra đời để trở thành **"bộ não thứ hai"** của mọi Developer, gom tất cả những bí kíp thực chiến nhất vào một giao diện scannable — nhìn phát thấy ngay, copy phát ăn liền.
+* **Mọi thứ trong tầm mắt:** Tổng hợp từ phím tắt IDE, câu lệnh CLI quản trị hệ thống, cú pháp Git conflict cho đến các chuẩn cấu hình môi trường chuẩn chỉnh.
+* **Thực chiến 100%:** Nói không với lý thuyết suông. Toàn bộ nội dung đều được chắt lọc từ kinh nghiệm đập bug, làm dự án thực tế qua nhiều năm của các Senior Developer.
+* **Tốc độ & Tiện lợi:** Giao diện tối ưu để tra cứu nhanh, giúp bác copy-paste câu lệnh trong vòng 2 giây rồi quay lại cày code tiếp mà không bị ngắt mạch tư duy.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🌟 Giá Trị Cốt Lõi Mang Lại
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 1. Giữ vững mạch "Flow" khi Code
+Bảo vệ năng lượng và sự tập trung của bác. Cần lệnh gì, gõ phím tắt gì? Bật `dev-vibe-cheatsheet` lên, copy, ném vào terminal là xong.
 
-## Deploy on Vercel
+### 2. Chuẩn hóa Quy trình làm việc
+Giúp anh em Dev (đặc biệt là các bạn Junior) nhanh chóng tiếp cận được các bộ quy tắc đặt tên nhánh Git, phong cách commit, cấu hình môi trường... chuẩn công nghiệp mà không cần người khác phải cầm tay chỉ việc.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 3. Tiết kiệm hàng giờ đồng hồ mỗi tuần
+Cộng dồn những khoảng thời gian 2-3 phút đi tìm lệnh lặt vặt mỗi ngày, dự án này giúp bác tiết kiệm cả tiếng đồng hồ mỗi tuần để tập trung vào việc core: Xử lý logic và ra tính năng.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🚀 Hướng Dẫn Khởi Chạy Nhanh (Dành cho Dev muốn đóng góp hoặc chạy Local)
+
+### Các bước cài đặt
+
+1. **Tải mã nguồn về máy:**
+   ```bash
+   git clone [https://github.com/your-username/dev-vibe-cheatsheet.git](https://github.com/your-username/dev-vibe-cheatsheet.git)
+   cd dev-vibe-cheatsheet
