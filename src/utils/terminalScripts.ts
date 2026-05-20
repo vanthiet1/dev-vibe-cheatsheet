@@ -672,20 +672,583 @@ export function generateTerminalScript(command: string): string[] {
   }
 
   // 13. TERMINAL SYSTEM BASICS
-  if (lower.startsWith("netstat")) {
+
+  // cd navigation
+  if (lower.startsWith("cd ") || lower === "cd ..") {
+    const target = cleanCmd.substring(3).trim() || "..";
+    if (target === "..") {
+      return [
+        `$ ${cleanCmd}`,
+        "D:\\dev> cd ..",
+        "D:\\>"
+      ];
+    }
     return [
-      "C:\\> " + cleanCmd,
-      "  Proto  Local Address          Foreign Address        State           PID",
-      "  TCP    127.0.0.1:3000         0.0.0.0:0              LISTENING       14892",
-      "✓ Found active process: PID 14892 listening on port 3000."
+      `$ ${cleanCmd}`,
+      `D:\\dev> `,
+      `✓ Working directory changed to: ${target}`
     ];
   }
 
-  if (lower.startsWith("where") || lower.startsWith("which")) {
-    const isGit = lower.includes("git");
+  // dir / ls -la
+  if (lower === "dir" || lower.startsWith("ls")) {
+    const isLs = lower.startsWith("ls");
+    const prefix = isLs ? "$" : "C:\\dev\\my-project>";
+    if (isLs && lower.includes("-la")) {
+      return [
+        `${prefix} ${cleanCmd}`,
+        "total 48",
+        "drwxr-xr-x  8 user staff   256 May 21 00:05 .",
+        "drwxr-xr-x 12 user staff   384 May 20 23:59 ..",
+        "drwxr-xr-x  9 user staff   288 May 21 00:05 .git",
+        "-rw-r--r--  1 user staff   312 May 20 14:30 .env",
+        "-rw-r--r--  1 user staff   892 May 20 14:30 .gitignore",
+        "-rw-r--r--  1 user staff  1140 May 21 00:02 package.json",
+        "drwxr-xr-x  5 user staff   160 May 21 00:05 src",
+        "drwxr-xr-x  3 user staff    96 May 21 00:04 node_modules",
+        "-rw-r--r--  1 user staff   231 May 20 14:30 README.md"
+      ];
+    }
+    return [
+      `C:\\dev\\my-project> dir`,
+      " Volume in drive D is DATA",
+      " Volume Serial Number is A1B2-C3D4",
+      "",
+      " Directory of D:\\dev\\my-project",
+      "",
+      "21/05/2026  00:05    <DIR>          .",
+      "21/05/2026  00:05    <DIR>          ..",
+      "21/05/2026  00:05    <DIR>          src",
+      "21/05/2026  00:04    <DIR>          node_modules",
+      "20/05/2026  14:30               312 .env",
+      "20/05/2026  14:30             1,140 package.json",
+      "20/05/2026  14:30               231 README.md",
+      "               3 File(s)          1,683 bytes",
+      "               4 Dir(s)   85,234,688,000 bytes free"
+    ];
+  }
+
+  // mkdir
+  if (lower.startsWith("mkdir ")) {
+    const name = cleanCmd.substring(6).trim() || "src";
     return [
       `$ ${cleanCmd}`,
-      isGit ? "C:\\Program Files\\Git\\cmd\\git.exe" : "/usr/bin/" + cleanCmd.split(" ").pop()
+      `✓ Created directory: ${name}/`
+    ];
+  }
+
+  // cls / clear
+  if (lower === "cls" || lower === "clear") {
+    return [
+      `$ ${cleanCmd}`,
+      "[Screen cleared]",
+      "C:\\dev\\my-project>"
+    ];
+  }
+
+  // ipconfig /flushdns — must come before plain ipconfig
+  if (lower.includes("flushdns")) {
+    return [
+      `C:\\> ${cleanCmd}`,
+      "Windows IP Configuration",
+      "",
+      "Successfully flushed the DNS Resolver Cache.",
+      "✓ DNS cache cleared. Stale entries purged.",
+      "ℹ New DNS lookups will retrieve fresh IP addresses from server."
+    ];
+  }
+
+  // ipconfig /all — must come before plain ipconfig
+  if (lower === "ipconfig /all") {
+    return [
+      "C:\\> ipconfig /all",
+      "Windows IP Configuration",
+      "   Host Name . . . . . . . . . . . : DESKTOP-VT1",
+      "   Primary Dns Suffix  . . . . . . :",
+      "   Node Type . . . . . . . . . . . : Hybrid",
+      "",
+      "Ethernet adapter vEthernet (WSL):",
+      "   IPv4 Address. . . . . . . . . . : 172.26.224.1",
+      "   Subnet Mask . . . . . . . . . . : 255.255.240.0",
+      "",
+      "Wireless LAN adapter Wi-Fi:",
+      "   Connection-specific DNS Suffix  : local",
+      "   IPv4 Address. . . . . . . . . . : 192.168.1.105",
+      "   Subnet Mask . . . . . . . . . . : 255.255.255.0",
+      "   Default Gateway . . . . . . . . : 192.168.1.1"
+    ];
+  }
+
+  // ipconfig (plain)
+  if (lower === "ipconfig") {
+    return [
+      "C:\\> ipconfig",
+      "Windows IP Configuration",
+      "",
+      "Ethernet adapter vEthernet (WSL):",
+      "   Connection-specific DNS Suffix  :",
+      "   Link-local IPv6 Address . . . . : fe80::1%4",
+      "   IPv4 Address. . . . . . . . . . : 172.26.224.1",
+      "   Subnet Mask . . . . . . . . . . : 255.255.240.0",
+      "   Default Gateway . . . . . . . . :",
+      "",
+      "Wireless LAN adapter Wi-Fi:",
+      "   IPv4 Address. . . . . . . . . . : 192.168.1.105",
+      "   Subnet Mask . . . . . . . . . . : 255.255.255.0",
+      "   Default Gateway . . . . . . . . : 192.168.1.1"
+    ];
+  }
+
+  // ping -t (continuous) — before plain ping
+  if (lower.includes("ping") && lower.includes("-t")) {
+    return [
+      `C:\\> ${cleanCmd}`,
+      "Pinging google.com [142.250.4.100] with 32 bytes of data:",
+      "Reply from 142.250.4.100: bytes=32 time=12ms TTL=118",
+      "Reply from 142.250.4.100: bytes=32 time=11ms TTL=118",
+      "Reply from 142.250.4.100: bytes=32 time=13ms TTL=118",
+      "Reply from 142.250.4.100: bytes=32 time=11ms TTL=118",
+      "  (Ctrl+C to stop continuous ping...)"
+    ];
+  }
+
+  // ping (plain)
+  if (lower.startsWith("ping ")) {
+    const host = cleanCmd.split(" ")[1] || "google.com";
+    return [
+      `C:\\> ${cleanCmd}`,
+      `Pinging ${host} [142.250.4.100] with 32 bytes of data:`,
+      `Reply from 142.250.4.100: bytes=32 time=12ms TTL=118`,
+      `Reply from 142.250.4.100: bytes=32 time=11ms TTL=118`,
+      `Reply from 142.250.4.100: bytes=32 time=13ms TTL=118`,
+      `Reply from 142.250.4.100: bytes=32 time=12ms TTL=118`,
+      "",
+      `Ping statistics for 142.250.4.100:`,
+      "    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)",
+      "Approximate round trip times in milli-seconds:",
+      "    Minimum = 11ms, Maximum = 13ms, Average = 12ms"
+    ];
+  }
+
+  // systeminfo
+  if (lower === "systeminfo") {
+    return [
+      "C:\\> systeminfo",
+      "",
+      "Host Name:                 DESKTOP-VT1",
+      "OS Name:                   Microsoft Windows 11 Pro",
+      "OS Version:                10.0.26100 N/A Build 26100",
+      "OS Manufacturer:           Microsoft Corporation",
+      "System Type:               x64-based PC",
+      "Processor(s):              Intel(R) Core(TM) i7-12700H, 2300 Mhz, 14 Core(s)",
+      "Total Physical Memory:     32,768 MB",
+      "Available Physical Memory: 18,432 MB",
+      "Virtual Memory: Max Size:  46,592 MB",
+      "Windows Directory:         C:\\WINDOWS",
+      "System Directory:          C:\\WINDOWS\\system32",
+      "Time Zone:                 (UTC+07:00) Bangkok, Hanoi, Jakarta",
+      "Hotfix(s):                 8 Hotfix(s) Installed."
+    ];
+  }
+
+  // tasklist
+  if (lower === "tasklist") {
+    return [
+      "C:\\> tasklist",
+      "",
+      "Image Name                     PID Session Name        Mem Usage",
+      "========================= ======== ================ ===========",
+      "System Idle Process              0 Services               20 K",
+      "node.exe                     14892 Console            94,512 K",
+      "chrome.exe                    9832 Console           312,480 K",
+      "Code.exe                      7144 Console           245,120 K",
+      "WindowsTerminal.exe          11204 Console            52,344 K",
+      "explorer.exe                  4412 Console            84,600 K"
+    ];
+  }
+
+  // taskkill /f /pid
+  if (lower.startsWith("taskkill") && lower.includes("/pid")) {
+    const pid = cleanCmd.match(/\/pid\s+(\d+)/i)?.[1] || "1234";
+    return [
+      `C:\\> ${cleanCmd}`,
+      `SUCCESS: The process with PID ${pid} has been terminated.`
+    ];
+  }
+
+  // taskkill /f /im
+  if (lower.startsWith("taskkill")) {
+    const match = cleanCmd.match(/\/im\s+(\S+)/i);
+    const proc = match ? match[1] : "chrome.exe";
+    return [
+      `C:\\> ${cleanCmd}`,
+      `SUCCESS: The process "${proc}" with PID 9832 has been terminated.`
+    ];
+  }
+
+  // netstat -ano | findstr — pipe variant — before plain netstat
+  if (lower.startsWith("netstat") && lower.includes("findstr")) {
+    const portMatch = lower.match(/:(\d+)/);
+    const port = portMatch ? portMatch[1] : "3000";
+    return [
+      `C:\\> ${cleanCmd}`,
+      `  TCP    0.0.0.0:${port}           0.0.0.0:0              LISTENING       14892`,
+      `  TCP    127.0.0.1:${port}         127.0.0.1:52341        ESTABLISHED     14892`,
+      `ℹ PID 14892 is occupying port ${port}. Use 'taskkill /f /pid 14892' to free it.`
+    ];
+  }
+
+  // netstat / Get-NetTCPConnection
+  if (lower.startsWith("netstat") || lower.startsWith("get-nettcpconnection")) {
+    return [
+      `C:\\> ${cleanCmd}`,
+      "",
+      "  Proto  Local Address          Foreign Address        State           PID",
+      "  TCP    0.0.0.0:80             0.0.0.0:0              LISTENING        4",
+      "  TCP    0.0.0.0:443            0.0.0.0:0              LISTENING        4",
+      "  TCP    0.0.0.0:3000           0.0.0.0:0              LISTENING       14892",
+      "  TCP    0.0.0.0:5432           0.0.0.0:0              LISTENING        9012",
+      "  TCP    127.0.0.1:3000         127.0.0.1:52341        ESTABLISHED     14892",
+      "  UDP    0.0.0.0:5353           *:*                                      2312"
+    ];
+  }
+
+  // type / cat / Get-Content
+  if (lower.startsWith("type ") || lower.startsWith("cat ") || lower.startsWith("get-content ")) {
+    const parts = cleanCmd.split(" ");
+    const file = parts[parts.length - 1] || "config.json";
+    const isJson = file.endsWith(".json");
+    const isEnv = file.endsWith(".env");
+    if (isEnv) {
+      return [
+        `$ ${cleanCmd}`,
+        "NODE_ENV=development",
+        "PORT=3000",
+        "MONGODB_URI=mongodb://localhost:27017/devdb",
+        "JWT_SECRET=supersecretkey_change_in_production",
+        "NEXT_PUBLIC_API_URL=http://localhost:3000/api"
+      ];
+    }
+    if (isJson) {
+      return [
+        `$ ${cleanCmd}`,
+        "{",
+        '  "name": "dev-vibe-cheatsheet",',
+        '  "version": "1.0.0",',
+        '  "scripts": {',
+        '    "dev": "next dev",',
+        '    "build": "next build",',
+        '    "start": "next start"',
+        "  },",
+        '  "dependencies": {',
+        '    "next": "^16.2.6",',
+        '    "react": "^19.0.0"',
+        "  }",
+        "}"
+      ];
+    }
+    return [
+      `$ ${cleanCmd}`,
+      `--- Content of ${file} ---`,
+      "# Project Configuration File",
+      "# Last modified: 2026-05-21",
+      "✓ File read successfully."
+    ];
+  }
+
+  // pwd
+  if (lower === "pwd") {
+    return [
+      "$ pwd",
+      "D:/dev/my-project"
+    ];
+  }
+
+  // del / rm (file deletion)
+  if (lower.startsWith("del ") || (lower.startsWith("rm ") && !lower.includes("-rf"))) {
+    const file = cleanCmd.split(" ").pop() || "app.log";
+    return [
+      `$ ${cleanCmd}`,
+      `✓ Deleted: ${file}`,
+      "ℹ File removed from disk. Action cannot be undone."
+    ];
+  }
+
+  // copy / cp
+  if (lower.startsWith("copy ") || lower.startsWith("cp ")) {
+    const parts = cleanCmd.split(" ");
+    const src = parts[1] || "config.json";
+    const dst = parts[2] || "backup.json";
+    return [
+      `$ ${cleanCmd}`,
+      `        1 file(s) copied.`,
+      `✓ Copied '${src}' → '${dst}'`
+    ];
+  }
+
+  // move / mv / ren
+  if (lower.startsWith("move ") || lower.startsWith("mv ") || lower.startsWith("ren ")) {
+    const parts = cleanCmd.split(" ");
+    const src = parts[1] || "old.txt";
+    const dst = parts[2] || "new.txt";
+    return [
+      `$ ${cleanCmd}`,
+      `        1 file(s) moved.`,
+      `✓ Renamed/Moved '${src}' → '${dst}'`
+    ];
+  }
+
+  // rmdir /s /q OR rm -rf
+  if (lower.startsWith("rmdir") || (lower.startsWith("rm") && lower.includes("-rf"))) {
+    const target = cleanCmd.split(" ").pop() || "temp_build";
+    return [
+      `$ ${cleanCmd}`,
+      `ℹ Recursively removing: ${target}/`,
+      `  Deleting files...`,
+      `✓ Directory '${target}' and all contents removed.`,
+      "⚠ This action is permanent and cannot be undone."
+    ];
+  }
+
+  // code .
+  if (lower === "code .") {
+    return [
+      "$ code .",
+      "Launching Visual Studio Code...",
+      "✓ Opened workspace: D:/dev/my-project",
+      "ℹ Extensions: ESLint, Prettier, TypeScript active."
+    ];
+  }
+
+  // explorer . / start .
+  if (lower === "explorer ." || lower === "start .") {
+    return [
+      `C:\\dev\\my-project> ${cleanCmd}`,
+      "✓ Opening File Explorer at current directory...",
+      "ℹ Window: D:\\dev\\my-project"
+    ];
+  }
+
+  // echo %PATH% / $env:PATH / echo $PATH
+  if (lower.startsWith("echo %path%") || lower === "$env:path" || lower === "echo $path") {
+    return [
+      `$ ${cleanCmd}`,
+      "C:\\Program Files\\Git\\cmd;",
+      "C:\\Program Files\\nodejs;",
+      "C:\\Users\\USER\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;",
+      "C:\\WINDOWS\\system32;",
+      "C:\\WINDOWS;",
+      "C:\\Users\\USER\\.gemini\\antigravity-cli\\bin",
+      "ℹ PATH contains 6 executable directories."
+    ];
+  }
+
+  // set PATH / $env:PATH +=
+  if (lower.startsWith("set path=") || lower.startsWith("$env:path +=")) {
+    return [
+      `$ ${cleanCmd}`,
+      "✓ Directory appended to PATH for this session.",
+      "ℹ Restart terminal to persist changes permanently."
+    ];
+  }
+
+  // node -v && npm -v
+  if (lower.includes("node") && lower.includes("-v")) {
+    return [
+      `$ ${cleanCmd}`,
+      "v22.3.0",
+      "10.8.1",
+      "✓ Node.js and NPM are installed and accessible."
+    ];
+  }
+
+  // npm install lodash (specific package) — before generic npm install
+  if (lower.startsWith("npm install ") && !lower.includes("run")) {
+    const pkg = cleanCmd.split(" ").pop() || "lodash";
+    return [
+      `$ ${cleanCmd}`,
+      `npm warn deprecated ${pkg}@4.17.21: ...`,
+      `added 1 package in 1.842s`,
+      "",
+      `1 package is looking for funding`,
+      `  run \`npm fund\` for details`,
+      `✓ Package '${pkg}' installed to node_modules.`
+    ];
+  }
+
+  // npm install (no args)
+  if (lower === "npm install") {
+    return [
+      "$ npm install",
+      "npm warn deprecated inflight@1.0.6: This module is not supported.",
+      "",
+      "added 284 packages in 14s",
+      "",
+      "87 packages are looking for funding",
+      "  run `npm fund` for details",
+      "✓ All dependencies installed to node_modules/."
+    ];
+  }
+
+  // npm run dev / npm run build / npm start
+  if (lower === "npm run dev") {
+    return [
+      "$ npm run dev",
+      "",
+      "> dev-vibe-cheatsheet@1.0.0 dev",
+      "> next dev",
+      "",
+      "  ▲ Next.js 16.2.6",
+      "  - Local:        http://localhost:3000",
+      "  - Network:      http://192.168.1.105:3000",
+      "",
+      " ✓ Starting...",
+      " ✓ Ready in 1843ms"
+    ];
+  }
+
+  if (lower === "npm run build") {
+    return [
+      "$ npm run build",
+      "",
+      "> dev-vibe-cheatsheet@1.0.0 build",
+      "> next build",
+      "",
+      "  ▲ Next.js 16.2.6 (Turbopack)",
+      "  Creating an optimized production build ...",
+      "✓ Compiled successfully in 6.6s",
+      "✓ Generating static pages (8/8)",
+      "",
+      "Route (app)",
+      "┌ ○ /",
+      "└ ƒ /api/commands",
+      "",
+      "Exit code: 0"
+    ];
+  }
+
+  if (lower === "npm start") {
+    return [
+      "$ npm start",
+      "",
+      "> dev-vibe-cheatsheet@1.0.0 start",
+      "> next start",
+      "",
+      "  ▲ Next.js 16.2.6",
+      "  - Local:        http://localhost:3000",
+      " ✓ Ready in 312ms"
+    ];
+  }
+
+  if (lower.startsWith("npm run ")) {
+    const script = cleanCmd.substring(8).trim();
+    return [
+      `$ ${cleanCmd}`,
+      `> running script: "${script}"`,
+      `✓ Script '${script}' completed successfully.`
+    ];
+  }
+
+  // npx create-react-app
+  if (lower.startsWith("npx create-react-app")) {
+    const name = cleanCmd.split(" ").pop() || "my-app";
+    return [
+      `$ ${cleanCmd}`,
+      "",
+      `Creating a new React app in D:\\dev\\${name}.`,
+      "",
+      "Installing packages. This might take a couple of minutes.",
+      "Installing react, react-dom, and react-scripts...",
+      "",
+      "added 1469 packages in 42s",
+      "",
+      "✓ Success! Created " + name + " at D:\\dev\\" + name,
+      "",
+      "Inside that directory, run:",
+      "  cd " + name,
+      "  npm start"
+    ];
+  }
+
+  // wmic logicaldisk
+  if (lower.startsWith("wmic")) {
+    return [
+      `C:\\> ${cleanCmd}`,
+      "",
+      "Caption  FreeSpace        Size",
+      "C:       45,234,176,000   256,060,514,304",
+      "D:       385,122,304,000  1,000,204,886,016",
+      "",
+      "ℹ C: drive: 45.2 GB free / 256 GB total",
+      "ℹ D: drive: 385 GB free / 1 TB total"
+    ];
+  }
+
+  // touch / New-Item / type nul >
+  if (lower.startsWith("touch ") || lower.startsWith("new-item ") || lower.includes("type nul >")) {
+    const file = lower.startsWith("touch ")
+      ? cleanCmd.split(" ")[1]
+      : lower.startsWith("new-item ")
+        ? cleanCmd.split(" ")[1]
+        : cleanCmd.split(">").pop()?.trim() || "index.html";
+    return [
+      `$ ${cleanCmd}`,
+      `✓ Created empty file: ${file}`,
+      `ℹ Size: 0 bytes | Modified: ${new Date().toLocaleDateString("vi-VN")}`
+    ];
+  }
+
+  // nano
+  if (lower.startsWith("nano ")) {
+    const file = cleanCmd.split(" ")[1] || ".env";
+    return [
+      `$ ${cleanCmd}`,
+      `  GNU nano 7.2           ${file}`,
+      "",
+      "  # Edit your file here...",
+      "  NODE_ENV=development",
+      "  PORT=3000",
+      "",
+      "^G Help   ^O Write   ^X Exit   ^K Cut   ^T Execute"
+    ];
+  }
+
+  // history
+  if (lower === "history") {
+    return [
+      "$ history",
+      "  497  git status",
+      "  498  git add .",
+      "  499  git commit -m \"feat: add terminal simulator\"",
+      "  500  git push origin main",
+      "  501  npm run dev",
+      "  502  code .",
+      "  503  history"
+    ];
+  }
+
+  // findstr / grep
+  if (lower.startsWith("findstr") || lower.startsWith("grep")) {
+    const matchQ = cleanCmd.match(/["'](.+?)["']/);
+    const query = matchQ ? matchQ[1] : "PORT";
+    const fileArg = cleanCmd.split(" ").pop() || ".env";
+    return [
+      `$ ${cleanCmd}`,
+      `${fileArg}:PORT=3000`,
+      `✓ Found 1 matching line for "${query}" in ${fileArg}.`
+    ];
+  }
+
+  // where / which
+  if (lower.startsWith("where ") || lower.startsWith("which ")) {
+    const prog = cleanCmd.split(" ").pop() || "git";
+    const isWindows = lower.startsWith("where");
+    return [
+      `$ ${cleanCmd}`,
+      isWindows
+        ? `C:\\Program Files\\Git\\cmd\\${prog}.exe`
+        : `/usr/bin/${prog}`,
+      `✓ Found executable for '${prog}' in PATH.`
     ];
   }
 
