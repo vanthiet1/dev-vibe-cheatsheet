@@ -15,9 +15,46 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Dev Cheatsheet — CLI Command Reference",
+  title: {
+    default: "Dev-CheatSheet — CLI Command Reference for Developers",
+    template: "%s | Dev-CheatSheet",
+  },
   description:
-    "Tra cứu lệnh Git, PowerShell và CMD nhanh chóng. Developer cheatsheet dành cho lập trình viên.",
+    "Tra cứu nhanh lệnh Git, PowerShell, CMD và Antigravity CLI. Cheatsheet dành cho lập trình viên với ví dụ thực tế, giải thích tham số và hỗ trợ copy nhanh.",
+  keywords: [
+    "git cheatsheet",
+    "powershell commands",
+    "cmd commands",
+    "developer tools",
+    "cli reference",
+    "git commands",
+    "terminal cheatsheet",
+    "antigravity cli",
+    "dev-vibe-cheatsheet",
+  ],
+  authors: [
+    {
+      name: "vanthiet",
+      url: "https://github.com/vanthiet1",
+    },
+  ],
+  creator: "vanthiet",
+  openGraph: {
+    title: "Dev-CheatSheet — CLI Command Reference for Developers",
+    description:
+      "Tra cứu nhanh lệnh Git, PowerShell, CMD. Cheatsheet dành cho lập trình viên với ví dụ thực tế.",
+    siteName: "Dev-CheatSheet",
+    locale: "vi_VN",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
 };
 
 export default function RootLayout({
