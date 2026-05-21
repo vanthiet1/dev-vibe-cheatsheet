@@ -1,4 +1,6 @@
 import Image from "next/image";
+import logo from "../app/favicon.ico";
+
 interface HeaderProps {
   seeding: boolean;
   onRunSeeding: () => void;
@@ -11,7 +13,7 @@ export default function Header({ seeding, onRunSeeding }: HeaderProps) {
         <div className="flex items-center gap-3">
           <h1 className="text-zinc-50 before:-inset-x-1 before:-rotate-1 relative z-4 before:pointer-events-none before:absolute before:inset-y-0 before:z-4 before:from-blue-500 before:via-cyan-500 before:to-blue-600 before:opacity-15 before:mix-blend-hard-light font-semibold text-base tracking-tight flex items-center gap-2">
             <Image
-              src="/logo_web.png"
+              src={logo}
               alt="Logo"
               width={50}
               height={50}
@@ -19,9 +21,6 @@ export default function Header({ seeding, onRunSeeding }: HeaderProps) {
             />
             DEV-VIBE-CHEATSHEET
           </h1>
-          <span className="text-xs uppercase tracking-wider bg-zinc-900 border border-zinc-800 text-zinc-400 px-2 py-0.5 rounded font-medium">
-            v1.0.0
-          </span>
         </div>
       </div>
     </header>
