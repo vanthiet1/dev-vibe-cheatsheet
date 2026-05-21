@@ -91,70 +91,133 @@ export default function AiConfigPage() {
 
   // Output format state: 'rules' | 'cli' | 'skills' | 'workflows' | 'agents'
   const [outputTab, setOutputTab] = useState<"rules" | "cli" | "skills" | "workflows" | "agents">("rules");
-  const [activeFile, setActiveFile] = useState(".editorconfig");
+  const [activeFile, setActiveFile] = useState(".agent/rules/GEMINI.md");
   const [contentLanguage, setContentLanguage] = useState<"en" | "vi">("vi");
   const [copied, setCopied] = useState(false);
 
-  // File Explorer Database Map definition (No separate gemini tab - integrated into rules tab for IDE!)
+  // File Explorer Database Map definition (Dynamic based on selected Tech Stack)
   const filesByTab = useMemo(() => {
     const isCli = ide === "antigravity-cli";
+    
+    const dynamicSkills: { path: string; label: string }[] = [];
+    const dynamicAgents: { path: string; label: string }[] = [];
+    const dynamicRules: { path: string; label: string }[] = [];
+    
+    const prefix = isCli ? ".gemini/antigravity-cli/" : ".agent/";
+    const pluginPrefix = isCli ? "plugins/my-plugin/" : "";
+
+    // Base Skills (always present)
+    dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/clean-code/SKILL.md`, label: "clean-code/SKILL.md" });
+    dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/security-scanner/SKILL.md`, label: "security-scanner/SKILL.md" });
+
+    // Dynamic Stack Skills
+    if (language === "typescript") {
+      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/typescript-best-practices/SKILL.md`, label: "typescript-best-practices/SKILL.md" });
+    } else if (language === "python") {
+      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/python-patterns/SKILL.md`, label: "python-patterns/SKILL.md" });
+    } else if (language === "go") {
+      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/go-standards/SKILL.md`, label: "go-standards/SKILL.md" });
+    } else if (language === "rust") {
+      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/rust-performance/SKILL.md`, label: "rust-performance/SKILL.md" });
+    } else if (language === "csharp") {
+      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/csharp-net-practices/SKILL.md`, label: "csharp-net-practices/SKILL.md" });
+    }
+
+    if (database === "postgres") {
+      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/postgres-optimization/SKILL.md`, label: "postgres-optimization/SKILL.md" });
+    } else if (database === "mongodb") {
+      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/mongodb-indexing/SKILL.md`, label: "mongodb-indexing/SKILL.md" });
+    } else if (database === "sqlite") {
+      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/sqlite-embedded-db/SKILL.md`, label: "sqlite-embedded-db/SKILL.md" });
+    } else if (database === "redis") {
+      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/redis-caching-patterns/SKILL.md`, label: "redis-caching-patterns/SKILL.md" });
+    }
+
+    if (styling === "tailwind-v4") {
+      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/tailwind-patterns/SKILL.md`, label: "tailwind-patterns/SKILL.md" });
+    } else if (styling === "shadcn") {
+      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/shadcn-ui-components/SKILL.md`, label: "shadcn-ui-components/SKILL.md" });
+    }
+
+    if (testing === "jest") {
+      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/jest-unit-tests/SKILL.md`, label: "jest-unit-tests/SKILL.md" });
+    } else if (testing === "playwright") {
+      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/playwright-e2e/SKILL.md`, label: "playwright-e2e/SKILL.md" });
+    }
+
+    // Base Agents (always present)
+    dynamicAgents.push({ path: `${prefix}${pluginPrefix}agents/debugger.md`, label: "debugger.md" });
+    dynamicAgents.push({ path: `${prefix}${pluginPrefix}agents/orchestrator.md`, label: "orchestrator.md" });
+
+    // Dynamic Stack Agents
+    if (framework === "nextjs-app") {
+      dynamicAgents.push({ path: `${prefix}${pluginPrefix}agents/nextjs-specialist.md`, label: "nextjs-specialist.md" });
+    }
+    if (database === "postgres" || database === "mongodb") {
+      dynamicAgents.push({ path: `${prefix}${pluginPrefix}agents/database-architect.md`, label: "database-architect.md" });
+    }
+    if (styling === "shadcn" || styling === "tailwind-v4") {
+      dynamicAgents.push({ path: `${prefix}${pluginPrefix}agents/ui-designer.md`, label: "ui-designer.md" });
+    }
+
+    // Base Rules & Stack Rules
+    if (isCli) {
+      dynamicRules.push({ path: `${prefix}${pluginPrefix}rules/clean-code.rules`, label: "clean-code.rules" });
+      dynamicRules.push({ path: `${prefix}${pluginPrefix}rules/performance.rules`, label: "performance.rules" });
+
+      if (language === "typescript") {
+        dynamicRules.push({ path: `${prefix}${pluginPrefix}rules/typescript.rules`, label: "typescript.rules" });
+      }
+      if (framework === "nextjs-app") {
+        dynamicRules.push({ path: `${prefix}${pluginPrefix}rules/nextjs.rules`, label: "nextjs.rules" });
+      }
+      if (database === "postgres") {
+        dynamicRules.push({ path: `${prefix}${pluginPrefix}rules/postgres-db.rules`, label: "postgres-db.rules" });
+      }
+    } else {
+      dynamicRules.push({ path: ".agent/rules/GEMINI.md", label: "rules/GEMINI.md" });
+    }
+
     if (isCli) {
       return {
-        rules: [
-          { path: "plugins/my-plugin/rules/clean-code.rules", label: "clean-code.rules" },
-          { path: "plugins/my-plugin/rules/performance.rules", label: "performance.rules" }
-        ],
+        rules: dynamicRules,
         cli: [
-          { path: "settings.json", label: "settings.json" },
-          { path: "import_manifest.json", label: "import_manifest.json" },
-          { path: "plugin.json", label: "plugin.json" },
-          { path: "mcp_config.json", label: "mcp_config.json" },
-          { path: "hooks.json", label: "hooks.json" },
-          { path: "plugins/structure", label: "Plugins Tree Map" }
+          { path: ".gemini/antigravity-cli/settings.json", label: "settings.json" },
+          { path: ".gemini/antigravity-cli/import_manifest.json", label: "import_manifest.json" },
+          { path: ".gemini/antigravity-cli/plugins/my-plugin/plugin.json", label: "plugin.json" },
+          { path: ".gemini/antigravity-cli/plugins/my-plugin/mcp_config.json", label: "mcp_config.json" },
+          { path: ".gemini/antigravity-cli/plugins/my-plugin/hooks.json", label: "hooks.json" },
+          { path: ".gemini/antigravity-cli/plugins/structure", label: "Plugins Tree Map" }
         ],
-        skills: [
-          { path: "plugins/my-plugin/skills/clean-code/SKILL.md", label: "clean-code/SKILL.md" },
-          { path: "plugins/my-plugin/skills/security-scanner/SKILL.md", label: "security-scanner/SKILL.md" }
-        ],
-        agents: [
-          { path: "plugins/my-plugin/agents/debugger.md", label: "debugger.md" },
-          { path: "plugins/my-plugin/agents/orchestrator.md", label: "orchestrator.md" }
-        ],
+        skills: dynamicSkills,
+        agents: dynamicAgents,
         workflows: [] // Not used in CLI
       };
     }
 
     return {
-      rules: [
-        { path: ".editorconfig", label: ".editorconfig" },
-        { path: "rules/GEMINI.md", label: "rules/GEMINI.md" }
-      ],
+      rules: dynamicRules,
       cli: [], // Not used in IDE
-      skills: [
-        { path: "skills/clean-code/SKILL.md", label: "clean-code/SKILL.md" },
-        { path: "skills/database-optimization/SKILL.md", label: "database-optimization/SKILL.md" },
-        { path: "skills/testing-patterns/SKILL.md", label: "testing-patterns/SKILL.md" },
-        { path: "skills/security-scanner/SKILL.md", label: "security-scanner/SKILL.md" }
-      ],
-      agents: [], // Not used in IDE
+      skills: dynamicSkills,
+      agents: dynamicAgents,
       workflows: [
-        { path: "workflows/debug.md", label: "debug.md" },
-        { path: "workflows/test.md", label: "test.md" },
-        { path: "workflows/verify.md", label: "verify.md" },
-        { path: "workflows/coordinate.md", label: "coordinate.md" }
+        { path: ".agent/workflows/debug.md", label: "debug.md" },
+        { path: ".agent/workflows/test.md", label: "test.md" },
+        { path: ".agent/workflows/verify.md", label: "verify.md" },
+        { path: ".agent/workflows/coordinate.md", label: "coordinate.md" }
       ]
     };
-  }, [ide]);
+  }, [ide, language, database, framework, styling, testing]);
 
   // IDE/CLI Change Helper to switch states cleanly without breaking selection
   const handleIdeChange = (newIde: string) => {
     setIde(newIde);
     if (newIde === "antigravity-cli") {
       setOutputTab("cli");
-      setActiveFile("settings.json");
+      setActiveFile(".gemini/antigravity-cli/settings.json");
     } else {
       setOutputTab("rules");
-      setActiveFile(".editorconfig");
+      setActiveFile(".agent/rules/GEMINI.md");
     }
   };
 
@@ -168,8 +231,18 @@ export default function AiConfigPage() {
 
   // Build current directory tree
   const treeNodes = useMemo(() => {
+    if (ide === "antigravity-ide" && outputTab === "rules") {
+      // Gather ALL file paths from all tabs in IDE mode to build the complete folder tree skeleton!
+      const allFiles = [
+        ...filesByTab.rules,
+        ...filesByTab.skills,
+        ...filesByTab.agents,
+        ...filesByTab.workflows
+      ];
+      return buildTree(allFiles);
+    }
     return buildTree(filesByTab[outputTab] || []);
-  }, [filesByTab, outputTab]);
+  }, [filesByTab, outputTab, ide]);
 
   // Dynamic Content compiler
   const generatedData = useMemo(() => {
@@ -207,8 +280,8 @@ export default function AiConfigPage() {
     document.body.removeChild(link);
   };
 
-  // Recursive Tree visual renderer with vertical guides
-  const renderTreeNodes = (nodes: TreeNode[], depth = 0) => {
+  // Recursive Tree visual renderer with vertical guides and foldersOnly option
+  const renderTreeNodes = (nodes: TreeNode[], depth = 0, foldersOnly = false) => {
     return nodes.map((node) => {
       if (node.isFolder) {
         return (
@@ -221,11 +294,13 @@ export default function AiConfigPage() {
               <span className="text-zinc-400 font-mono tracking-wide">{node.name}/</span>
             </div>
             <div className="relative border-l border-zinc-800/80 ml-[6px] space-y-0.5">
-              {renderTreeNodes(node.children, depth + 1)}
+              {renderTreeNodes(node.children, depth + 1, foldersOnly)}
             </div>
           </div>
         );
       }
+      
+      if (foldersOnly) return null; // Skip rendering file nodes completely!
       
       const isActive = activeFile === node.path;
       return (
@@ -267,7 +342,7 @@ export default function AiConfigPage() {
             Cấu hình Agent & Rules
           </h2>
           <p className="text-zinc-400 text-sm max-w-2xl">
-            Tạo cấu hình chỉ thị prompt (<code className="text-violet-400 bg-violet-950/20 px-1 py-0.5 rounded">.rules</code>), kỹ năng phân rã (<code className="text-violet-400 bg-violet-950/20 px-1 py-0.5 rounded">SKILL.md</code>) và bộ quy tắc ứng xử (<code className="text-violet-400 bg-violet-950/20 px-1 py-0.5 rounded">rules/GEMINI.md</code>) chuẩn Google Antigravity.
+            Tạo cấu hình chỉ thị prompt (<code className="text-violet-400 bg-violet-950/20 px-1 py-0.5 rounded">.rules</code>), kỹ năng phân rã (<code className="text-violet-400 bg-violet-950/20 px-1 py-0.5 rounded">SKILL.md</code>) và bộ quy tắc ứng xử (<code className="text-violet-400 bg-violet-950/20 px-1 py-0.5 rounded">GEMINI.md</code>) chuẩn Google Antigravity.
           </p>
         </div>
 
@@ -375,7 +450,7 @@ export default function AiConfigPage() {
                       className={`py-2 px-1 rounded-md text-[11px] font-bold border transition-all cursor-pointer text-center truncate ${
                         language === item.key
                           ? "border-violet-600/80 bg-violet-950/25 text-violet-300"
-                          : "border-zinc-800 bg-zinc-900/10 text-zinc-400 hover:border-zinc-700"
+                          : "border-zinc-800 bg-zinc-900/10 text-zinc-450 hover:border-zinc-700"
                       }`}
                     >
                       {item.label}
@@ -401,7 +476,7 @@ export default function AiConfigPage() {
                       className={`py-2 px-1 rounded-md text-[11px] font-bold border transition-all cursor-pointer text-center truncate ${
                         database === item.key
                           ? "border-violet-600/80 bg-violet-950/25 text-violet-300"
-                          : "border-zinc-800 bg-zinc-900/10 text-zinc-400 hover:border-zinc-700"
+                          : "border-zinc-800 bg-zinc-900/10 text-zinc-450 hover:border-zinc-700"
                       }`}
                     >
                       {item.label}
@@ -425,7 +500,7 @@ export default function AiConfigPage() {
                       className={`py-2 px-1.5 rounded-md text-[11px] font-bold border transition-all cursor-pointer text-center ${
                         framework === item.key
                           ? "border-violet-600/80 bg-violet-950/25 text-violet-300"
-                          : "border-zinc-800 bg-zinc-900/10 text-zinc-400 hover:border-zinc-700"
+                          : "border-zinc-800 bg-zinc-900/10 text-zinc-450 hover:border-zinc-700"
                       }`}
                     >
                       {item.label}
@@ -450,7 +525,7 @@ export default function AiConfigPage() {
                       className={`py-2 px-2 rounded-md text-[11px] font-bold border transition-all cursor-pointer text-center ${
                         styling === item.key
                           ? "border-violet-600/80 bg-violet-950/25 text-violet-300"
-                          : "border-zinc-800 bg-zinc-900/10 text-zinc-400 hover:border-zinc-700"
+                          : "border-zinc-800 bg-zinc-900/10 text-zinc-450 hover:border-zinc-700"
                       }`}
                     >
                       {item.label}
@@ -473,7 +548,7 @@ export default function AiConfigPage() {
                       className={`py-2 px-2.5 rounded-md text-[11px] font-bold border transition-all cursor-pointer text-center ${
                         testing === item.key
                           ? "border-violet-600/80 bg-violet-950/25 text-violet-300"
-                          : "border-zinc-800 bg-zinc-900/10 text-zinc-400 hover:border-zinc-700"
+                          : "border-zinc-800 bg-zinc-900/10 text-zinc-450 hover:border-zinc-700"
                       }`}
                     >
                       {item.label}
@@ -488,91 +563,104 @@ export default function AiConfigPage() {
           <div className="lg:col-span-7 flex flex-col space-y-4">
             
             {/* Output File Switcher Tabs */}
-            <div className="flex items-center gap-1.5 p-1 bg-zinc-900/60 border border-zinc-900 rounded-lg text-xs self-start overflow-x-auto max-w-full">
-              {/* Dynamic rules tab for IDE */}
+            <div className="flex items-center gap-1.5 p-1 bg-zinc-900/60 border border-zinc-900 rounded-lg text-xs self-start overflow-x-auto max-w-full animate-fade-in">
+              
+              {/* IDE Mode Tabs */}
               {ide === "antigravity-ide" && (
-                <button
-                  onClick={() => handleTabChange("rules")}
-                  className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border ${
-                    outputTab === "rules"
-                      ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
-                      : "border-transparent text-zinc-450 hover:text-zinc-200 hover:bg-zinc-800/20"
-                  }`}
-                >
-                  RULE.md / rules/
-                </button>
+                <>
+                  <button
+                    onClick={() => handleTabChange("rules")}
+                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border ${
+                      outputTab === "rules"
+                        ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
+                        : "border-transparent text-zinc-455 hover:text-zinc-200 hover:bg-zinc-800/20"
+                    }`}
+                  >
+                    IDE Config
+                  </button>
+                  
+                  <button
+                    onClick={() => handleTabChange("skills")}
+                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border ${
+                      outputTab === "skills"
+                        ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
+                        : "border-transparent text-zinc-455 hover:text-zinc-200 hover:bg-zinc-800/20"
+                    }`}
+                  >
+                    Skills
+                  </button>
+
+                  <button
+                    onClick={() => handleTabChange("agents")}
+                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border ${
+                      outputTab === "agents"
+                        ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
+                        : "border-transparent text-zinc-455 hover:text-zinc-200 hover:bg-zinc-800/20"
+                    }`}
+                  >
+                    Agents
+                  </button>
+
+                  <button
+                    onClick={() => handleTabChange("workflows")}
+                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border ${
+                      outputTab === "workflows"
+                        ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
+                        : "border-transparent text-zinc-455 hover:text-zinc-200 hover:bg-zinc-800/20"
+                    }`}
+                  >
+                    Workflows
+                  </button>
+                </>
               )}
 
-              {/* Dynamic CLI Config tab for CLI */}
+              {/* CLI Mode Tabs */}
               {ide === "antigravity-cli" && (
-                <button
-                  onClick={() => handleTabChange("cli")}
-                  className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border ${
-                    outputTab === "cli"
-                      ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
-                      : "border-transparent text-zinc-450 hover:text-zinc-200 hover:bg-zinc-800/20"
-                  }`}
-                >
-                  CLI Config
-                </button>
-              )}
+                <>
+                  <button
+                    onClick={() => handleTabChange("cli")}
+                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border ${
+                      outputTab === "cli"
+                        ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
+                        : "border-transparent text-zinc-455 hover:text-zinc-200 hover:bg-zinc-800/20"
+                    }`}
+                  >
+                    CLI Config
+                  </button>
 
-              {/* Dynamic skills tab label based on IDE vs CLI selection */}
-              <button
-                onClick={() => handleTabChange("skills")}
-                className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap border ${
-                  outputTab === "skills"
-                    ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
-                    : "border-transparent text-zinc-450 hover:text-zinc-200 hover:bg-zinc-800/20"
-                }`}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                {ide === "antigravity-cli" ? "skills/ (Module)" : "SKILL.md (Module)"}
-              </button>
+                  <button
+                    onClick={() => handleTabChange("skills")}
+                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border ${
+                      outputTab === "skills"
+                        ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
+                        : "border-transparent text-zinc-455 hover:text-zinc-200 hover:bg-zinc-800/20"
+                    }`}
+                  >
+                    Skills
+                  </button>
 
-              {/* Dynamic agents tab for CLI only */}
-              {ide === "antigravity-cli" && (
-                <button
-                  onClick={() => handleTabChange("agents")}
-                  className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap border ${
-                    outputTab === "agents"
-                      ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
-                      : "border-transparent text-zinc-450 hover:text-zinc-200 hover:bg-zinc-800/20"
-                  }`}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse shrink-0" />
-                  agents/ (Subagents)
-                </button>
-              )}
+                  <button
+                    onClick={() => handleTabChange("agents")}
+                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border ${
+                      outputTab === "agents"
+                        ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
+                        : "border-transparent text-zinc-455 hover:text-zinc-200 hover:bg-zinc-800/20"
+                    }`}
+                  >
+                    Agents
+                  </button>
 
-              {/* Dynamic rules tab for CLI only */}
-              {ide === "antigravity-cli" && (
-                <button
-                  onClick={() => handleTabChange("rules")}
-                  className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap border ${
-                    outputTab === "rules"
-                      ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
-                      : "border-transparent text-zinc-450 hover:text-zinc-200 hover:bg-zinc-800/20"
-                  }`}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-pink-500 animate-pulse shrink-0" />
-                  rules/ (Rules)
-                </button>
-              )}
-
-              {/* Dynamic workflows tab for IDE only */}
-              {ide === "antigravity-ide" && (
-                <button
-                  onClick={() => handleTabChange("workflows")}
-                  className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap border ${
-                    outputTab === "workflows"
-                      ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
-                      : "border-transparent text-zinc-450 hover:text-zinc-200 hover:bg-zinc-800/20"
-                  }`}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse shrink-0" />
-                  WORKFLOW.md (Workflow)
-                </button>
+                  <button
+                    onClick={() => handleTabChange("rules")}
+                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border ${
+                      outputTab === "rules"
+                        ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
+                        : "border-transparent text-zinc-455 hover:text-zinc-200 hover:bg-zinc-800/20"
+                    }`}
+                  >
+                    Rules
+                  </button>
+                </>
               )}
             </div>
 
@@ -617,7 +705,7 @@ export default function AiConfigPage() {
                   className={`px-3 py-1.5 rounded-md text-xs font-bold cursor-pointer transition-all duration-150 flex items-center gap-1.5 ${
                     copied
                       ? "bg-emerald-950/50 border border-emerald-700/60 text-emerald-300"
-                      : "bg-zinc-950 border border-zinc-800 text-zinc-350 hover:bg-zinc-900 hover:border-zinc-700 hover:text-zinc-100 active:scale-95"
+                      : "bg-zinc-950 border border-zinc-800 text-zinc-355 hover:bg-zinc-900 hover:border-zinc-700 hover:text-zinc-100 active:scale-95"
                   }`}
                 >
                   {copied ? <CheckIcon className="text-sm" /> : <CopyIcon className="text-sm" />}
@@ -646,7 +734,7 @@ export default function AiConfigPage() {
                 
                 <div className="space-y-1 pl-1">
                   {treeNodes && treeNodes.length > 0 ? (
-                    renderTreeNodes(treeNodes)
+                    renderTreeNodes(treeNodes, 0, ide === "antigravity-ide" && outputTab === "rules")
                   ) : (
                     <span className="text-[10px] text-zinc-600 italic">No files available</span>
                   )}
@@ -661,7 +749,7 @@ export default function AiConfigPage() {
             </div>
 
             {/* Step-by-step Directory installation walkthrough (Dynamic based on IDE vs CLI) */}
-            <div className="bg-zinc-900/10 border border-zinc-900 rounded-xl p-5 space-y-4">
+            <div className="bg-zinc-900/10 border border-zinc-900 rounded-xl p-5 space-y-4 animate-fade-in">
               <h3 className="text-xs font-extrabold text-zinc-200 uppercase tracking-widest flex items-center gap-2">
                 🚀 HƯỚNG DẪN MODULE CẤU TRÚC 3 BƯỚC:
               </h3>
@@ -692,23 +780,23 @@ export default function AiConfigPage() {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
                   <div className="space-y-1.5 border-l-2 border-violet-600/40 pl-3">
-                    <h4 className="font-bold text-zinc-200">Bước 1: Tạo tệp .editorconfig</h4>
+                    <h4 className="font-bold text-zinc-200">Bước 1: Tạo thư mục .agent/</h4>
                     <p className="text-[11px] text-zinc-400 leading-normal">
-                      Lưu tệp cấu hình mã hóa <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded">.editorconfig</code> trực tiếp tại thư mục gốc dự án của bạn.
+                      Tạo thư mục tên là <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded">.agent/</code> trực tiếp tại thư mục gốc dự án của bạn làm phân khu làm việc của Agent.
                     </p>
                   </div>
                   
                   <div className="space-y-1.5 border-l-2 border-violet-600/40 pl-3">
-                    <h4 className="font-bold text-zinc-200">Bước 2: Tạo folder rules & GEMINI.md</h4>
+                    <h4 className="font-bold text-zinc-200">Bước 2: Lưu rules & GEMINI.md</h4>
                     <p className="text-[11px] text-zinc-400 leading-normal">
-                      Tạo thư mục tên là <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded">rules/</code> tại thư mục gốc dự án, sau đó lưu file quy tắc <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded">GEMINI.md</code> vào bên trong thư mục đó (<code className="text-violet-400">rules/GEMINI.md</code>).
+                      Tạo tiếp thư mục <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded">.agent/rules/</code> và lưu file quy tắc <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded">GEMINI.md</code> vào đó (<code className="text-violet-400">.agent/rules/GEMINI.md</code>).
                     </p>
                   </div>
 
                   <div className="space-y-1.5 border-l-2 border-violet-600/40 pl-3">
-                    <h4 className="font-bold text-zinc-200">Bước 3: Phân chia Skill rõ ràng</h4>
+                    <h4 className="font-bold text-zinc-200">Bước 3: Phân chia Kỹ năng & Tác nhân</h4>
                     <p className="text-[11px] text-zinc-400 leading-normal">
-                      Đặt các tệp kỹ năng của bạn vào folder riêng lẻ <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded">skills/&#123;tên_skill&#125;/SKILL.md</code> để AI Agent tải thông tin thông minh, tiết kiệm tối đa lượng token.
+                      Đặt các tệp kỹ năng của bạn vào folder riêng lẻ <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded">.agent/skills/&#123;tên_skill&#125;/SKILL.md</code> để AI Agent tải thông tin thông minh, tiết kiệm tối đa lượng token.
                     </p>
                   </div>
                 </div>

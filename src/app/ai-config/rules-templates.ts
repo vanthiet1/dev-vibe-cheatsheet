@@ -182,8 +182,14 @@ export function generateRulesContent(params: RuleGeneratorParams): { content: st
   let filename = activeFile.split("/").pop() || activeFile;
 
   let activeFileCheck = activeFile;
-  if (activeFile.startsWith("plugins/my-plugin/")) {
-    activeFileCheck = activeFile.replace("plugins/my-plugin/", "");
+  if (activeFile.startsWith(".gemini/antigravity-cli/")) {
+    activeFileCheck = activeFile.replace(".gemini/antigravity-cli/", "");
+  }
+  if (activeFileCheck.startsWith(".agent/")) {
+    activeFileCheck = activeFileCheck.replace(".agent/", "");
+  }
+  if (activeFileCheck.startsWith("plugins/my-plugin/")) {
+    activeFileCheck = activeFileCheck.replace("plugins/my-plugin/", "");
   }
 
   // 2. Main File Generator router
@@ -1031,6 +1037,84 @@ File path: \`plugins/my-plugin/rules/performance.rules\`
 - Prevent wasteful re-renders using optimized useMemo and useCallback bindings.
 - Enforce parallel execution of independent async operations (Promise.all).
 - Optimize index layouts to eliminate full table sweeps.
+`;
+    }
+  } else if (activeFileCheck.startsWith("skills/")) {
+    // Dynamic Skill Files Content Router
+    const skillSlug = activeFileCheck.replace("skills/", "").replace("/SKILL.md", "");
+    if (isVi) {
+      content = `# Kỹ năng Agent nâng cao (SKILL.md)
+Phân mục kỹ năng: \`${skillSlug}\`
+
+Bản tài liệu này hướng dẫn chi tiết cho AI Agent áp dụng tốt nhất các mẫu thiết kế và nguyên lý lập trình tối ưu liên quan trực tiếp đến \`${skillSlug}\` trong không gian làm việc của bạn.
+
+## 🚀 Các yêu cầu bắt buộc:
+1. Đảm bảo cấu trúc code mạch lạc, tự giải thích và tái sử dụng tối đa.
+2. Không over-engineer, tối giản hóa logic để đạt hiệu quả cao nhất.
+3. Luôn kiểm tra hiệu năng, truy vấn dữ liệu và bundle size trước khi kết thúc.
+`;
+    } else {
+      content = `# Advanced Agent Skill Specification (SKILL.md)
+Skill module category: \`${skillSlug}\`
+
+This documentation serves as a tailored instruction set guiding the AI Agent on how to best apply core development patterns, performance enhancements, and structure configurations for \`${skillSlug}\` in this repository.
+
+## 🚀 Key Mandates:
+1. Guarantee highly modular, clean, and self-documenting code layouts.
+2. Ban unnecessary abstractions and prioritize MVP structures.
+3. Validate performance, execution plans, and bundle sizes prior to task completion.
+`;
+    }
+  } else if (activeFileCheck.startsWith("agents/")) {
+    // Dynamic Agent Files Content Router
+    const agentSlug = activeFileCheck.replace("agents/", "");
+    if (isVi) {
+      content = `# Chỉ thị Subagent Chuyên biệt (Agent Specification)
+Vai trò Agent: \`${agentSlug}\`
+
+Bạn là một tác nhân AI (Subagent) chuyên trách cao cấp sở hữu kiến thức chuyên sâu về \`${agentSlug}\`.
+
+## 🎯 Nhiệm vụ chính:
+1. Giải quyết triệt để các vấn đề phức tạp, cấu trúc mã nguồn liên quan đến vai trò được giao.
+2. Viết mã nguồn ngắn gọn, tối ưu, dễ bảo trì và mở rộng.
+3. Phối hợp nhịp nhàng với Orchestrator để hoàn thành tiến độ dự án.
+`;
+    } else {
+      content = `# Specialized Subagent Specification (Agent)
+Agent Specialist Role: \`${agentSlug}\`
+
+You are an autonomous high-performance AI Subagent possessing domain-expert knowledge and specialized patterns for \`${agentSlug}\`.
+
+## 🎯 Core Objectives:
+1. Decisively resolve complex architecture layout challenges relating to your specialist role.
+2. Produce short, readable, highly reusable, and performant code layers.
+3. Maintain perfect synergy with the main Orchestrator to ensure smooth progression.
+`;
+    }
+  } else if (activeFileCheck.startsWith("rules/") && activeFileCheck !== "rules/GEMINI.md") {
+    // Dynamic Rules Files Content Router
+    const ruleSlug = activeFileCheck.replace("rules/", "");
+    if (isVi) {
+      content = `# Bộ quy chuẩn chỉ thị Prompt chuyên sâu (.rules)
+Phân khu quy chuẩn: \`${ruleSlug}\`
+
+Bộ quy tắc này được kích hoạt tự động để điều phối hành vi viết code của AI đối với các công nghệ liên quan tới \`${ruleSlug}\`.
+
+## 🛡️ Nguyên tắc hoạt động:
+1. Cấm tuyệt đối việc sử dụng code không an toàn hoặc không định kiểu rõ ràng.
+2. Bắt buộc kiểm soát lỗi chặt chẽ ở mọi cấp độ (Error Boundary, Try/Catch, Schema validation).
+3. Đảm bảo hiệu năng xử lý ở mức tối đa.
+`;
+    } else {
+      content = `# Targeted Prompt Rules Specification (.rules)
+Target Rule Domain: \`${ruleSlug}\`
+
+These rules are loaded automatically to steer the AI coding engine behaviors for assets relating to \`${ruleSlug}\`.
+
+## 🛡️ Key Directives:
+1. Strictly ban typeless variables or unsafe library implementations.
+2. Mandate highly resilient exception handling at all architecture layers (Error boundaries, try-catch, schemas).
+3. Maximize compilation speeds and run-time optimization constraints.
 `;
     }
   } else {
