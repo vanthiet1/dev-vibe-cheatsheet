@@ -91,6 +91,35 @@ function TerminalIcon({ className }: { className?: string }) {
   );
 }
 
+// Brand SVG icons for Tech Stack buttons
+const TECH_ICONS: Record<string, React.ReactNode> = {
+  // Languages
+  typescript: <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0" fill="#3178C6"><rect width="24" height="24" rx="2" fill="#3178C6"/><path d="M13.5 15.5v1.7c.3.2.7.3 1.1.3 1.7 0 2.8-1 2.8-2.5 0-1.3-.7-2-2.1-2.6-.9-.4-1.2-.7-1.2-1.2s.4-.9 1-.9c.5 0 1 .2 1.4.6l1-1.3C17 9.1 16.2 8.8 15.1 8.8c-1.6 0-2.7 1-2.7 2.4 0 1.2.7 1.9 2.2 2.5.8.3 1.1.7 1.1 1.2 0 .6-.4 1-1.1 1-.6 0-1.1-.3-1.5-.7l-.6.3zm-3.9-5.6H7.5V8.9H14v1H11.7V17H9.6V9.9z" fill="white"/></svg>,
+  javascript: <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0" fill="none"><rect width="24" height="24" rx="2" fill="#F7DF1E"/><path d="M7.5 17.8l1.4-.9c.3.5.6.9 1.2.9.6 0 1-.3 1-1.2V11h1.7v5.7c0 2-1.1 2.8-2.8 2.8-1.5 0-2.3-.8-2.7-1.7zm6.1-.2l1.4-.8c.4.6.9 1.1 1.8 1.1.8 0 1.2-.4 1.2-.9 0-.6-.5-.9-1.4-1.2l-.5-.2c-1.4-.6-2.3-1.3-2.3-2.8 0-1.4 1-2.4 2.6-2.4 1.1 0 1.9.4 2.5 1.4l-1.4.9c-.3-.5-.6-.7-1.1-.7-.5 0-.8.3-.8.7 0 .5.3.7 1.1 1l.5.2c1.6.7 2.5 1.4 2.5 2.9 0 1.7-1.3 2.6-3 2.6-1.7 0-2.8-.9-3.1-1.8z" fill="black"/></svg>,
+  python: <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0"><defs><linearGradient id="pyG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#4B8BBE"/><stop offset="100%" stopColor="#FFE873"/></linearGradient></defs><path d="M12 2C7 2 7.5 4 7.5 4v2h5v1H5S2 6.7 2 12s2.5 5 2.5 5H6v-2.5S5.8 12 8 12h8c2 0 3-1 3-3V5c0-2-2-3-7-3zm-1 1.5c.6 0 1 .4 1 1s-.4 1-1 1-1-.4-1-1 .4-1 1-1z" fill="#4B8BBE"/><path d="M12 22c5 0 4.5-2 4.5-2v-2h-5v-1h7s2.5.3 2.5-5-2.5-5-2.5-5H18v2.5S18.2 12 16 12H8c-2 0-3 1-3 3v4c0 2 2 3 7 3zm1-1.5c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1z" fill="#FFE873"/></svg>,
+  go: <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0" fill="none"><rect width="24" height="24" rx="2" fill="#00ACD7"/><text x="3" y="17" fontSize="13" fontWeight="bold" fill="white" fontFamily="monospace">Go</text></svg>,
+  rust: <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0" fill="#CE422B"><rect width="24" height="24" rx="2" fill="#1a1a1a"/><path d="M12 4l1 2h2l-1.5 1.5.5 2L12 8.5 10 9.5l.5-2L9 6h2zm0 4c2.2 0 4 1.8 4 4s-1.8 4-4 4-4-1.8-4-4 1.8-4 4-4zm0 1.5c-1.4 0-2.5 1.1-2.5 2.5s1.1 2.5 2.5 2.5 2.5-1.1 2.5-2.5-1.1-2.5-2.5-2.5zM4 16l1-1h1v1.5H5v.5h2v-3H4v2zm15 0v2h2v-.5h-1.5V16H18l1 1v-1h1z" fill="#CE422B"/></svg>,
+  csharp: <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0"><rect width="24" height="24" rx="2" fill="#512BD4"/><text x="3" y="17" fontSize="11" fontWeight="bold" fill="white" fontFamily="monospace">C#</text></svg>,
+  // Databases
+  postgres: <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0" fill="none"><rect width="24" height="24" rx="2" fill="#336791"/><path d="M12 4c-3 0-5 2-5 4v1c0 .5.2 1 .5 1.4C7.2 11 7 11.5 7 12v4c0 1.1.9 2 2 2h1v-2H9v-4c0-.6.4-1 1-1h4c.6 0 1 .4 1 1v4h-1v2h1c1.1 0 2-.9 2-2v-4c0-.5-.2-1-.5-1.4.3-.4.5-.9.5-1.4V8c0-2-2-4-5-4zm0 2c1.7 0 3 .9 3 2s-1.3 2-3 2-3-.9-3-2 1.3-2 3-2z" fill="white"/></svg>,
+  mongodb: <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0" fill="none"><rect width="24" height="24" rx="2" fill="#13AA52"/><path d="M12 3c0 0-5 5-5 10 0 2.8 2.2 5 5 5s5-2.2 5-5C17 8 12 3 12 3zm0 13.5c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5z" fill="white"/></svg>,
+  sqlite: <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0"><rect width="24" height="24" rx="2" fill="#003B57"/><text x="3" y="16" fontSize="7.5" fontWeight="bold" fill="#75c8fb" fontFamily="monospace">SQLite</text></svg>,
+  mysql: <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0"><rect width="24" height="24" rx="2" fill="#4479A1"/><text x="2" y="16" fontSize="8" fontWeight="bold" fill="white" fontFamily="monospace">MySQL</text></svg>,
+  redis: <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0" fill="none"><rect width="24" height="24" rx="2" fill="#DC382D"/><path d="M5 14l7-3 7 3-7 3-7-3zm0-4l7-3 7 3-7 3-7-3z" fill="white" opacity=".8"/><path d="M5 10l7 3 7-3" stroke="white" strokeWidth=".5" fill="none"/></svg>,
+  // Frameworks
+  "nextjs-app": <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0" fill="none"><rect width="24" height="24" rx="2" fill="black"/><path d="M12 4a8 8 0 100 16A8 8 0 0012 4zm-1 4.5V16l5.5-7.5H11z" fill="white"/></svg>,
+  "react-vite": <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0" fill="none"><rect width="24" height="24" rx="2" fill="#646CFF"/><path d="M12 2l3.5 6H20l-4 5 2 6-6-3-6 3 2-6-4-5h4.5z" fill="#FFD62E"/></svg>,
+  nodejs: <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0" fill="none"><rect width="24" height="24" rx="2" fill="#3C873A"/><path d="M12 4L5 8v8l7 4 7-4V8l-7-4zm0 2l5 3v6l-5 3-5-3V9l5-3z" fill="white"/></svg>,
+  // UI Libraries
+  "tailwind-v4": <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0" fill="none"><rect width="24" height="24" rx="2" fill="#0F172A"/><path d="M6 12c0-2 1-3 3-3s3 1 3 3 1 3 3 3 3-1 3-3" stroke="#38BDF8" strokeWidth="2" strokeLinecap="round" fill="none"/></svg>,
+  shadcn: <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0" fill="none"><rect width="24" height="24" rx="2" fill="#18181B"/><line x1="6" y1="12" x2="18" y2="12" stroke="white" strokeWidth="2"/><line x1="12" y1="6" x2="12" y2="18" stroke="white" strokeWidth="2"/></svg>,
+  antd: <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0" fill="none"><rect width="24" height="24" rx="2" fill="#1677FF"/><path d="M12 5l6 10H6z" fill="white"/></svg>,
+  mui: <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0" fill="none"><rect width="24" height="24" rx="2" fill="#007FFF"/><path d="M3 16V8l4 3V8l5 4-5 4v-4L7 16zm11-8l3 3 3-3v8l-3-3-3 3V8z" fill="white"/></svg>,
+  // Testing
+  jest: <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0" fill="none"><rect width="24" height="24" rx="2" fill="#C21325"/><text x="3" y="16" fontSize="8.5" fontWeight="bold" fill="white" fontFamily="monospace">Jest</text></svg>,
+  playwright: <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0" fill="none"><rect width="24" height="24" rx="2" fill="#2EAD33"/><circle cx="12" cy="12" r="5" stroke="white" strokeWidth="1.5" fill="none"/><circle cx="12" cy="12" r="2" fill="white"/></svg>,
+};
+
 // Hierarchical visual directory tree interface
 interface TreeNode {
   name: string;
@@ -143,12 +172,6 @@ function VsCodeSimulator({
 }) {
   // Stepper completion and dynamic loop variables
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
-  const [terminalLogs, setTerminalLogs] = useState<string[]>([
-    "Microsoft Windows [Version 10.0.22631]",
-    "(c) Microsoft Corporation. All rights reserved.",
-    "",
-    "C:\\Users\\Developer\\Desktop\\my-project> init_antigravity"
-  ]);
 
   // Stepper input text fields for character-by-character visual typing
   const [folderInputVal, setFolderInputVal] = useState("");
@@ -165,23 +188,10 @@ function VsCodeSimulator({
   const [editorText, setEditorText] = useState("");
   const [showLaser, setShowLaser] = useState(false);
 
-  const terminalContainerRef = useRef<HTMLDivElement>(null);
-
-  // Auto-scroll terminal log pane within its isolated container
-  useEffect(() => {
-    if (terminalContainerRef.current) {
-      terminalContainerRef.current.scrollTop = terminalContainerRef.current.scrollHeight;
-    }
-  }, [terminalLogs]);
-
   // Visual Autopilot sequence runner inside simulator
   useEffect(() => {
     let active = true;
     let timerId: NodeJS.Timeout;
-
-    const addLog = (msg: string) => {
-      if (active) setTerminalLogs(prev => [...prev, msg]);
-    };
 
     // Continuous loop executing the entire VS Code simulation lifecycle
     const playSimulatorSequence = async () => {
@@ -197,12 +207,6 @@ function VsCodeSimulator({
       setShowLaser(false);
       setCursorX(280);
       setCursorY(150);
-      setTerminalLogs([
-        "Microsoft Windows [Version 10.0.22631]",
-        "(c) Microsoft Corporation. All rights reserved.",
-        "",
-        "C:\\Users\\Developer\\Desktop\\my-project> init_antigravity"
-      ]);
 
       await new Promise(resolve => setTimeout(resolve, 1500));
       if (!active) return;
@@ -218,7 +222,6 @@ function VsCodeSimulator({
       setCursorAction("clicking");
       await new Promise(resolve => setTimeout(resolve, 250));
       setCursorAction("idle");
-      addLog("C:\\Users\\Developer\\Desktop\\my-project> mkdir -p .agent");
       setShowFolderInput(true);
       await new Promise(resolve => setTimeout(resolve, 350));
       if (!active) return;
@@ -238,7 +241,6 @@ function VsCodeSimulator({
       // Phase 4: Submit folder creation
       setShowFolderInput(false);
       setCompletedSteps(prev => [...prev, 1]);
-      addLog("[SUCCESS] Created workspace directory: .agent/");
       await new Promise(resolve => setTimeout(resolve, 900));
       if (!active) return;
 
@@ -253,7 +255,6 @@ function VsCodeSimulator({
       setCursorAction("clicking");
       await new Promise(resolve => setTimeout(resolve, 250));
       setCursorAction("idle");
-      addLog("C:\\Users\\Developer\\Desktop\\my-project> touch .agent/rules/GEMINI.md");
       setShowFileInput(true);
       await new Promise(resolve => setTimeout(resolve, 350));
       if (!active) return;
@@ -273,9 +274,6 @@ function VsCodeSimulator({
       // Phase 8: Submit rules file creation
       setShowFileInput(false);
       setCompletedSteps(prev => [...prev, 2, 3, 4]);
-      addLog("[SUCCESS] Created Rule behavioural spec file: .agent/rules/GEMINI.md");
-      addLog("[SUCCESS] Generated skill directories and AI specialist agents.");
-      addLog("[SUCCESS] Configured workspace automation workflows.");
       await new Promise(resolve => setTimeout(resolve, 900));
       if (!active) return;
 
@@ -308,9 +306,6 @@ function VsCodeSimulator({
       
       await new Promise(resolve => setTimeout(resolve, 400));
       setShowLaser(false);
-      addLog("");
-      addLog("✨ [COMPLETE] Antigravity IDE configuration generated successfully!");
-      addLog("✨ Ready to pair program with Google Antigravity Agent! 🚀");
 
       // Loop cooldown delay before resetting
       timerId = setTimeout(() => {
@@ -377,7 +372,7 @@ function VsCodeSimulator({
             </div>
           </div>
           
-          <div className="p-3 space-y-1.5 text-[11px] overflow-y-auto overscroll-contain max-h-[220px]">
+          <div className="p-3 space-y-1.5 text-[11px] overflow-y-hidden max-h-[220px]">
             <div className="font-bold text-zinc-300">📁 MY-PROJECT</div>
             
             {/* .agent/ folder tree */}
@@ -527,7 +522,7 @@ function VsCodeSimulator({
           </div>
 
           {/* Interactive laser compilation sweep sweep block */}
-          <div className="flex-grow font-mono text-[11px] leading-relaxed text-zinc-300 overflow-y-auto overscroll-contain whitespace-pre relative border border-zinc-900/60 rounded bg-[#151515] p-4 select-text">
+          <div className="flex-grow font-mono text-[11px] leading-relaxed text-zinc-300 overflow-y-hidden whitespace-pre relative border border-zinc-900/60 rounded bg-[#151515] p-4 select-text">
             {showLaser && (
               <div className="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-violet-500 to-transparent animate-pulse shadow-[0_0_15px_rgba(139,92,246,0.8)]" style={{ top: "35%" }} />
             )}
@@ -539,33 +534,6 @@ function VsCodeSimulator({
 
         </div>
 
-      </div>
-
-      {/* VS Code Window Footer Terminal Simulator */}
-      <div ref={terminalContainerRef} className="bg-[#181818] border-t border-zinc-850 p-3 h-[130px] overflow-y-auto overscroll-contain font-mono text-[10px] text-zinc-400 leading-normal scrollbar-thin relative z-10">
-        <div className="flex items-center justify-between border-b border-zinc-850 pb-1.5 mb-1.5 text-zinc-500 select-none">
-          <div className="flex items-center gap-4">
-            <span className="text-zinc-300 font-bold hover:text-zinc-200 cursor-pointer">TERMINAL</span>
-            <span className="hover:text-zinc-300 cursor-pointer">PROBLEMS</span>
-            <span className="hover:text-zinc-300 cursor-pointer">OUTPUT</span>
-            <span className="hover:text-zinc-300 cursor-pointer">DEBUG CONSOLE</span>
-          </div>
-          <div>powershell</div>
-        </div>
-        
-        <div className="space-y-1">
-          {terminalLogs.map((log, idx) => (
-            <div key={idx} className={
-              log.includes("[SUCCESS]")
-                ? "text-emerald-400 font-semibold"
-                : log.includes("✨")
-                  ? "text-violet-400 font-bold animate-pulse"
-                  : "text-zinc-300"
-            }>
-              {log}
-            </div>
-          ))}
-        </div>
       </div>
 
     </div>
@@ -916,13 +884,14 @@ export default function AiConfigPage() {
                     <button
                       key={item.key}
                       onClick={() => setLanguage(item.key)}
-                      className={`py-1.5 rounded-md text-[10px] font-bold border transition-all cursor-pointer text-center truncate ${
+                      className={`py-1.5 px-1 rounded-md text-[10px] font-bold border transition-all cursor-pointer flex items-center justify-center gap-1 ${
                         language === item.key
                           ? "border-violet-600/80 bg-violet-950/25 text-violet-300"
                           : "border-zinc-800 bg-zinc-900/10 text-zinc-450 hover:border-zinc-700"
                       }`}
                     >
-                      {item.label}
+                      {TECH_ICONS[item.key]}
+                      <span>{item.label}</span>
                     </button>
                   ))}
                 </div>
@@ -942,13 +911,14 @@ export default function AiConfigPage() {
                     <button
                       key={item.key}
                       onClick={() => setDatabase(item.key)}
-                      className={`py-1.5 rounded-md text-[10px] font-bold border transition-all cursor-pointer text-center truncate ${
+                      className={`py-1.5 px-1 rounded-md text-[10px] font-bold border transition-all cursor-pointer flex items-center justify-center gap-1 ${
                         database === item.key
                           ? "border-violet-600/80 bg-violet-950/25 text-violet-300"
                           : "border-zinc-800 bg-zinc-900/10 text-zinc-450 hover:border-zinc-700"
                       }`}
                     >
-                      {item.label}
+                      {TECH_ICONS[item.key]}
+                      <span>{item.label}</span>
                     </button>
                   ))}
                 </div>
@@ -966,13 +936,14 @@ export default function AiConfigPage() {
                     <button
                       key={item.key}
                       onClick={() => setFramework(item.key)}
-                      className={`py-1.5 rounded-md text-[10px] font-bold border transition-all cursor-pointer text-center ${
+                      className={`py-1.5 px-1 rounded-md text-[10px] font-bold border transition-all cursor-pointer flex items-center justify-center gap-1 ${
                         framework === item.key
                           ? "border-violet-600/80 bg-violet-950/25 text-violet-300"
                           : "border-zinc-800 bg-zinc-900/10 text-zinc-455 hover:border-zinc-700"
                       }`}
                     >
-                      {item.label}
+                      {TECH_ICONS[item.key]}
+                      <span>{item.label}</span>
                     </button>
                   ))}
                 </div>
@@ -991,13 +962,14 @@ export default function AiConfigPage() {
                     <button
                       key={item.key}
                       onClick={() => setStyling(item.key)}
-                      className={`py-1.5 px-1 rounded-md text-[10px] font-bold border transition-all cursor-pointer text-center ${
+                      className={`py-1.5 px-1 rounded-md text-[10px] font-bold border transition-all cursor-pointer flex items-center justify-center gap-1 ${
                         styling === item.key
                           ? "border-violet-600/80 bg-violet-950/25 text-violet-300"
                           : "border-zinc-800 bg-zinc-900/10 text-zinc-455 hover:border-zinc-700"
                       }`}
                     >
-                      {item.label}
+                      {TECH_ICONS[item.key]}
+                      <span>{item.label}</span>
                     </button>
                   ))}
                 </div>
@@ -1008,19 +980,20 @@ export default function AiConfigPage() {
                 <label className="text-[10px] font-extrabold text-zinc-450 block">Kiểm thử:</label>
                 <div className="grid grid-cols-2 gap-1.5">
                   {[
-                    { key: "jest", label: "Jest / Vitest" },
+                    { key: "jest", label: "Jest" },
                     { key: "playwright", label: "Playwright" }
                   ].map((item) => (
                     <button
                       key={item.key}
                       onClick={() => setTesting(item.key)}
-                      className={`py-1.5 px-1 rounded-md text-[10px] font-bold border transition-all cursor-pointer text-center ${
+                      className={`py-1.5 px-1 rounded-md text-[10px] font-bold border transition-all cursor-pointer flex items-center justify-center gap-1 ${
                         testing === item.key
                           ? "border-violet-600/80 bg-violet-950/25 text-violet-300"
                           : "border-zinc-800 bg-zinc-900/10 text-zinc-455 hover:border-zinc-700"
                       }`}
                     >
-                      {item.label}
+                      {TECH_ICONS[item.key]}
+                      <span>{item.label}</span>
                     </button>
                   ))}
                 </div>
@@ -1221,7 +1194,7 @@ export default function AiConfigPage() {
             <div className="grid grid-cols-1 md:grid-cols-12 border border-zinc-900 rounded-b-xl overflow-hidden min-h-[500px] bg-zinc-950 shadow-2xl">
               
               {/* File Explorer Sidebar: Visual Nested Tree Directory Structure */}
-              <div className="md:col-span-4 bg-zinc-950/40 border-r border-zinc-900 p-4 space-y-4 select-none shrink-0 overflow-y-auto overscroll-contain max-h-[500px]">
+              <div className="md:col-span-4 bg-zinc-950/40 border-r border-zinc-900 p-4 space-y-4 select-none shrink-0">
                 <div className="text-[9px] font-extrabold text-zinc-500 uppercase tracking-widest flex items-center gap-1.5 mb-2 select-none">
                   <span className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse" />
                   WORKSPACE TREE
@@ -1247,7 +1220,7 @@ export default function AiConfigPage() {
                     testing={testing}
                   />
                 ) : (
-                  <div className="p-5 overflow-y-auto overscroll-contain max-h-[500px] font-mono text-[11px] md:text-xs leading-relaxed text-zinc-300 shadow-inner select-text whitespace-pre-wrap flex-grow">
+                  <div className="p-5 overflow-y-auto max-h-[500px] font-mono text-[11px] md:text-xs leading-relaxed text-zinc-300 shadow-inner select-text whitespace-pre-wrap flex-grow">
                     {generatedData.content}
                   </div>
                 )}
