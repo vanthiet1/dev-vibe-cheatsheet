@@ -75,6 +75,7 @@ export default function AiConfigPage() {
   // Output format state: 'rules' | 'skills' | 'workflows' | 'gemini'
   const [outputTab, setOutputTab] = useState<"rules" | "skills" | "workflows" | "gemini">("rules");
   const [activeFile, setActiveFile] = useState(".antigravityrules");
+  const [contentLanguage, setContentLanguage] = useState<"en" | "vi">("vi");
   const [copied, setCopied] = useState(false);
 
   // Tab change handler that automatically resets active file cleanly
@@ -114,70 +115,141 @@ export default function AiConfigPage() {
       ide === "antigravity-cli" ? "Antigravity CLI Agent" : "Antigravity IDE Config";
 
     // 1. Core Code Guidelines sections
+    const isVi = contentLanguage === "vi";
     let frameworkSection = "";
-    if (framework === "nextjs-app") {
-      frameworkSection = `- **Next.js App Router Architecture:** Always prefer Server Components for remote data fetching. Keep components stateless when possible.
+    if (isVi) {
+      if (framework === "nextjs-app") {
+        frameworkSection = `- **Kiến trúc App Router trong Next.js:** Luôn ưu tiên Server Components để tải dữ liệu từ xa. Giữ cho các component phi trạng thái (stateless) nhiều nhất có thể.
+- **Giảm thiểu Waterfalls:** Thực hiện các truy vấn cơ sở dữ liệu hoặc API song song bằng cách sử dụng Promise.all().
+- **An toàn Hydration:** Tránh lỗi không khớp dữ liệu hiển thị (hydration mismatch). Không chèn các đoạn kiểm tra ngày/tháng hoặc window trong hàm render máy chủ đầu tiên.`;
+      } else if (framework === "react-vite") {
+        frameworkSection = `- **Mô hình Custom Hooks chức năng:** Dựa hoàn toàn vào các custom hooks chuẩn để xử lý side-effects. Giữ logic nghiệp vụ tách biệt hoàn toàn khỏi layout giao diện component.
+- **Kiểm soát Render:** Bao bọc các tính toán nặng bên trong useMemo. Hạn chế tối đa việc re-render do thay đổi trạng thái context liên tục.`;
+      } else {
+        frameworkSection = `- **Xử lý I/O không chặn (Non-Blocking):** Viết các hàm controller xử lý bất đồng bộ async/await sạch sẽ. Phân tách rõ ràng file xử lý định tuyến (routing) và database.
+- **Middleware Bảo mật:** Áp dụng rate-limiting, cấu hình an toàn CORS, và mã hóa các JSON headers bảo mật tại cổng API.`;
+      }
+    } else {
+      if (framework === "nextjs-app") {
+        frameworkSection = `- **Next.js App Router Architecture:** Always prefer Server Components for remote data fetching. Keep components stateless when possible.
 - **Minimize Waterfalls:** Fetch database queries or API queries in parallel via Promise.all().
 - **Hydration Safe:** Avoid hydration mismatches. Do not write date/window checks in initial server renders.`;
-    } else if (framework === "react-vite") {
-      frameworkSection = `- **Functional Hooks Pattern:** Rely exclusively on standard custom hooks for side effects. Keep business logic separate from component layouts.
+      } else if (framework === "react-vite") {
+        frameworkSection = `- **Functional Hooks Pattern:** Rely exclusively on standard custom hooks for side effects. Keep business logic separate from component layouts.
 - **Render Control:** Wrap heavy computations inside useMemo. Avoid excessive context state triggers.`;
-    } else {
-      frameworkSection = `- **Non-Blocking IO:** Write clean async/await controller actions. Keep routing handlers and database controller files separated.
+      } else {
+        frameworkSection = `- **Non-Blocking IO:** Write clean async/await controller actions. Keep routing handlers and database controller files separated.
 - **Security Middleware:** Enforce rate-limiting, CORS protections, and secure JSON headers at API gates.`;
+      }
     }
 
     let languageSection = "";
-    if (language === "typescript") {
-      languageSection = `- **Strict Compiler Type Checks:** Banned 'any' keyword completely. Export precise, clean typescript interface/type structures.
+    if (isVi) {
+      if (language === "typescript") {
+        languageSection = `- **Kiểm tra kiểu dữ liệu nghiêm ngặt:** Cấm hoàn toàn từ khóa 'any'. Định nghĩa và export các cấu trúc interface/type rõ ràng và chuẩn xác.
+- **Chữ ký hàm chuẩn chỉ:** Khai báo tường minh tất cả kiểu dữ liệu của tham số đầu vào và kiểu trả về của hàm.`;
+      } else if (language === "javascript") {
+        languageSection = `- **Cú pháp ES6 hiện đại:** Giải cấu trúc (destructure) thuộc tính đối tượng gọn gàng. Tránh lỗi hoisting do dùng từ khóa 'var'.
+- **Phòng thủ an toàn:** Đảm bảo kiểm tra thuộc tính an toàn bằng optional chaining (?.) và nullish coalescing (??).`;
+      } else if (language === "python") {
+        languageSection = `- **Gợi ý kiểu (Type Hinting):** Khai báo rõ ràng kiểu dữ liệu cho biến và tham số. Trả về cấu trúc Union/Optional tường minh.
+- **Tuân thủ PEP 8:** Đảm bảo khoảng cách chuẩn, sử dụng tên biến kiểu snake_case, và sắp xếp import gọn gàng.
+- **Môi trường ảo:** Quản lý thư viện phụ thuộc nghiêm ngặt thông qua UV hoặc Poetry.`;
+      } else if (language === "go") {
+        languageSection = `- **Lập trình Go chuẩn mực:** Bắt buộc kiểm tra lỗi tường minh ngay sau mỗi tác vụ thực thi ('if err != nil'). Tuyệt đối không bỏ qua lỗi.
+- **Mô hình đồng thời (Concurrency):** Sử dụng goroutines và channels an toàn. Hạn chế sử dụng khóa locks. Tối ưu hóa phân bổ struct.`;
+      } else if (language === "rust") {
+        languageSection = `- **An toàn quyền sở hữu (Ownership):** Tuân thủ nghiêm ngặt lifetime của biến và các giới hạn borrow checker. Tránh clone dữ liệu vô tội vạ.
+- **Xử lý lỗi Monad:** Khớp mẫu và xử lý triệt để Option/Result. Không dùng hàm .unwrap() trong môi trường production.`;
+      } else {
+        languageSection = `- **Kích hoạt Nullable:** Bật chỉ thị '#nullable enable' trên toàn dự án để phòng tránh ngoại lệ tham chiếu null.
+- **Tối ưu hóa LINQ:** Không chặn luồng đồng bộ bằng các tác vụ bất đồng bộ (không dùng .Result hoặc .Wait()). Tối ưu truy vấn dữ liệu với LINQ.
+- **Tiêm phụ thuộc (Dependency Injection):** Áp dụng DI qua constructor một cách nhất quán trong toàn bộ kiến trúc ứng dụng.`;
+      }
+    } else {
+      if (language === "typescript") {
+        languageSection = `- **Strict Compiler Type Checks:** Banned 'any' keyword completely. Export precise, clean typescript interface/type structures.
 - **Proper Signatures:** Explicitly declare all parameter types and function return signatures.`;
-    } else if (language === "javascript") {
-      languageSection = `- **Modern ES6 syntax:** Destructure object keys cleanly. Avoid classic 'var' hoisting bugs.
+      } else if (language === "javascript") {
+        languageSection = `- **Modern ES6 syntax:** Destructure object keys cleanly. Avoid classic 'var' hoisting bugs.
 - **Defensive guards:** Ensure safe property checks using optional chaining (?.) and nullish coalescing (??).`;
-    } else if (language === "python") {
-      languageSection = `- **Type Hinting:** Annotate variable and parameter types explicitly. Return precise Union/Optional structures.
+      } else if (language === "python") {
+        languageSection = `- **Type Hinting:** Annotate variable and parameter types explicitly. Return precise Union/Optional structures.
 - **PEP 8 Compliance:** Strictly follow PEP 8 spacing, snake_case variable names, and clean import sorting.
 - **Virtual Env:** Manage dependencies strictly via UV or Poetry.`;
-    } else if (language === "go") {
-      languageSection = `- **Idiomatic Go:** Enforce explicit error checking right after executions (\`if err != nil\`). Do not ignore errors.
+      } else if (language === "go") {
+        languageSection = `- **Idiomatic Go:** Enforce explicit error checking right after executions (\`if err != nil\`). Do not ignore errors.
 - **Concurrent Patterns:** Safely use goroutines and channels. Avoid locks. Keep struct allocations optimized.`;
-    } else if (language === "rust") {
-      languageSection = `- **Ownership Safety:** Respect lifetime variables and strict borrow checking limits. Avoid unnecessary cloning.
+      } else if (language === "rust") {
+        languageSection = `- **Ownership Safety:** Respect lifetime variables and strict borrow checking limits. Avoid unnecessary cloning.
 - **Monad Errors:** Handle error states strictly using Option/Result matching. Keep unwrapping out of production source code.`;
-    } else {
-      languageSection = `- **Nullable Enablers:** Turn on \`#nullable enable\` globally. Prevent unexpected null reference exceptions.
+      } else {
+        languageSection = `- **Nullable Enablers:** Turn on \`#nullable enable\` globally. Prevent unexpected null reference exceptions.
 - **LINQ optimization:** Avoid blocking async-over-sync tasks (no \`.Result\` or \`.Wait()\`). Optimize collections with LINQ.
 - **Dependency Injection:** Enforce clear constructor dependency injection patterns throughout the application architecture.`;
+      }
     }
 
     let databaseSection = "";
-    if (database === "postgres") {
-      databaseSection = `- **PostgreSQL Indexing:** Write precise indexes for every foreign key query. Never run massive table scans.
-- **Clean Transactions:** Explicitly wrap multi-step entity changes inside transactional boundaries. Release connection pool clients cleanly.`;
-    } else if (database === "mongodb") {
-      databaseSection = `- **Document Schema Design:** Design lean, clean Mongoose documents. Avoid deep nesting to prevent slow aggregation query pipelines.
-- **Anti-NoSQL Injections:** Sanitize raw client parameters to prevent query injection attacks.`;
-    } else if (database === "sqlite") {
-      databaseSection = `- **WAL Concurrency Mode:** Enforce Write-Ahead Logging (WAL) mode for simultaneous write safety.
-- **Single-Thread Safety:** Ensure sequential database writers to completely prevent database locks.`;
-    } else if (database === "mysql") {
-      databaseSection = `- **InnoDB Engine:** Keep relational referential integrity tight using foreign keys. Optimize JOIN statements safely.`;
+    if (isVi) {
+      if (database === "postgres") {
+        databaseSection = `- **Chỉ mục PostgreSQL:** Tạo chỉ mục chính xác cho mọi khóa ngoại phục vụ truy vấn. Tuyệt đối không quét toàn bảng (table scans).
+- **Giao dịch an toàn:** Bao bọc các thay đổi dữ liệu nhiều bước trong Transaction. Giải phóng kết nối (connection pool) ngay sau khi xong.`;
+      } else if (database === "mongodb") {
+        databaseSection = `- **Thiết kế Schema tối giản:** Thiết kế các tài liệu Mongoose gọn gàng. Hạn chế lồng tài liệu quá sâu để tránh làm chậm pipeline tổng hợp.
+- **Chống lỗi chèn tham số NoSQL:** Làm sạch và kiểm tra chặt chẽ các tham số từ client đầu vào.`;
+      } else if (database === "sqlite") {
+        databaseSection = `- **Chế độ đồng thời WAL:** Bật tính năng Write-Ahead Logging (WAL) để đảm bảo an toàn khi ghi đồng thời.
+- **Ghi tuần tự an toàn:** Đảm bảo thực hiện tuần tự hóa các tác vụ ghi cơ sở dữ liệu để chống lỗi khóa DB hoàn toàn.`;
+      } else if (database === "mysql") {
+        databaseSection = `- **Công cụ InnoDB:** Đảm bảo tính toàn vẹn quan hệ chặt chẽ bằng khóa ngoại. Tối ưu hóa các mệnh đề JOIN an toàn.`;
+      } else {
+        databaseSection = `- **Không gian tên Key có cấu trúc:** Phân tách rõ ràng key bằng dấu hai chấm chuẩn: domain:id:field (ví dụ: user:1026:profile).
+- **Thời hạn TTL bắt buộc:** Đặt thời gian sống (TTL) cụ thể cho mọi key để tránh rò rỉ bộ nhớ đệm RAM.`;
+      }
     } else {
-      databaseSection = `- **Structured Key Namespaces:** Enforce key standard colon separation: \`domain:id:field\` (e.g. \`user:1026:profile\`).
+      if (database === "postgres") {
+        databaseSection = `- **PostgreSQL Indexing:** Write precise indexes for every foreign key query. Never run massive table scans.
+- **Clean Transactions:** Explicitly wrap multi-step entity changes inside transactional boundaries. Release connection pool clients cleanly.`;
+      } else if (database === "mongodb") {
+        databaseSection = `- **Document Schema Design:** Design lean, clean Mongoose documents. Avoid deep nesting to prevent slow aggregation query pipelines.
+- **Anti-NoSQL Injections:** Sanitize raw client parameters to prevent query injection attacks.`;
+      } else if (database === "sqlite") {
+        databaseSection = `- **WAL Concurrency Mode:** Enforce Write-Ahead Logging (WAL) mode for simultaneous write safety.
+- **Single-Thread Safety:** Ensure sequential database writers to completely prevent database locks.`;
+      } else if (database === "mysql") {
+        databaseSection = `- **InnoDB Engine:** Keep relational referential integrity tight using foreign keys. Optimize JOIN statements safely.`;
+      } else {
+        databaseSection = `- **Structured Key Namespaces:** Enforce key standard colon separation: \`domain:id:field\` (e.g. \`user:1026:profile\`).
 - **TTL Enforcements:** Every cache key must have a precise, well-reasoned Time-to-Live (TTL) expiration set to prevent RAM bloat.`;
+      }
     }
 
     let stylingSection = "";
-    if (styling === "tailwind-v4") {
-      stylingSection = `- **CSS-First Tokens:** Apply Tailwind CSS v4 design tokens within your main stylesheet config.
-- **No Inline Styles:** Use Tailwind classes rather than inline style objects. Keep styles clean and responsive.`;
-    } else if (styling === "shadcn") {
-      stylingSection = `- **Accessible Radix Primitives:** Keep shadcn elements customizable, composable, and accessible via screen readers.
-- **Clean cn() Merging:** Wrap all conditional styles inside the utility helper \`cn(...)\`.`;
-    } else if (styling === "antd") {
-      stylingSection = `- **Corporate Design Tokens:** Adjust branding colors strictly using ConfigProvider tokens. Keep markup clean.`;
+    if (isVi) {
+      if (styling === "tailwind-v4") {
+        stylingSection = `- **Token CSS-First:** Định nghĩa và kế thừa các token thiết kế Tailwind CSS v4 ngay trong stylesheet chính của bạn.
+- **Không dùng Inline Styles:** Tuyệt đối dùng các class Tailwind thay vì viết inline styles trực tiếp.`;
+      } else if (styling === "shadcn") {
+        stylingSection = `- **Thành phần Radix dễ tiếp cận:** Giữ các phần tử shadcn tùy biến cao, lắp ghép linh hoạt và tương thích tốt với trình đọc màn hình.
+- **Hàm gộp cn() chuẩn:** Luôn bao bọc tất cả các style có điều kiện bên trong helper \`cn(...)\`.`;
+      } else if (styling === "antd") {
+        stylingSection = `- **Token thiết kế chuyên nghiệp:** Tùy biến màu sắc thương hiệu và layout đồng nhất thông qua ConfigProvider tokens.`;
+      } else {
+        stylingSection = `- **MUI Theme Đồng nhất:** Sử dụng cấu hình từ ThemeProvider. Tránh khai báo thủ công mã màu hoặc khoảng cách tùy tiện.`;
+      }
     } else {
-      stylingSection = `- **MUI Theme Alignment:** Rely on ThemeProvider. Avoid hardcoded theme variables. Keep elements responsive.`;
+      if (styling === "tailwind-v4") {
+        stylingSection = `- **CSS-First Tokens:** Apply Tailwind CSS v4 design tokens within your main stylesheet config.
+- **No Inline Styles:** Use Tailwind classes rather than inline style objects. Keep styles clean and responsive.`;
+      } else if (styling === "shadcn") {
+        stylingSection = `- **Accessible Radix Primitives:** Keep shadcn elements customizable, composable, and accessible via screen readers.
+- **Clean cn() Merging:** Wrap all conditional styles inside the utility helper \`cn(...)\`.`;
+      } else if (styling === "antd") {
+        stylingSection = `- **Corporate Design Tokens:** Adjust branding colors strictly using ConfigProvider tokens. Keep markup clean.`;
+      } else {
+        stylingSection = `- **MUI Theme Alignment:** Rely on ThemeProvider. Avoid hardcoded theme variables. Keep elements responsive.`;
+      }
     }
 
     let content = "";
@@ -185,7 +257,44 @@ export default function AiConfigPage() {
 
     // 2. Main File Generator router
     if (activeFile === ".antigravityrules") {
-      content = `# ${ideLabel} Guidelines (.antigravityrules)
+      if (isVi) {
+        content = `# Hướng dẫn ${ideLabel} (.antigravityrules)
+# Công nghệ: ${frameworkLabel} | ${languageLabel} | ${dbLabel} | ${stylingLabel}
+
+Bạn đang hoạt động với vai trò là AI senior coding assistant cao cấp tích hợp trực tiếp trong không gian làm việc của ${ideLabel}. Bạn phải tuân thủ nghiêm ngặt các quy tắc sau:
+
+## 1. Kiến trúc Mô-đun & Nguyên lý
+- Giữ các hàm nhỏ, tập trung, đơn trách nhiệm và dễ tái sử dụng.
+- Xây dựng phiên bản chạy được tối giản trước (MVP). Chỉ mở rộng thêm các tính năng sau khi đã chạy kiểm thử xác minh.
+- Sử dụng tên biến và tên hàm rõ ràng, tự giải thích (self-documenting). Tránh bình luận giải giải thích dòng code hiển nhiên.
+
+## 2. Quy chuẩn Framework (${frameworkLabel})
+${frameworkSection}
+
+## 3. Tiêu chuẩn Ngôn ngữ (${languageLabel})
+${languageSection}
+
+## 4. Quy tắc Cơ sở dữ liệu (${dbLabel})
+${databaseSection}
+
+## 5. Bố cục Giao diện & Styles (${stylingLabel})
+${stylingSection}
+
+## 6. Kiểm thử & Quản lý Chất lượng (${testingLabel})
+- Tuân thủ quy chuẩn AAA (Arrange-Act-Assert) trong các file kiểm thử unit test.
+- Chạy trình kiểm tra tĩnh và đảm bảo ứng dụng biên dịch thành công trước khi hoàn thành tác vụ.
+
+${
+  ide === "antigravity-cli"
+    ? `## 7. Các câu lệnh riêng cho Antigravity CLI
+- Thực hiện chạy trình kiểm tra tĩnh (static compilation check) nghiêm ngặt sau mỗi thay đổi mã nguồn.
+- Sử dụng các script tự động để chứng minh tính đúng đắn qua kết quả thực thi thực tế.`
+    : `## 7. Quy tắc tích hợp cho Antigravity IDE
+- Tận dụng tối đa các panel trực quan và sơ đồ cây thư mục trong không gian làm việc.
+- Đồng bộ hóa các thay đổi mã nguồn khớp với tiêu chuẩn của tệp .vscode/settings.json.`
+}`;
+      } else {
+        content = `# ${ideLabel} Guidelines (.antigravityrules)
 # Stack: ${frameworkLabel} | ${languageLabel} | ${dbLabel} | ${stylingLabel}
 
 You are acting as the AI senior coding assistant integrated inside the ${ideLabel} workspace. You must strictly adhere to the following rules:
@@ -220,6 +329,7 @@ ${
 - Leverage integrated visual panels and file trees.
 - Align code changes with workspace settings.json standards.`
 }`;
+      }
     } else if (activeFile === ".editorconfig") {
       content = `# EditorConfig root setting
 root = true
@@ -237,7 +347,44 @@ indent_style = space
 indent_size = ${language === "python" || language === "csharp" ? "4" : "2"}
 `;
     } else if (activeFile === "skills/clean-code/SKILL.md") {
-      content = `---
+      if (isVi) {
+        content = `---
+name: clean-code-skill
+description: Quy chuẩn nghiêm ngặt để đảm bảo code dễ đọc, hàm ngắn gọn và tự giải thích trong ${languageLabel}.
+when_to_use: "Luôn kích hoạt khi tạo mới hoặc chỉnh sửa bất kỳ tệp tin mã nguồn nào trong không gian làm việc."
+allowed-tools: Read, Write, Grep
+effort: low
+---
+
+# Đặc tả Kỹ năng Mô-đun - Viết Mã Sạch (skills/clean-code/SKILL.md)
+# Đối tượng IDE: ${ideLabel}
+# Ngôn ngữ: ${languageLabel}
+
+Tài liệu này xác định các mô hình lập trình và kỳ vọng chất lượng mã nguồn đối với ngôn ngữ ${languageLabel}.
+
+## 1. Quy ước đặt tên Biến & Phương thức
+- Định dạng tên biến bắt buộc: ${
+  language === "python" ? "snake_case (ví dụ: \`user_profile_id\`)" :
+  language === "go" ? "camelCase (ví dụ: \`userProfileId\`) hoặc mô tả ngắn gọn" :
+  language === "rust" ? "snake_case (ví dụ: \`user_profile_id\`)" :
+  language === "csharp" ? "PascalCase cho phương thức (\`FetchUserData\`), camelCase cho biến cục bộ" :
+  "camelCase (ví dụ: \`userProfileId\`)"
+}
+- Tuyệt đối không dùng các tiền tố lười biếng (như "temp" hoặc "data"). Hãy đặt tên mang tính mô tả cao.
+
+## 2. Giữ hàm ngắn gọn và đơn nhiệm (Atomic)
+- Một hàm hoặc phương thức không được vượt quá 25 dòng code.
+- Nếu một hàm chứa quá nhiều điều kiện lồng nhau, hãy ngay lập tức tách nó thành một hook tiện ích hoặc phương thức private riêng.
+
+## 3. Thích ứng theo Môi trường (${ideLabel})
+- **Hành vi xử lý:** ${
+  ide === "antigravity-cli"
+    ? "Tự động bổ sung các comment ngắn gọn. Tuyệt đối không sinh mã thừa, tối ưu hóa các tệp tin lưu nháp trước khi lưu đè."
+    : "Tương tác nhịp nhàng với các panel của IDE. Định nghĩa phím tắt kiểm tra lỗi nhanh trước khi lưu file thực tế."
+}
+`;
+      } else {
+        content = `---
 name: clean-code-skill
 description: Strict guidelines to enforce pristine readability, small methods, and self-documenting code in ${languageLabel}.
 when_to_use: "Always on when creating or editing any source code file in this workspace."
@@ -272,8 +419,122 @@ This guideline defines the coding patterns and quality expectations for ${langua
     : "Tương tác nhịp nhàng với IDE panels. Định nghĩa phím tắt kiểm tra lỗi nhanh trước khi lưu file thực tế."
 }
 `;
+      }
     } else if (activeFile === "skills/database-optimization/SKILL.md") {
-      content = `---
+      if (isVi) {
+        content = `---
+name: database-optimization-skill
+description: Các phương pháp tối ưu hóa truy vấn, transaction và chỉ mục cho ${dbLabel}.
+when_to_use: "Sử dụng kỹ năng này bất cứ khi nào bạn viết câu truy vấn, tổng hợp dữ liệu hoặc quản lý kết nối đến ${dbLabel}."
+allowed-tools: Read, Write, Grep, RunCommand
+effort: medium
+---
+
+# Đặc tả Kỹ năng Mô-đun - Tối ưu Cơ sở Dữ liệu (skills/database-optimization/SKILL.md)
+# Database: ${dbLabel}
+
+Tài liệu này định nghĩa các mô hình truy vấn tối ưu nhất để tương tác sạch sẽ với ${dbLabel}.
+
+## 1. Tối ưu hóa Kết nối
+${
+  database === "postgres" ? "- Duy trì một kết nối pool duy nhất được chia sẻ. Không bao giờ gọi \`pg.connect\` liên tục trong các vòng lặp." :
+  database === "sqlite" ? "- Kích hoạt chế độ ghi đồng thời SQLite WAL. Tuyệt đối không ghi vào SQLite đồng thời từ các luồng khác nhau." :
+  database === "mongodb" ? "- Đảm bảo các schema index được đăng ký chuẩn xác. Giới hạn số lượng tài liệu trả về chặt chẽ." :
+  database === "mysql" ? "- Bắt buộc sử dụng công cụ InnoDB và thiết lập chỉ mục trên tất cả các khóa ngoại." :
+  "- Thiết lập thời gian sống (TTL) rõ ràng cho dữ liệu để tránh rò rỉ RAM và tràn bộ nhớ đệm."
+}
+
+## 2. Ví dụ về Truy vấn Bất đồng bộ (${languageLabel})
+\`\`\`${language === "typescript" ? "typescript" : language === "python" ? "python" : language === "go" ? "go" : language === "csharp" ? "csharp" : "javascript"}
+${
+  language === "typescript" || language === "javascript"
+    ? `import { NextResponse } from "next/server";
+import { getDbClient } from "@/lib/db";
+
+// Hàm xử lý lấy dữ liệu tối ưu hóa từ DB
+export async function GET(request: Request) {
+  try {
+    const client = await getDbClient();
+    const data = await client.query("SELECT id, name FROM items LIMIT 10");
+    return NextResponse.json({ success: true, data });
+  } catch (error) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+}`
+    : language === "python"
+    ? `import asyncio
+from database import get_db_session
+
+# Hàm bất đồng bộ lấy 10 bản ghi tối ưu
+async def fetch_optimized_data():
+    try:
+        async with get_db_session() as session:
+            result = await session.execute("SELECT id, name FROM items LIMIT 10")
+            return {"success": True, "data": result.fetchall()}
+    except Exception as e:
+        return {"success": False, "error": str(e)}`
+    : language === "go"
+    ? `package database
+
+import (
+	"context"
+	"database/sql"
+	"time"
+)
+
+// FetchOptimizedData truy vấn dữ liệu nhanh trong 3 giây timeout
+func FetchOptimizedData(ctx context.Context, db *sql.DB) ([]Item, error) {
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
+
+	rows, err := db.QueryContext(ctx, "SELECT id, name FROM items LIMIT 10")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	return items, nil
+}`
+    : language === "rust"
+    ? `use sqlx::{Pool, Postgres};
+
+// Truy vấn lấy dữ liệu bất đồng bộ nhanh với SQLx
+pub async fn fetch_data(pool: &Pool<Postgres>) -> Result<Vec<Item>, sqlx::Error> {
+    let items = sqlx::query_as::<_, Item>("SELECT id, name FROM items LIMIT 10")
+        .fetch_all(pool)
+        .await?;
+    Ok(items)
+}`
+    : `using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
+public class DataService 
+{
+    private readonly ApplicationDbContext _context;
+    public DataService(ApplicationDbContext context) => _context = context;
+
+    // Lấy danh sách 10 bản ghi tối ưu không tracking
+    public async Task<List<Item>> FetchOptimizedDataAsync()
+    {
+        return await _context.Items
+            .AsNoTracking()
+            .Take(10)
+            .ToListAsync();
+    }
+}`
+}
+\`\`\`
+
+## 3. Quy trình Kiểm thử & Xác thực Tối ưu
+- **Phương thức thực thi:** ${
+  ide === "antigravity-cli"
+    ? "Chạy trực tiếp dòng lệnh: `npx antigravity run verify` để chạy các script tối ưu hóa kết nối tự động trong 100ms."
+    : "Đồng bộ hóa phím tắt biên dịch IDE (như `CTRL+SHIFT+B` hoặc `CMD+SHIFT+B`) để kích hoạt quá trình phân tích lỗi trực quan."
+}
+`;
+      } else {
+        content = `---
 name: database-optimization-skill
 description: Best practices for optimizing ${dbLabel} queries, transactions, and indexing models.
 when_to_use: "Use this skill whenever writing queries, aggregations, or managing active connections to ${dbLabel}."
@@ -371,9 +632,44 @@ public class DataService
 }`
 }
 \`\`\`
+
+## 3. Verification Workflow Script
+The agent can execute automated validations:
+- **Execution Mode:** ${
+  ide === "antigravity-cli"
+    ? "Chạy trực tiếp dòng lệnh CLI: `npx antigravity run verify` để chạy các script tối ưu hóa kết nối tự động trong 100ms."
+    : "Đồng bộ hóa phím tắt biên dịch IDE (như `CTRL+SHIFT+B` hoặc `CMD+SHIFT+B`) để kích hoạt quá trình phân tích lỗi trực quan."
+}
 `;
+      }
     } else if (activeFile === "skills/testing-patterns/SKILL.md") {
-      content = `---
+      if (isVi) {
+        content = `---
+name: testing-patterns-skill
+description: Các mô hình chuẩn để viết kiểm thử Unit và E2E đáng tin cậy bằng ${testingLabel}.
+when_to_use: "Sử dụng khi viết test suite, cấu hình mock hoặc chạy các quy trình kiểm thử hồi quy."
+allowed-tools: Read, Write, Grep, RunCommand
+effort: low
+---
+
+# Đặc tả Kỹ năng Mô-đun - Quy chuẩn Kiểm thử (skills/testing-patterns/SKILL.md)
+# Công cụ kiểm thử: ${testingLabel}
+
+Tài liệu này bắt buộc thực thi quy trình viết test TDD khép kín và áp dụng mô hình AAA.
+
+## 1. Mô hình AAA (Arrange-Act-Assert)
+- **Arrange (Chuẩn bị):** Khởi tạo tất cả các biến đầu vào, cấu hình mock và trạng thái dữ liệu giả định một cách sạch sẽ.
+- **Act (Thực thi):** Thực hiện gọi phương thức mục tiêu hoặc gửi API request cần kiểm thử.
+- **Assert (Kiểm chứng):** Kiểm tra triệt để kiểu dữ liệu trả về, giá trị thuộc tính và số lần gọi mock để khẳng định kết quả đúng đắn.
+
+## 2. Câu lệnh chạy kiểm thử tự động
+- Chạy bộ kiểm thử trực tiếp trên terminal của bạn:
+  \`\`\`bash
+  ${testing === "jest" ? "npm run test" : "npx playwright test"}
+  \`\`\`
+`;
+      } else {
+        content = `---
 name: testing-patterns-skill
 description: Clean patterns for writing reliable Unit and E2E tests utilizing ${testingLabel}.
 when_to_use: "Use when creating test suites, mock configurations, or regression testing blocks."
@@ -397,8 +693,32 @@ This guideline enforces strict TDD and AAA testing flows.
   ${testing === "jest" ? "npm run test" : "npx playwright test"}
   \`\`\`
 `;
+      }
     } else if (activeFile === "skills/security-scanner/SKILL.md") {
-      content = `---
+      if (isVi) {
+        content = `---
+name: security-scanner-skill
+description: Quy tắc phòng chống lỗ hổng OWASP Top 10, lọc dữ liệu đầu vào và bảo vệ cổng API.
+when_to_use: "Luôn kích hoạt khi viết các route server công khai, cấu hình header bảo mật hoặc xử lý form gửi lên."
+allowed-tools: Read, Write, Grep
+effort: low
+---
+
+# Đặc tả Kỹ năng Mô-đun - Rà soát Bảo mật (skills/security-scanner/SKILL.md)
+
+Tài liệu này kiểm soát các chính sách bảo mật mạng cho ứng dụng của bạn.
+
+## 1. Làm sạch dữ liệu đầu vào (Sanitization)
+- Tuyệt đối không bao giờ tin cậy trực tiếp tham số gửi lên từ client.
+- Luôn sử dụng kỹ thuật liên kết tham số (parameter binding) bản xứ của DB để phòng chống lỗ hổng chèn mã SQL Injection.
+- Mã hóa hoặc loại bỏ thẻ script độc hại ở đầu ra để ngăn ngừa lỗ hổng XSS (Cross-Site Scripting).
+
+## 2. Tiêu chuẩn bảo mật API cổng vào
+- Đảm bảo giới hạn số lượng request tối đa trên giây (Rate-Limiting) để tránh tấn công DoS/DDoS.
+- Cấu hình chuẩn các Header phản hồi bảo mật (CORS chặt chẽ, Content-Security-Policy an toàn).
+`;
+      } else {
+        content = `---
 name: security-scanner-skill
 description: Guidelines to prevent OWASP Top 10 vulnerabilities, enforce input validation, and secure REST/GraphQL API controllers.
 when_to_use: "Always on when developing internet-exposed server routes, headers, and queries."
@@ -419,8 +739,33 @@ This file governs security policies for the active stack.
 - Keep connection limits secured.
 - Ensure strict HTTP response headers (CORS, Rate-Limiting, Content-Security-Policy).
 `;
+      }
     } else if (activeFile === "workflows/debug.md") {
-      content = `# Socratic Debugging Workflow (workflows/debug.md)
+      if (isVi) {
+        content = `# Quy trình Gỡ lỗi Socratic (workflows/debug.md)
+# Công nghệ: ${frameworkLabel} & ${languageLabel}
+
+Quy trình này hướng dẫn Agent phân tích để xác định nguyên nhân gốc rễ (Root Cause) của lỗi hệ thống.
+
+## 1. Bước 1: Phân tích & Thu thập chứng cứ
+- Đọc kỹ log lỗi và toàn bộ thông tin stack trace.
+- Sử dụng các công cụ rà soát biến số và kết nối cơ sở dữ liệu.
+- Bắt buộc đưa ra ít nhất 2 giả thuyết nguyên nhân khả dĩ trước khi thay đổi bất kỳ file nguồn nào.
+
+## 2. Bước 2: Khắc phục & Chạy vòng lặp kiểm tra
+- Thực hiện một chỉnh sửa tối giản, tập trung chính xác vào điểm lỗi.
+- Xác thực xem mã nguồn có biên dịch thành công hay không bằng câu lệnh:
+  \`\`\`bash
+  ${
+    language === "typescript" ? "npx tsc --noEmit" :
+    language === "python" ? "python -m mypy ." :
+    language === "go" ? "go vet ./..." :
+    language === "rust" ? "cargo check" : "dotnet build"
+  }
+  \`\`\`
+`;
+      } else {
+        content = `# Socratic Debugging Workflow (workflows/debug.md)
 # Stack: ${frameworkLabel} & ${languageLabel}
 
 This file guides the agent through systematic root cause identification.
@@ -442,8 +787,28 @@ This file guides the agent through systematic root cause identification.
   }
   \`\`\`
 `;
+      }
     } else if (activeFile === "workflows/test.md") {
-      content = `# Test-Driven Development Workflow (workflows/test.md)
+      if (isVi) {
+        content = `# Quy trình Phát triển hướng Kiểm thử TDD (workflows/test.md)
+# Framework áp dụng: ${testingLabel}
+
+Quy trình này hướng dẫn chu trình TDD khép kín để phát triển tính năng an toàn.
+
+## 1. Giai đoạn Đỏ (Red Phase)
+- Viết một ca kiểm thử (unit test hoặc integration test) mô tả chính xác yêu cầu nghiệp vụ mới.
+- Thực hiện chạy thử nghiệm để chứng minh bài test này biên dịch được nhưng sẽ thất bại (fail) như kỳ vọng.
+
+## 2. Giai đoạn Xanh (Green Phase)
+- Viết mã nguồn tối giản nhất có thể để vượt qua bài kiểm thử vừa viết.
+- Xác thực xem tất cả các ca kiểm thử trong hệ thống đã chạy qua thành công (pass).
+
+## 3. Giai đoạn Tái cấu trúc (Refactor Phase)
+- Dọn dẹp mã nguồn, tối ưu cấu trúc file, loại bỏ thuật toán lặp hoặc style dư thừa.
+- Chạy lại toàn bộ test suite để đảm bảo không xảy ra bất kỳ lỗi suy thoái (regression) nào.
+`;
+      } else {
+        content = `# Test-Driven Development Workflow (workflows/test.md)
 # Framework: ${testingLabel}
 
 This file outlines the closed-loop TDD cycle.
@@ -460,8 +825,32 @@ This file outlines the closed-loop TDD cycle.
 - Clean up any messy styles, duplicated algorithms, or variables.
 - Rerun tests to ensure no regressions occur.
 `;
+      }
     } else if (activeFile === "workflows/verify.md") {
-      content = `# Automated Verification Workflow (workflows/verify.md)
+      if (isVi) {
+        content = `# Quy trình Xác thực tự động (workflows/verify.md)
+
+Tài liệu này xác định các quy tắc tự động xác minh trước khi đóng gói hoặc triển khai mã nguồn.
+
+## 1. Xác thực biên dịch (Build Verification)
+- Chạy lệnh biên dịch tĩnh bắt buộc:
+  \`\`\`bash
+  ${
+    language === "typescript" ? "npx tsc --noEmit" :
+    language === "python" ? "python -m mypy ." :
+    language === "go" ? "go vet ./..." :
+    language === "rust" ? "cargo check" : "dotnet build"
+  }
+  \`\`\`
+
+## 2. Xác thực bộ kiểm thử (Test Verification)
+- Chạy kiểm thử tự động toàn diện:
+  \`\`\`bash
+  ${testing === "jest" ? "npm run test" : "npx playwright test"}
+  \`\`\`
+`;
+      } else {
+        content = `# Automated Verification Workflow (workflows/verify.md)
 
 This file defines the pre-flight verification checks.
 
@@ -482,8 +871,23 @@ This file defines the pre-flight verification checks.
   ${testing === "jest" ? "npm run test" : "npx playwright test"}
   \`\`\`
 `;
+      }
     } else if (activeFile === "workflows/coordinate.md") {
-      content = `# Multi-Agent Coordination Workflow (workflows/coordinate.md)
+      if (isVi) {
+        content = `# Quy trình Phân phối Đa Agent (workflows/coordinate.md)
+
+Quy trình điều phối các tác vụ phức tạp giữa nhiều vai trò Agent độc lập.
+
+## 1. Phân chia trách nhiệm rõ ràng (Separation of Concerns)
+- Chia nhỏ các yêu cầu phát triển tính năng phức tạp thành các giai đoạn độc lập và tuần tự.
+- Phân phối các nhiệm vụ nhỏ hơn cho các Agent chuyên môn (frontend, backend, security) xử lý.
+
+## 2. Điểm kiểm soát an toàn tích hợp (Integration Checkpoints)
+- Thực hiện biên dịch tĩnh tại mỗi bước bàn giao mã nguồn giữa các Agent.
+- Chạy quét bảo mật tự động trước khi hợp nhất cập nhật lên nhánh chính.
+`;
+      } else {
+        content = `# Multi-Agent Coordination Workflow (workflows/coordinate.md)
 
 This file defines the orchestrator coordination patterns.
 
@@ -495,6 +899,7 @@ This file defines the orchestrator coordination patterns.
 - Run compiler type checks at each boundary integration.
 - Run security scanners before deploying any updates.
 `;
+      }
     } else {
       // GEMINI.md
       const compilerCommand = 
@@ -506,7 +911,63 @@ This file defines the orchestrator coordination patterns.
       const testCommand = 
         testing === "jest" ? "npm run test" : "npx playwright test";
 
-      content = `# GEMINI.md - AG Kit
+      if (isVi) {
+        content = `# GEMINI.md - AG Kit
+
+> Tệp tin cấu hình hành vi của AI trong không gian làm việc này.
+
+---
+
+## QUAN TRỌNG: GIAO THỨC TẢI AGENT & SKILL (BẮT ĐẦU TẠI ĐÂY)
+
+> **BẮT BUỘC:** Bạn PHẢI đọc tệp tin quy chuẩn của Agent tương ứng và các kỹ năng của nó TRƯỚC KHI tiến hành bất kỳ thay đổi mã nguồn nào. Đây là quy tắc ưu tiên cao nhất.
+
+### 1. Cơ chế tải kỹ năng theo Mô-đun
+Agent được kích hoạt → Kiểm tra thuộc tính frontmatter "skills:" → Đọc file SKILL.md (INDEX) → Chỉ đọc các phần cụ thể liên quan.
+- **Đọc chọn lọc:** KHÔNG đọc toàn bộ file trong thư mục skill cùng lúc. Đọc \`SKILL.md\` trước, sau đó chỉ đọc các phần cụ thể khớp với yêu cầu của người dùng.
+- **Thứ tự ưu tiên quy tắc:** P0 (GEMINI.md) > P1 (Agent .md) > P2 (SKILL.md). Tất cả các quy tắc đều mang tính ràng buộc pháp lý.
+
+### 2. Giao thức Bắt buộc thực thi
+1. **Khi Agent được kích hoạt:** Đọc quy tắc → Kiểm tra Frontmatter → Nạp tệp tin SKILL.md → Áp dụng tất cả hướng dẫn.
+2. **Nghiêm cấm:** Không bao giờ bỏ qua bước đọc luật của Agent hoặc kỹ năng đi kèm. Phương châm bắt buộc: "Đọc → Hiểu bản chất → Áp dụng thực tiễn".
+
+---
+
+## 📥 PHÂN LOẠI YÊU CẦU (BƯỚC 1)
+Phân loại yêu cầu của người dùng trước khi sử dụng bất kỳ công cụ nào:
+- **CÂU HỎI (QUESTION):** Giải thích, hướng dẫn → Trả lời bằng văn bản (Chỉ TIER 0).
+- **RÀ SOÁT / KHẢO SÁT (SURVEY):** Liệt kê, phân tích cấu trúc → Chỉ lấy thông tin phiên làm việc, không chỉnh sửa file.
+- **MÃ NGUỒN ĐƠN GIẢN (SIMPLE CODE):** Sửa lỗi nhỏ, chỉnh sửa đơn lẻ một tệp tin → Tiến hành chỉnh sửa inline trực tiếp.
+- **MÃ NGUỒN PHỨC TẠP (COMPLEX CODE):** Xây dựng tính năng lớn, tái cấu trúc hệ thống → **Bắt buộc tạo file {task-slug}.md**.
+
+---
+
+## TIER 1: QUY CHUẨN MÃ NGUỒN (Khi viết Code)
+
+### 🛠️ Quy tắc theo Công nghệ đã cấu hình
+- **Framework:** ${frameworkLabel}
+${frameworkSection}
+- **Ngôn ngữ:** ${languageLabel}
+${languageSection}
+- **Cơ sở dữ liệu:** ${dbLabel}
+${databaseSection}
+- **Bố cục CSS:** ${stylingLabel}
+${stylingSection}
+
+### 🏁 Giao thức Kiểm tra cuối cùng (Final Checklist)
+Khi người dùng yêu cầu kiểm tra cuối cùng hoặc bàn giao dự án:
+- **Trình tự chạy xác minh ưu tiên:** 1. Bảo mật -> 2. Lint -> 3. Schema DB -> 4. Chạy kiểm thử -> 5. Đánh giá UX -> 6. SEO.
+- **Biên dịch thử:**
+  \`\`\`bash
+  ${compilerCommand}
+  \`\`\`
+- **Chạy toàn bộ test:**
+  \`\`\`bash
+  ${testCommand}
+  \`\`\`
+`;
+      } else {
+        content = `# GEMINI.md - AG Kit
 
 > This file defines how the AI behaves in this workspace.
 
@@ -653,13 +1114,14 @@ ${stylingSection}
   ${testCommand}
   \`\`\`
 `;
+      }
     }
 
     return {
       content,
       filename
     };
-  }, [ide, framework, language, database, styling, testing, activeFile]);
+  }, [ide, framework, language, database, styling, testing, activeFile, contentLanguage]);
 
   // Copy helper
   const handleCopy = async () => {
@@ -923,20 +1385,20 @@ ${stylingSection}
             <div className="flex items-center gap-1.5 p-1 bg-zinc-900/60 border border-zinc-900 rounded-lg text-xs self-start overflow-x-auto max-w-full">
               <button
                 onClick={() => handleTabChange("rules")}
-                className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap ${
+                className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border ${
                   outputTab === "rules"
-                    ? "bg-violet-950/40 text-violet-300 border border-violet-800/40"
-                    : "text-zinc-400 hover:text-zinc-200"
+                    ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
+                    : "border-transparent text-zinc-450 hover:text-zinc-200 hover:bg-zinc-800/20"
                 }`}
               >
                 RULE.md / .rules
               </button>
               <button
                 onClick={() => handleTabChange("skills")}
-                className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+                className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap border ${
                   outputTab === "skills"
-                    ? "bg-violet-950/40 text-violet-300 border border-violet-800/40"
-                    : "text-zinc-400 hover:text-zinc-200"
+                    ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
+                    : "border-transparent text-zinc-450 hover:text-zinc-200 hover:bg-zinc-800/20"
                 }`}
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
@@ -944,10 +1406,10 @@ ${stylingSection}
               </button>
               <button
                 onClick={() => handleTabChange("workflows")}
-                className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+                className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap border ${
                   outputTab === "workflows"
-                    ? "bg-violet-950/40 text-violet-300 border border-violet-800/40"
-                    : "text-zinc-400 hover:text-zinc-200"
+                    ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
+                    : "border-transparent text-zinc-450 hover:text-zinc-200 hover:bg-zinc-800/20"
                 }`}
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse shrink-0" />
@@ -955,10 +1417,10 @@ ${stylingSection}
               </button>
               <button
                 onClick={() => handleTabChange("gemini")}
-                className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+                className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap border ${
                   outputTab === "gemini"
-                    ? "bg-violet-950/40 text-violet-300 border border-violet-800/40"
-                    : "text-zinc-400 hover:text-zinc-200"
+                    ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
+                    : "border-transparent text-zinc-450 hover:text-zinc-200 hover:bg-zinc-800/20"
                 }`}
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse shrink-0" />
@@ -978,6 +1440,30 @@ ${stylingSection}
               </div>
 
               <div className="flex items-center gap-2">
+                {/* Language Selector */}
+                <div className="flex items-center bg-zinc-950 border border-zinc-800 rounded-md p-0.5 mr-2">
+                  <button
+                    onClick={() => setContentLanguage("vi")}
+                    className={`px-2.5 py-1 rounded text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                      contentLanguage === "vi"
+                        ? "bg-violet-950/50 text-violet-300 border border-violet-850/40"
+                        : "text-zinc-500 hover:text-zinc-300"
+                    }`}
+                  >
+                    🇻🇳 VI
+                  </button>
+                  <button
+                    onClick={() => setContentLanguage("en")}
+                    className={`px-2.5 py-1 rounded text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                      contentLanguage === "en"
+                        ? "bg-violet-950/50 text-violet-300 border border-violet-850/40"
+                        : "text-zinc-500 hover:text-zinc-300"
+                    }`}
+                  >
+                    🇺🇸 EN
+                  </button>
+                </div>
+
                 <button
                   onClick={handleCopy}
                   className={`px-3 py-1.5 rounded-md text-xs font-bold cursor-pointer transition-all duration-150 flex items-center gap-1.5 ${
