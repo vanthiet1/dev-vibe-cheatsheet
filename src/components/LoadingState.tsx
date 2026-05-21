@@ -42,19 +42,6 @@ export function EmptyState({
       <p className="text-sm text-zinc-400 mb-4">
         Không tìm thấy câu lệnh nào khớp với bộ lọc hiện tại.
       </p>
-      {!hasCategories && (
-        <div className="max-w-md mx-auto p-4 border border-zinc-800 bg-zinc-900 text-left text-xs mb-4 rounded-md">
-          <p className="text-zinc-300 font-semibold mb-1">Dữ liệu rỗng</p>
-          <p className="text-zinc-500 leading-relaxed">
-            Nhấn nút{" "}
-            <strong className="text-blue-500 font-medium">
-              Re-seed Database
-            </strong>{" "}
-            ở góc trên bên phải màn hình để tự động chèn dữ liệu mẫu cho Git,
-            PowerShell và CMD.
-          </p>
-        </div>
-      )}
       <button
         onClick={onResetFilters}
         className="px-3.5 py-1.5 border border-zinc-800 hover:border-zinc-700 bg-zinc-900/50 hover:bg-zinc-900 text-zinc-400 hover:text-zinc-200 transition-all rounded-md text-xs cursor-pointer active:scale-95"
