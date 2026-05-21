@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import { Category, ICategory } from '@/models/Category';
 import { Command } from '@/models/Command';
+import { invalidateCache } from '@/lib/dataCache';
 
 export async function GET() {
   try {
@@ -2452,6 +2453,8 @@ Cung cấp các quy tắc hướng dẫn chi tiết dành cho Agent ở đây...
         viewCount: 480
       }
     ]);
+
+    invalidateCache();
 
     return NextResponse.json({
       success: true,

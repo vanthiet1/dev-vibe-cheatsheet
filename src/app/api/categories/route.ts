@@ -1,12 +1,27 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import { Category } from '@/models/Category';
+import { getCachedCategories, setCachedCategories, invalidateCache } from '@/lib/dataCache';
+import { ICategory } from '@/types';
 
 export async function GET() {
   try {
+    const cached = getCachedCategories();
+    if (cached) {
+      return NextResponse.json({ success: true, data: cached });
+    }
+
     await dbConnect();
-    const categories = await Category.find({}).sort({ parentId: 1, order: 1 }).lean();
-    return NextResponse.json({ success: true, data: categories });
+    const categories = await Category.find({}).sort({ parentId: 1, order: 1 }).lean() as unknown as ICategory[];
+    
+    // Ensure all ObjectIds are converted to strings if lean() returns them as ObjectIds
+    const serializedCategories = categories.map(cat => ({
+      ...cat,
+      _id: cat._id.toString(),
+    }));
+
+    setCachedCategories(serializedCategories);
+    return NextResponse.json({ success: true, data: serializedCategories });
   } catch (error) {
     const err = error as Error;
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
@@ -23,6 +38,10 @@ export async function POST(request: Request) {
     }
 
     const newCategory = await Category.create(body);
+    
+    // Invalidate categories and commands cache on any new creation
+    invalidateCache();
+    
     return NextResponse.json({ success: true, data: newCategory }, { status: 201 });
   } catch (error) {
     const err = error as Error;

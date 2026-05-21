@@ -133,15 +133,15 @@ export default function TerminalSimulator({ script }: TerminalSimulatorProps) {
   };
 
   return (
-    <div className="w-full bg-zinc-950 border border-zinc-800 rounded-lg overflow-hidden shadow-2xl font-mono text-sm relative group flex flex-col min-h-[220px] max-h-[350px]">
+    <div className="w-full bg-zinc-950 border border-zinc-800 rounded-lg overflow-hidden shadow-2xl font-mono text-sm relative group flex flex-col max-h-[200px]">
       {/* Top Window Bar */}
-      <div className="bg-zinc-900 px-4 py-3 border-b border-zinc-800 flex items-center justify-between shrink-0">
+      <div className="bg-zinc-900 px-4 py-2.5 border-b border-zinc-800 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-red-500/80" />
-          <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-          <div className="w-3 h-3 rounded-full bg-green-500/80" />
+          <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
+          <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
+          <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
         </div>
-        <span className="text-xs text-zinc-500 font-medium select-none">antigravity@terminal:~</span>
+        <span className="text-[11px] text-zinc-500 font-medium select-none">antigravity@terminal:~</span>
         <button
           onClick={startAnimation}
           className="text-zinc-500 hover:text-zinc-300 transition-colors p-0.5 rounded cursor-pointer"
@@ -154,32 +154,32 @@ export default function TerminalSimulator({ script }: TerminalSimulatorProps) {
       {/* Terminal View Output */}
       <div
         ref={containerRef}
-        className="p-4 overflow-y-auto flex-1 space-y-1.5 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent text-[13px] leading-relaxed"
+        className="p-3.5 overflow-y-auto overflow-x-hidden flex-1 space-y-1 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent text-[12.5px] leading-relaxed"
       >
         {lines.map((line, idx) => (
-          <div key={idx} className={getLineColorClass(line)}>
+          <div key={idx} className={`${getLineColorClass(line)} whitespace-pre-wrap break-words`}>
             {line}
           </div>
         ))}
 
         {/* Cursor / Typing command indicator */}
         {isTyping && (
-          <div className="text-zinc-100 font-semibold flex items-center">
+          <div className="text-zinc-100 font-semibold flex items-center whitespace-pre-wrap break-words">
             <span>$ {typedCommand}</span>
-            <span className="w-1.5 h-4 bg-zinc-400 ml-0.5 animate-pulse" />
+            <span className="w-1.5 h-3.5 bg-zinc-400 ml-0.5 animate-pulse" />
           </div>
         )}
 
         {/* Finished / Idle indicator */}
         {isFinished && (
-          <div className="text-zinc-500 flex items-center gap-1.5 pt-2 text-xs border-t border-zinc-900/50 mt-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+          <div className="text-zinc-500 flex items-center gap-1.5 pt-1.5 border-t border-zinc-900/50 mt-1.5 text-[11px]">
+            <span className="w-1.2 h-1.2 rounded-full bg-emerald-500" />
             <span>Đã hoàn thành phiên làm việc.</span>
             <button
               onClick={startAnimation}
               className="text-blue-500 hover:text-blue-400 ml-2 cursor-pointer font-medium hover:underline flex items-center gap-0.5"
             >
-              <RedoIcon className="text-[10px]" /> Chạy lại
+              <RedoIcon className="text-[9px]" /> Chạy lại
             </button>
           </div>
         )}
