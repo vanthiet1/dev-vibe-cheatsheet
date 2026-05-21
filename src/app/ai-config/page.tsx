@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { generateRulesContent } from "./rules-templates";
@@ -37,6 +37,56 @@ function LightningIcon({ className }: { className?: string }) {
   return (
     <svg className={className} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" width="1em" height="1em">
       <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+    </svg>
+  );
+}
+
+// Tab Category Icons for beautiful, dynamic UI
+function GearIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" width="1em" height="1em">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+  );
+}
+
+function ShieldIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" width="1em" height="1em">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+    </svg>
+  );
+}
+
+function SparklesIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" width="1em" height="1em">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+    </svg>
+  );
+}
+
+function RobotIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" width="1em" height="1em">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+    </svg>
+  );
+}
+
+function WorkflowIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" width="1em" height="1em">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 4h5v5H4V4zm11 0h5v5h-5V4zM4 15h5v5H4v-5zm11 0h5v5h-5v-5zM9 6.5h6m-6 11h6M6.5 9v6m11-6v6" />
+    </svg>
+  );
+}
+
+function TerminalIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" width="1em" height="1em">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
     </svg>
   );
 }
@@ -80,6 +130,448 @@ const buildTree = (files: { path: string; label: string }[]): TreeNode[] => {
   return root;
 };
 
+// High-fidelity interactive VS Code workspace simulation with visual auto-gliding mouse pointer
+function VsCodeSimulator({ 
+  framework, 
+  language 
+}: { 
+  framework: string; 
+  language: string; 
+  database: string; 
+  styling: string; 
+  testing: string; 
+}) {
+  // Stepper completion and dynamic loop variables
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+  const [terminalLogs, setTerminalLogs] = useState<string[]>([
+    "Microsoft Windows [Version 10.0.22631]",
+    "(c) Microsoft Corporation. All rights reserved.",
+    "",
+    "C:\\Users\\Developer\\Desktop\\my-project> init_antigravity"
+  ]);
+
+  // Stepper input text fields for character-by-character visual typing
+  const [folderInputVal, setFolderInputVal] = useState("");
+  const [fileInputVal, setFileInputVal] = useState("");
+  const [showFolderInput, setShowFolderInput] = useState(false);
+  const [showFileInput, setShowFileInput] = useState(false);
+
+  // Dynamic visual Mouse Cursor state controls
+  const [cursorX, setCursorX] = useState(250);
+  const [cursorY, setCursorY] = useState(150);
+  const [cursorAction, setCursorAction] = useState<"idle" | "clicking" | "moving">("idle");
+
+  // Laser editor compiling sweep state
+  const [editorText, setEditorText] = useState("");
+  const [showLaser, setShowLaser] = useState(false);
+
+  const terminalContainerRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll terminal log pane within its isolated container
+  useEffect(() => {
+    if (terminalContainerRef.current) {
+      terminalContainerRef.current.scrollTop = terminalContainerRef.current.scrollHeight;
+    }
+  }, [terminalLogs]);
+
+  // Visual Autopilot sequence runner inside simulator
+  useEffect(() => {
+    let active = true;
+    let timerId: NodeJS.Timeout;
+
+    const addLog = (msg: string) => {
+      if (active) setTerminalLogs(prev => [...prev, msg]);
+    };
+
+    // Continuous loop executing the entire VS Code simulation lifecycle
+    const playSimulatorSequence = async () => {
+      if (!active) return;
+
+      // Phase 0: Reset states
+      setCompletedSteps([]);
+      setFolderInputVal("");
+      setFileInputVal("");
+      setShowFolderInput(false);
+      setShowFileInput(false);
+      setEditorText("");
+      setShowLaser(false);
+      setCursorX(280);
+      setCursorY(150);
+      setTerminalLogs([
+        "Microsoft Windows [Version 10.0.22631]",
+        "(c) Microsoft Corporation. All rights reserved.",
+        "",
+        "C:\\Users\\Developer\\Desktop\\my-project> init_antigravity"
+      ]);
+
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      if (!active) return;
+
+      // Phase 1: Glide mouse to "New Folder" Icon in mock Explorer top header
+      setCursorAction("moving");
+      setCursorX(124);
+      setCursorY(35);
+      await new Promise(resolve => setTimeout(resolve, 1300));
+      if (!active) return;
+
+      // Phase 2: Click New Folder Icon
+      setCursorAction("clicking");
+      await new Promise(resolve => setTimeout(resolve, 250));
+      setCursorAction("idle");
+      addLog("C:\\Users\\Developer\\Desktop\\my-project> mkdir -p .agent");
+      setShowFolderInput(true);
+      await new Promise(resolve => setTimeout(resolve, 350));
+      if (!active) return;
+
+      // Phase 3: Character-by-character typing ".agent"
+      const folderChars = ".agent".split("");
+      let folderTemp = "";
+      for (let char of folderChars) {
+        if (!active) return;
+        folderTemp += char;
+        setFolderInputVal(folderTemp);
+        await new Promise(resolve => setTimeout(resolve, 120));
+      }
+      await new Promise(resolve => setTimeout(resolve, 350));
+      if (!active) return;
+
+      // Phase 4: Submit folder creation
+      setShowFolderInput(false);
+      setCompletedSteps(prev => [...prev, 1]);
+      addLog("[SUCCESS] Created workspace directory: .agent/");
+      await new Promise(resolve => setTimeout(resolve, 900));
+      if (!active) return;
+
+      // Phase 5: Glide mouse to "New File" Icon
+      setCursorAction("moving");
+      setCursorX(146);
+      setCursorY(35);
+      await new Promise(resolve => setTimeout(resolve, 1300));
+      if (!active) return;
+
+      // Phase 6: Click New File Icon
+      setCursorAction("clicking");
+      await new Promise(resolve => setTimeout(resolve, 250));
+      setCursorAction("idle");
+      addLog("C:\\Users\\Developer\\Desktop\\my-project> touch .agent/rules/GEMINI.md");
+      setShowFileInput(true);
+      await new Promise(resolve => setTimeout(resolve, 350));
+      if (!active) return;
+
+      // Phase 7: Character-by-character typing "GEMINI.md"
+      const fileChars = "GEMINI.md".split("");
+      let fileTemp = "";
+      for (let char of fileChars) {
+        if (!active) return;
+        fileTemp += char;
+        setFileInputVal(fileTemp);
+        await new Promise(resolve => setTimeout(resolve, 120));
+      }
+      await new Promise(resolve => setTimeout(resolve, 350));
+      if (!active) return;
+
+      // Phase 8: Submit rules file creation
+      setShowFileInput(false);
+      setCompletedSteps(prev => [...prev, 2, 3, 4]);
+      addLog("[SUCCESS] Created Rule behavioural spec file: .agent/rules/GEMINI.md");
+      addLog("[SUCCESS] Generated skill directories and AI specialist agents.");
+      addLog("[SUCCESS] Configured workspace automation workflows.");
+      await new Promise(resolve => setTimeout(resolve, 900));
+      if (!active) return;
+
+      // Phase 9: Glide to main editor window
+      setCursorAction("moving");
+      setCursorX(360);
+      setCursorY(160);
+      await new Promise(resolve => setTimeout(resolve, 1200));
+      if (!active) return;
+
+      // Phase 10: Laser compile sweep and print out behavior rules inside VS Code editor
+      setShowLaser(true);
+      const lines = [
+        `# Antigravity behaviour specifications (GEMINI.md)`,
+        `# Primary stack loaded: ${framework} (${language})`,
+        ``,
+        `## Universal direct rules:`,
+        `- Restrict function blocks to a maximum of 25 lines.`,
+        `- Reuse existing modular abstractions before writing new code.`,
+        `- Enforce zero-exception TypeScript type safety.`
+      ];
+      
+      let typedEditor = "";
+      for (let line of lines) {
+        if (!active) return;
+        typedEditor += line + "\n";
+        setEditorText(typedEditor);
+        await new Promise(resolve => setTimeout(resolve, 250));
+      }
+      
+      await new Promise(resolve => setTimeout(resolve, 400));
+      setShowLaser(false);
+      addLog("");
+      addLog("✨ [COMPLETE] Antigravity IDE configuration generated successfully!");
+      addLog("✨ Ready to pair program with Google Antigravity Agent! 🚀");
+
+      // Loop cooldown delay before resetting
+      timerId = setTimeout(() => {
+        if (active) playSimulatorSequence();
+      }, 7000);
+    };
+
+    playSimulatorSequence();
+
+    return () => {
+      active = false;
+      clearTimeout(timerId);
+    };
+  }, [framework, language]);
+
+  const isStep1Done = completedSteps.includes(1);
+  const isStep2Done = completedSteps.includes(2);
+  const isStep3Done = completedSteps.includes(3);
+  const isStep4Done = completedSteps.includes(4);
+
+  return (
+    <div className="relative w-full flex flex-col bg-[#1e1e1e] border border-zinc-800 rounded-lg overflow-hidden font-sans text-xs select-none shadow-2xl h-full min-h-[500px]">
+      
+      {/* Dynamic Absolute Mouse Pointer element */}
+      <div 
+        style={{ 
+          transform: `translate(${cursorX}px, ${cursorY}px)`,
+          transition: "transform 1.1s cubic-bezier(0.25, 1, 0.5, 1)"
+        }}
+        className={`absolute pointer-events-none z-50 transition-all duration-150 ${
+          cursorAction === "clicking" ? "scale-90 opacity-80" : "scale-100"
+        }`}
+      >
+        <svg className="w-5 h-5 text-white filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M4.5 3v15.3l4.7-4.6 3.8 8.8 3.5-1.5-3.8-8.8 6-0.6L4.5 3z" />
+        </svg>
+      </div>
+
+      {/* VS Code Window Header */}
+      <div className="bg-[#2d2d2d] px-3 py-2 flex items-center justify-between border-b border-[#252526] z-10">
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
+          <span className="text-[10px] text-zinc-400 font-mono ml-2">Visual Studio Code - Simulator</span>
+        </div>
+        <div className="bg-[#3c3c3c] text-zinc-300 font-mono text-[9px] px-8 py-0.5 rounded border border-zinc-800 select-none">
+          my-project - Antigravity Configurator
+        </div>
+        <div className="w-12" />
+      </div>
+
+      {/* VS Code Editor Main Grid */}
+      <div className="flex-grow grid grid-cols-1 md:grid-cols-12 bg-[#1e1e1e] min-h-[380px] relative z-10">
+        
+        {/* Mock VS Code Explorer Sidebar */}
+        <div className="md:col-span-4 bg-[#252526] border-r border-[#1e1e1e] flex flex-col text-zinc-400 font-mono select-none">
+          <div className="px-3 py-2 text-[9px] uppercase tracking-wider font-extrabold text-zinc-500 border-b border-[#1e1e1e] flex items-center justify-between">
+            <span>Explorer: MY-PROJECT</span>
+            <div className="flex items-center gap-2 text-zinc-500 font-normal">
+              {/* Folder and File creation controls highlighted visually */}
+              <span className={`hover:text-zinc-200 transition-colors p-0.5 rounded ${showFolderInput ? "text-violet-400 bg-zinc-800" : ""}`}>📁⁺</span>
+              <span className={`hover:text-zinc-200 transition-colors p-0.5 rounded ${showFileInput ? "text-violet-400 bg-zinc-800" : ""}`}>📄⁺</span>
+            </div>
+          </div>
+          
+          <div className="p-3 space-y-1.5 text-[11px] overflow-y-auto overscroll-contain max-h-[220px]">
+            <div className="font-bold text-zinc-300">📁 MY-PROJECT</div>
+            
+            {/* .agent/ folder tree */}
+            <div className="pl-3 space-y-1.5 border-l border-zinc-800/80 ml-2">
+              
+              {/* Step 1 input folder typing */}
+              {showFolderInput && (
+                <div className="flex items-center gap-1.5 text-violet-400 font-bold bg-violet-950/20 py-0.5 px-1 rounded animate-pulse border border-violet-800/30">
+                  <span>📂</span>
+                  <span className="font-mono">{folderInputVal}</span>
+                  <span className="w-1 h-3.5 bg-violet-400 animate-ping" />
+                </div>
+              )}
+
+              {isStep1Done && (
+                <div className="flex items-center gap-1.5 transition-all duration-300 text-emerald-400 font-bold">
+                  <span>📂</span>
+                  <span>.agent</span>
+                </div>
+              )}
+
+              {!isStep1Done && !showFolderInput && (
+                <div className="flex items-center gap-1.5 text-zinc-650 opacity-40">
+                  <span>📂</span>
+                  <span>.agent</span>
+                </div>
+              )}
+
+              {/* rules/ subfolder */}
+              <div className="pl-3 space-y-1.5 border-l border-zinc-800/80 ml-2">
+                <div className={`flex items-center gap-1.5 transition-all duration-300 ${
+                  isStep2Done ? "text-emerald-400 font-bold" : "text-zinc-650 opacity-40"
+                }`}>
+                  <span>📂</span>
+                  <span>rules</span>
+                </div>
+                
+                {/* Step 2 input file typing */}
+                {showFileInput && (
+                  <div className="pl-4 flex items-center gap-1.5 text-violet-400 font-bold bg-violet-950/20 py-0.5 px-1 rounded animate-pulse border border-violet-800/30">
+                    <span>📄</span>
+                    <span className="font-mono">{fileInputVal}</span>
+                    <span className="w-1 h-3.5 bg-violet-400 animate-ping" />
+                  </div>
+                )}
+
+                {isStep2Done && (
+                  <div className="pl-4 flex items-center gap-1.5 transition-all duration-300 text-emerald-300">
+                    <span>📄</span>
+                    <span>GEMINI.md</span>
+                  </div>
+                )}
+
+                {!isStep2Done && !showFileInput && (
+                  <div className="pl-4 flex items-center gap-1.5 text-zinc-650 opacity-40">
+                    <span>📄</span>
+                    <span>GEMINI.md</span>
+                  </div>
+                )}
+              </div>
+
+              {/* skills/ subfolder */}
+              <div className="pl-3 space-y-1.5 border-l border-zinc-800/80 ml-2">
+                <div className={`flex items-center gap-1.5 transition-all duration-300 ${
+                  isStep3Done ? "text-emerald-400 font-bold" : "text-zinc-650 opacity-40"
+                }`}>
+                  <span>📂</span>
+                  <span>skills</span>
+                </div>
+                <div className={`pl-4 flex items-center gap-1.5 transition-all duration-300 ${
+                  isStep3Done ? "text-emerald-350" : "text-zinc-650 opacity-40"
+                }`}>
+                  <span>📂</span>
+                  <span>clean-code</span>
+                </div>
+                <div className={`pl-8 flex items-center gap-1.5 transition-all duration-300 ${
+                  isStep3Done ? "text-emerald-300" : "text-zinc-650 opacity-40"
+                }`}>
+                  <span>📄</span>
+                  <span>SKILL.md</span>
+                </div>
+              </div>
+
+              {/* agents/ subfolder */}
+              <div className="pl-3 space-y-1.5 border-l border-zinc-800/80 ml-2">
+                <div className={`flex items-center gap-1.5 transition-all duration-300 ${
+                  isStep3Done ? "text-emerald-400 font-bold" : "text-zinc-650 opacity-40"
+                }`}>
+                  <span>📂</span>
+                  <span>agents</span>
+                </div>
+                <div className={`pl-4 flex items-center gap-1.5 transition-all duration-300 ${
+                  isStep3Done ? "text-emerald-300" : "text-zinc-650 opacity-40"
+                }`}>
+                  <span>📄</span>
+                  <span>debugger.md</span>
+                </div>
+              </div>
+
+              {/* workflows/ subfolder */}
+              <div className="pl-3 space-y-1.5 border-l border-zinc-800/80 ml-2">
+                <div className={`flex items-center gap-1.5 transition-all duration-300 ${
+                  isStep4Done ? "text-emerald-400 font-bold" : "text-zinc-650 opacity-40"
+                }`}>
+                  <span>📂</span>
+                  <span>workflows</span>
+                </div>
+                <div className={`pl-4 flex items-center gap-1.5 transition-all duration-300 ${
+                  isStep4Done ? "text-emerald-300" : "text-zinc-650 opacity-40"
+                }`}>
+                  <span>📄</span>
+                  <span>debug.md</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Standard non-config workspace files */}
+            <div className="pl-3 space-y-1 ml-2 text-zinc-500 opacity-60">
+              <div className="flex items-center gap-1.5">
+                <span>⚙️</span>
+                <span>package.json</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span>⚙️</span>
+                <span>.env</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        {/* Dynamic code typing panel simulating developer writing */}
+        <div className="md:col-span-8 p-5 flex flex-col bg-[#1e1e1e] text-zinc-300 overflow-hidden relative">
+          
+          <div className="flex justify-between items-center border-b border-zinc-800 pb-2.5 select-none mb-3">
+            <div>
+              <h3 className="text-xs font-bold text-zinc-200 uppercase tracking-wider flex items-center gap-1.5">
+                <LightningIcon className="text-violet-400" />
+                WORKSPACE EDITOR: Rules Compiler
+              </h3>
+            </div>
+            {isStep4Done && (
+              <span className="text-[9px] bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold px-2 py-0.5 rounded animate-pulse select-none">
+                ĐỒNG BỘ THÀNH CÔNG
+              </span>
+            )}
+          </div>
+
+          {/* Interactive laser compilation sweep sweep block */}
+          <div className="flex-grow font-mono text-[11px] leading-relaxed text-zinc-300 overflow-y-auto overscroll-contain whitespace-pre relative border border-zinc-900/60 rounded bg-[#151515] p-4 select-text">
+            {showLaser && (
+              <div className="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-violet-500 to-transparent animate-pulse shadow-[0_0_15px_rgba(139,92,246,0.8)]" style={{ top: "35%" }} />
+            )}
+            
+            {editorText ? editorText : (
+              <span className="text-zinc-600 italic select-none">Đang chờ khởi động quy chuẩn hành vi từ Explorer...</span>
+            )}
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* VS Code Window Footer Terminal Simulator */}
+      <div ref={terminalContainerRef} className="bg-[#181818] border-t border-zinc-850 p-3 h-[130px] overflow-y-auto overscroll-contain font-mono text-[10px] text-zinc-400 leading-normal scrollbar-thin relative z-10">
+        <div className="flex items-center justify-between border-b border-zinc-850 pb-1.5 mb-1.5 text-zinc-500 select-none">
+          <div className="flex items-center gap-4">
+            <span className="text-zinc-300 font-bold hover:text-zinc-200 cursor-pointer">TERMINAL</span>
+            <span className="hover:text-zinc-300 cursor-pointer">PROBLEMS</span>
+            <span className="hover:text-zinc-300 cursor-pointer">OUTPUT</span>
+            <span className="hover:text-zinc-300 cursor-pointer">DEBUG CONSOLE</span>
+          </div>
+          <div>powershell</div>
+        </div>
+        
+        <div className="space-y-1">
+          {terminalLogs.map((log, idx) => (
+            <div key={idx} className={
+              log.includes("[SUCCESS]")
+                ? "text-emerald-400 font-semibold"
+                : log.includes("✨")
+                  ? "text-violet-400 font-bold animate-pulse"
+                  : "text-zinc-300"
+            }>
+              {log}
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
 export default function AiConfigPage() {
   // Option selectors state
   const [ide, setIde] = useState("antigravity-ide");
@@ -89,9 +581,9 @@ export default function AiConfigPage() {
   const [styling, setStyling] = useState("shadcn");
   const [testing, setTesting] = useState("jest");
 
-  // Output format state: 'rules' | 'cli' | 'skills' | 'workflows' | 'agents'
-  const [outputTab, setOutputTab] = useState<"rules" | "cli" | "skills" | "workflows" | "agents">("rules");
-  const [activeFile, setActiveFile] = useState(".agent/rules/GEMINI.md");
+  // Output format state: 'config' | 'rules' | 'cli' | 'skills' | 'workflows' | 'agents'
+  const [outputTab, setOutputTab] = useState<"config" | "rules" | "cli" | "skills" | "workflows" | "agents">("config");
+  const [activeFile, setActiveFile] = useState(".agent/config-overview.md");
   const [contentLanguage, setContentLanguage] = useState<"en" | "vi">("vi");
   const [copied, setCopied] = useState(false);
 
@@ -180,6 +672,7 @@ export default function AiConfigPage() {
 
     if (isCli) {
       return {
+        config: [],
         rules: dynamicRules,
         cli: [
           { path: ".gemini/antigravity-cli/settings.json", label: "settings.json" },
@@ -196,6 +689,9 @@ export default function AiConfigPage() {
     }
 
     return {
+      config: [
+        { path: ".agent/config-overview.md", label: "config-overview.md" }
+      ],
       rules: dynamicRules,
       cli: [], // Not used in IDE
       skills: dynamicSkills,
@@ -216,13 +712,13 @@ export default function AiConfigPage() {
       setOutputTab("cli");
       setActiveFile(".gemini/antigravity-cli/settings.json");
     } else {
-      setOutputTab("rules");
-      setActiveFile(".agent/rules/GEMINI.md");
+      setOutputTab("config");
+      setActiveFile(".agent/config-overview.md");
     }
   };
 
   // Tab change handler that automatically resets active file cleanly
-  const handleTabChange = (tab: "rules" | "cli" | "skills" | "workflows" | "agents") => {
+  const handleTabChange = (tab: "config" | "rules" | "cli" | "skills" | "workflows" | "agents") => {
     setOutputTab(tab);
     if (filesByTab[tab] && filesByTab[tab].length > 0) {
       setActiveFile(filesByTab[tab][0].path);
@@ -231,7 +727,7 @@ export default function AiConfigPage() {
 
   // Build current directory tree
   const treeNodes = useMemo(() => {
-    if (ide === "antigravity-ide" && outputTab === "rules") {
+    if (ide === "antigravity-ide" && outputTab === "config") {
       // Gather ALL file paths from all tabs in IDE mode to build the complete folder tree skeleton!
       const allFiles = [
         ...filesByTab.rules,
@@ -346,108 +842,81 @@ export default function AiConfigPage() {
           </p>
         </div>
 
-        {/* Dynamic Controls & Presentation Screen */}
+        {/* Panoramic Grid Container (ratio 3:9 splits spacing beautifully) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* Left Panel: Options */}
-          <div className="lg:col-span-5 space-y-6">
+          {/* Left Panel Options (Shrunk to lg:col-span-3) */}
+          <div className="lg:col-span-3 space-y-6">
             
             {/* IDE/Agent Selector */}
-            <div className="bg-zinc-900/20 border border-zinc-900 rounded-xl p-5 space-y-4">
-              <h3 className="text-sm font-bold text-zinc-200 flex items-center gap-2 uppercase tracking-wide">
-                <span className="w-1.5 h-1.5 rounded-full bg-violet-500" />
-                1. Trình biên dịch AI & IDE
+            <div className="bg-zinc-900/20 border border-zinc-900 rounded-xl p-4 space-y-4">
+              <h3 className="text-[11px] font-extrabold text-zinc-200 flex items-center gap-2 uppercase tracking-wide">
+                <span className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse" />
+                1. Hệ điều hành AI
               </h3>
               
-              <div className="grid grid-cols-1 gap-2.5">
+              <div className="flex flex-col gap-2">
                 {/* Antigravity IDE Select */}
                 <button
                   onClick={() => handleIdeChange("antigravity-ide")}
-                  className={`p-3.5 rounded-lg border text-left transition-all duration-200 flex items-start gap-3 cursor-pointer ${
+                  className={`p-3 rounded-lg border text-left transition-all duration-205 cursor-pointer flex flex-col gap-1 ${
                     ide === "antigravity-ide"
                       ? "border-violet-600 bg-violet-950/15 shadow-[0_0_15px_rgba(139,92,246,0.1)]"
                       : "border-zinc-800 bg-zinc-900/10 hover:border-zinc-700"
                   }`}
                 >
-                  <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 mt-0.5 ${
-                    ide === "antigravity-ide" ? "border-violet-500" : "border-zinc-600"
-                  }`}>
-                    {ide === "antigravity-ide" && <span className="w-2 h-2 rounded-full bg-violet-500" />}
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-zinc-100">Antigravity IDE</span>
+                    {ide === "antigravity-ide" && <span className="w-1.5 h-1.5 rounded-full bg-violet-500" />}
                   </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-zinc-100 flex items-center gap-1.5">
-                      Antigravity IDE Config
-                      <span className="text-[10px] bg-violet-500/20 text-violet-400 font-extrabold px-1.5 py-0.5 rounded uppercase">Mặc định</span>
-                    </h4>
-                    <p className="text-[11px] text-zinc-400 mt-1 leading-relaxed">
-                      Đồng bộ hóa các file kỹ năng và quy chuẩn làm việc tích hợp sâu trong IDE.
-                    </p>
-                  </div>
+                  <p className="text-[10px] text-zinc-450 leading-relaxed">
+                    Quy chuẩn kỹ năng sâu bên trong IDE.
+                  </p>
                 </button>
 
                 {/* Antigravity CLI Select */}
                 <button
                   onClick={() => handleIdeChange("antigravity-cli")}
-                  className={`p-3.5 rounded-lg border text-left transition-all duration-200 flex items-start gap-3 cursor-pointer ${
+                  className={`p-3 rounded-lg border text-left transition-all duration-205 cursor-pointer flex flex-col gap-1 ${
                     ide === "antigravity-cli"
                       ? "border-violet-600 bg-violet-950/15 shadow-[0_0_15px_rgba(139,92,246,0.1)]"
                       : "border-zinc-800 bg-zinc-900/10 hover:border-zinc-700"
                   }`}
                 >
-                  <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 mt-0.5 ${
-                    ide === "antigravity-cli" ? "border-violet-500" : "border-zinc-600"
-                  }`}>
-                    {ide === "antigravity-cli" && <span className="w-2 h-2 rounded-full bg-violet-500" />}
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-zinc-100">Antigravity CLI</span>
+                    {ide === "antigravity-cli" && <span className="w-1.5 h-1.5 rounded-full bg-violet-500" />}
                   </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-zinc-100 flex items-center gap-1.5">
-                      Antigravity CLI Agent
-                    </h4>
-                    <p className="text-[11px] text-zinc-400 mt-1 leading-relaxed">
-                      Thiết lập cấu hình chỉ thị prompt chuyên dụng cho bộ dòng lệnh Antigravity CLI.
-                    </p>
-                  </div>
+                  <p className="text-[10px] text-zinc-450 leading-relaxed">
+                    Quy tắc chuyên biệt cho dòng lệnh CLI.
+                  </p>
                 </button>
-
-                {/* Claude Code Agent Select (Coming soon) */}
-                <div className="p-3.5 rounded-lg border border-zinc-900/60 bg-zinc-950/20 opacity-50 relative flex items-start gap-3 select-none">
-                  <div className="w-4 h-4 rounded-full border border-zinc-800 flex items-center justify-center shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="text-xs font-bold text-zinc-500 flex items-center gap-1.5">
-                      Claude Code Agent
-                      <span className="text-[9px] bg-zinc-800 text-zinc-400 font-bold px-1.5 py-0.5 rounded uppercase">Coming soon</span>
-                    </h4>
-                    <p className="text-[11px] text-zinc-600 mt-1 leading-relaxed">
-                      Thiết lập file chỉ thị và quy tắc tối ưu hóa token cho Anthropic Claude Code.
-                    </p>
-                  </div>
-                </div>
               </div>
             </div>
 
             {/* Core Tech Options */}
-            <div className="bg-zinc-900/20 border border-zinc-900 rounded-xl p-5 space-y-5">
-              <h3 className="text-sm font-bold text-zinc-200 flex items-center gap-2 uppercase tracking-wide">
+            <div className="bg-zinc-900/20 border border-zinc-900 rounded-xl p-4 space-y-4">
+              <h3 className="text-[11px] font-extrabold text-zinc-200 flex items-center gap-2 uppercase tracking-wide">
                 <span className="w-1.5 h-1.5 rounded-full bg-violet-500" />
-                2. Tech Stack cấu hình dự án
+                2. Tech Stack dự án
               </h3>
 
               {/* Ngôn ngữ */}
               <div className="space-y-2">
-                <label className="text-xs font-bold text-zinc-400 block">Ngôn ngữ Lập trình:</label>
-                <div className="grid grid-cols-3 gap-2">
+                <label className="text-[10px] font-extrabold text-zinc-450 block">Ngôn ngữ:</label>
+                <div className="grid grid-cols-3 gap-1.5">
                   {[
-                    { key: "typescript", label: "TypeScript" },
-                    { key: "javascript", label: "JavaScript" },
-                    { key: "python", label: "Python" },
-                    { key: "go", label: "Go Lang" },
+                    { key: "typescript", label: "TS" },
+                    { key: "javascript", label: "JS" },
+                    { key: "python", label: "Py" },
+                    { key: "go", label: "Go" },
                     { key: "rust", label: "Rust" },
-                    { key: "csharp", label: "C# (.NET)" }
+                    { key: "csharp", label: "C#" }
                   ].map((item) => (
                     <button
                       key={item.key}
                       onClick={() => setLanguage(item.key)}
-                      className={`py-2 px-1 rounded-md text-[11px] font-bold border transition-all cursor-pointer text-center truncate ${
+                      className={`py-1.5 rounded-md text-[10px] font-bold border transition-all cursor-pointer text-center truncate ${
                         language === item.key
                           ? "border-violet-600/80 bg-violet-950/25 text-violet-300"
                           : "border-zinc-800 bg-zinc-900/10 text-zinc-450 hover:border-zinc-700"
@@ -461,19 +930,19 @@ export default function AiConfigPage() {
 
               {/* Database */}
               <div className="space-y-2">
-                <label className="text-xs font-bold text-zinc-400 block">Cơ sở dữ liệu (Database):</label>
-                <div className="grid grid-cols-3 gap-2">
+                <label className="text-[10px] font-extrabold text-zinc-450 block">Cơ sở dữ liệu:</label>
+                <div className="grid grid-cols-3 gap-1.5">
                   {[
-                    { key: "postgres", label: "PostgreSQL" },
-                    { key: "mongodb", label: "MongoDB" },
-                    { key: "sqlite", label: "SQLite" },
-                    { key: "mysql", label: "MySQL" },
-                    { key: "redis", label: "Redis Cache" }
+                    { key: "postgres", label: "PG" },
+                    { key: "mongodb", label: "MDB" },
+                    { key: "sqlite", label: "Lite" },
+                    { key: "mysql", label: "SQL" },
+                    { key: "redis", label: "Cache" }
                   ].map((item) => (
                     <button
                       key={item.key}
                       onClick={() => setDatabase(item.key)}
-                      className={`py-2 px-1 rounded-md text-[11px] font-bold border transition-all cursor-pointer text-center truncate ${
+                      className={`py-1.5 rounded-md text-[10px] font-bold border transition-all cursor-pointer text-center truncate ${
                         database === item.key
                           ? "border-violet-600/80 bg-violet-950/25 text-violet-300"
                           : "border-zinc-800 bg-zinc-900/10 text-zinc-450 hover:border-zinc-700"
@@ -487,20 +956,20 @@ export default function AiConfigPage() {
 
               {/* Framework */}
               <div className="space-y-2">
-                <label className="text-xs font-bold text-zinc-400 block">Framework chính:</label>
-                <div className="grid grid-cols-3 gap-2">
+                <label className="text-[10px] font-extrabold text-zinc-450 block">Framework:</label>
+                <div className="grid grid-cols-3 gap-1.5">
                   {[
-                    { key: "nextjs-app", label: "Next.js" },
-                    { key: "react-vite", label: "React Vite" },
-                    { key: "nodejs", label: "Node.js API" }
+                    { key: "nextjs-app", label: "Next" },
+                    { key: "react-vite", label: "Vite" },
+                    { key: "nodejs", label: "Node" }
                   ].map((item) => (
                     <button
                       key={item.key}
                       onClick={() => setFramework(item.key)}
-                      className={`py-2 px-1.5 rounded-md text-[11px] font-bold border transition-all cursor-pointer text-center ${
+                      className={`py-1.5 rounded-md text-[10px] font-bold border transition-all cursor-pointer text-center ${
                         framework === item.key
                           ? "border-violet-600/80 bg-violet-950/25 text-violet-300"
-                          : "border-zinc-800 bg-zinc-900/10 text-zinc-450 hover:border-zinc-700"
+                          : "border-zinc-800 bg-zinc-900/10 text-zinc-455 hover:border-zinc-700"
                       }`}
                     >
                       {item.label}
@@ -511,21 +980,21 @@ export default function AiConfigPage() {
 
               {/* UI Library */}
               <div className="space-y-2">
-                <label className="text-xs font-bold text-zinc-400 block">Thư viện UI Frontend:</label>
-                <div className="grid grid-cols-2 gap-2">
+                <label className="text-[10px] font-extrabold text-zinc-450 block">Thư viện UI:</label>
+                <div className="grid grid-cols-2 gap-1.5">
                   {[
-                    { key: "tailwind-v4", label: "Tailwind CSS v4" },
-                    { key: "shadcn", label: "Shadcn UI" },
+                    { key: "tailwind-v4", label: "Tailwind v4" },
+                    { key: "shadcn", label: "Shadcn" },
                     { key: "antd", label: "Ant Design" },
-                    { key: "mui", label: "Material UI" }
+                    { key: "mui", label: "Material" }
                   ].map((item) => (
                     <button
                       key={item.key}
                       onClick={() => setStyling(item.key)}
-                      className={`py-2 px-2 rounded-md text-[11px] font-bold border transition-all cursor-pointer text-center ${
+                      className={`py-1.5 px-1 rounded-md text-[10px] font-bold border transition-all cursor-pointer text-center ${
                         styling === item.key
                           ? "border-violet-600/80 bg-violet-950/25 text-violet-300"
-                          : "border-zinc-800 bg-zinc-900/10 text-zinc-450 hover:border-zinc-700"
+                          : "border-zinc-800 bg-zinc-900/10 text-zinc-455 hover:border-zinc-700"
                       }`}
                     >
                       {item.label}
@@ -536,19 +1005,19 @@ export default function AiConfigPage() {
 
               {/* Testing */}
               <div className="space-y-2">
-                <label className="text-xs font-bold text-zinc-400 block">Testing framework:</label>
-                <div className="grid grid-cols-2 gap-2">
+                <label className="text-[10px] font-extrabold text-zinc-450 block">Kiểm thử:</label>
+                <div className="grid grid-cols-2 gap-1.5">
                   {[
                     { key: "jest", label: "Jest / Vitest" },
-                    { key: "playwright", label: "Playwright E2E" }
+                    { key: "playwright", label: "Playwright" }
                   ].map((item) => (
                     <button
                       key={item.key}
                       onClick={() => setTesting(item.key)}
-                      className={`py-2 px-2.5 rounded-md text-[11px] font-bold border transition-all cursor-pointer text-center ${
+                      className={`py-1.5 px-1 rounded-md text-[10px] font-bold border transition-all cursor-pointer text-center ${
                         testing === item.key
                           ? "border-violet-600/80 bg-violet-950/25 text-violet-300"
-                          : "border-zinc-800 bg-zinc-900/10 text-zinc-450 hover:border-zinc-700"
+                          : "border-zinc-800 bg-zinc-900/10 text-zinc-455 hover:border-zinc-700"
                       }`}
                     >
                       {item.label}
@@ -559,8 +1028,8 @@ export default function AiConfigPage() {
             </div>
           </div>
 
-          {/* Right Presentation Screen */}
-          <div className="lg:col-span-7 flex flex-col space-y-4">
+          {/* Right Presentation Screen (Expanded to lg:col-span-9) */}
+          <div className="lg:col-span-9 flex flex-col space-y-4">
             
             {/* Output File Switcher Tabs */}
             <div className="flex items-center gap-1.5 p-1 bg-zinc-900/60 border border-zinc-900 rounded-lg text-xs self-start overflow-x-auto max-w-full animate-fade-in">
@@ -569,47 +1038,63 @@ export default function AiConfigPage() {
               {ide === "antigravity-ide" && (
                 <>
                   <button
+                    onClick={() => handleTabChange("config")}
+                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border flex items-center gap-1.5 ${
+                      outputTab === "config"
+                        ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
+                        : "border-transparent text-zinc-455 hover:text-zinc-200 hover:bg-zinc-800/20"
+                    }`}
+                  >
+                    <GearIcon className="text-sm" />
+                    <span>IDE Config</span>
+                  </button>
+
+                  <button
                     onClick={() => handleTabChange("rules")}
-                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border ${
+                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border flex items-center gap-1.5 ${
                       outputTab === "rules"
                         ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
                         : "border-transparent text-zinc-455 hover:text-zinc-200 hover:bg-zinc-800/20"
                     }`}
                   >
-                    IDE Config
+                    <ShieldIcon className="text-sm" />
+                    <span>Rules</span>
                   </button>
                   
                   <button
                     onClick={() => handleTabChange("skills")}
-                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border ${
+                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border flex items-center gap-1.5 ${
                       outputTab === "skills"
                         ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
                         : "border-transparent text-zinc-455 hover:text-zinc-200 hover:bg-zinc-800/20"
                     }`}
                   >
-                    Skills
+                    <SparklesIcon className="text-sm" />
+                    <span>Skills</span>
                   </button>
 
                   <button
                     onClick={() => handleTabChange("agents")}
-                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border ${
+                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border flex items-center gap-1.5 ${
                       outputTab === "agents"
                         ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
                         : "border-transparent text-zinc-455 hover:text-zinc-200 hover:bg-zinc-800/20"
                     }`}
                   >
-                    Agents
+                    <RobotIcon className="text-sm" />
+                    <span>Agents</span>
                   </button>
 
                   <button
                     onClick={() => handleTabChange("workflows")}
-                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border ${
+                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border flex items-center gap-1.5 ${
                       outputTab === "workflows"
                         ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
                         : "border-transparent text-zinc-455 hover:text-zinc-200 hover:bg-zinc-800/20"
                     }`}
                   >
-                    Workflows
+                    <WorkflowIcon className="text-sm" />
+                    <span>Workflows</span>
                   </button>
                 </>
               )}
@@ -619,46 +1104,50 @@ export default function AiConfigPage() {
                 <>
                   <button
                     onClick={() => handleTabChange("cli")}
-                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border ${
+                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border flex items-center gap-1.5 ${
                       outputTab === "cli"
                         ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
                         : "border-transparent text-zinc-455 hover:text-zinc-200 hover:bg-zinc-800/20"
                     }`}
                   >
-                    CLI Config
+                    <TerminalIcon className="text-sm" />
+                    <span>CLI Config</span>
                   </button>
 
                   <button
                     onClick={() => handleTabChange("skills")}
-                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border ${
+                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border flex items-center gap-1.5 ${
                       outputTab === "skills"
                         ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
                         : "border-transparent text-zinc-455 hover:text-zinc-200 hover:bg-zinc-800/20"
                     }`}
                   >
-                    Skills
+                    <SparklesIcon className="text-sm" />
+                    <span>Skills</span>
                   </button>
 
                   <button
                     onClick={() => handleTabChange("agents")}
-                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border ${
+                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border flex items-center gap-1.5 ${
                       outputTab === "agents"
                         ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
                         : "border-transparent text-zinc-455 hover:text-zinc-200 hover:bg-zinc-800/20"
                     }`}
                   >
-                    Agents
+                    <RobotIcon className="text-sm" />
+                    <span>Agents</span>
                   </button>
 
                   <button
                     onClick={() => handleTabChange("rules")}
-                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border ${
+                    className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border flex items-center gap-1.5 ${
                       outputTab === "rules"
                         ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
                         : "border-transparent text-zinc-455 hover:text-zinc-200 hover:bg-zinc-800/20"
                     }`}
                   >
-                    Rules
+                    <ShieldIcon className="text-sm" />
+                    <span>Rules</span>
                   </button>
                 </>
               )}
@@ -671,54 +1160,60 @@ export default function AiConfigPage() {
                 <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
                 <span className="text-[11px] font-mono text-zinc-450 ml-2 select-none">
-                  {generatedData.filename}
+                  {activeFile === ".agent/config-overview.md" ? "vscode-autopilot-simulator" : generatedData.filename}
                 </span>
               </div>
 
               <div className="flex items-center gap-2">
                 {/* Language Selector */}
-                <div className="flex items-center bg-zinc-950 border border-zinc-800 rounded-md p-0.5 mr-2">
-                  <button
-                    onClick={() => setContentLanguage("vi")}
-                    className={`px-2.5 py-1 rounded text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 ${
-                      contentLanguage === "vi"
-                        ? "bg-violet-950/50 text-violet-300 border border-violet-850/40"
-                        : "text-zinc-500 hover:text-zinc-300"
-                    }`}
-                  >
-                    🇻🇳 VI
-                  </button>
-                  <button
-                    onClick={() => setContentLanguage("en")}
-                    className={`px-2.5 py-1 rounded text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 ${
-                      contentLanguage === "en"
-                        ? "bg-violet-950/50 text-violet-300 border border-violet-850/40"
-                        : "text-zinc-500 hover:text-zinc-300"
-                    }`}
-                  >
-                    🇺🇸 EN
-                  </button>
-                </div>
+                {activeFile !== ".agent/config-overview.md" && (
+                  <div className="flex items-center bg-zinc-950 border border-zinc-800 rounded-md p-0.5 mr-2">
+                    <button
+                      onClick={() => setContentLanguage("vi")}
+                      className={`px-2.5 py-1 rounded text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                        contentLanguage === "vi"
+                          ? "bg-violet-950/50 text-violet-300 border border-violet-850/40"
+                          : "text-zinc-500 hover:text-zinc-300"
+                      }`}
+                    >
+                      🇻🇳 VI
+                    </button>
+                    <button
+                      onClick={() => setContentLanguage("en")}
+                      className={`px-2.5 py-1 rounded text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                        contentLanguage === "en"
+                          ? "bg-violet-950/50 text-violet-300 border border-violet-850/40"
+                          : "text-zinc-500 hover:text-zinc-300"
+                      }`}
+                    >
+                      🇺🇸 EN
+                    </button>
+                  </div>
+                )}
 
-                <button
-                  onClick={handleCopy}
-                  className={`px-3 py-1.5 rounded-md text-xs font-bold cursor-pointer transition-all duration-150 flex items-center gap-1.5 ${
-                    copied
-                      ? "bg-emerald-950/50 border border-emerald-700/60 text-emerald-300"
-                      : "bg-zinc-950 border border-zinc-800 text-zinc-355 hover:bg-zinc-900 hover:border-zinc-700 hover:text-zinc-100 active:scale-95"
-                  }`}
-                >
-                  {copied ? <CheckIcon className="text-sm" /> : <CopyIcon className="text-sm" />}
-                  <span>{copied ? "Đã sao chép!" : "Sao chép"}</span>
-                </button>
+                {activeFile !== ".agent/config-overview.md" && (
+                  <>
+                    <button
+                      onClick={handleCopy}
+                      className={`px-3 py-1.5 rounded-md text-xs font-bold cursor-pointer transition-all duration-150 flex items-center gap-1.5 ${
+                        copied
+                          ? "bg-emerald-950/50 border border-emerald-700/60 text-emerald-300"
+                          : "bg-zinc-950 border border-zinc-800 text-zinc-355 hover:bg-zinc-900 hover:border-zinc-700 hover:text-zinc-100 active:scale-95"
+                      }`}
+                    >
+                      {copied ? <CheckIcon className="text-sm" /> : <CopyIcon className="text-sm" />}
+                      <span>{copied ? "Đã sao chép!" : "Sao chép"}</span>
+                    </button>
 
-                <button
-                  onClick={handleDownload}
-                  className="px-3 py-1.5 rounded-md text-xs font-bold bg-violet-600 hover:bg-violet-500 text-white shadow-md shadow-violet-950/30 cursor-pointer transition-all duration-150 flex items-center gap-1.5 active:scale-95"
-                >
-                  <DownloadIcon className="text-sm" />
-                  <span>Tải file</span>
-                </button>
+                    <button
+                      onClick={handleDownload}
+                      className="px-3 py-1.5 rounded-md text-xs font-bold bg-violet-600 hover:bg-violet-500 text-white shadow-md shadow-violet-950/30 cursor-pointer transition-all duration-150 flex items-center gap-1.5 active:scale-95"
+                    >
+                      <DownloadIcon className="text-sm" />
+                      <span>Tải file</span>
+                    </button>
+                  </>
+                )}
               </div>
             </div>
 
@@ -726,7 +1221,7 @@ export default function AiConfigPage() {
             <div className="grid grid-cols-1 md:grid-cols-12 border border-zinc-900 rounded-b-xl overflow-hidden min-h-[500px] bg-zinc-950 shadow-2xl">
               
               {/* File Explorer Sidebar: Visual Nested Tree Directory Structure */}
-              <div className="md:col-span-4 bg-zinc-950/40 border-r border-zinc-900 p-4 space-y-4 select-none shrink-0 overflow-y-auto max-h-[500px]">
+              <div className="md:col-span-4 bg-zinc-950/40 border-r border-zinc-900 p-4 space-y-4 select-none shrink-0 overflow-y-auto overscroll-contain max-h-[500px]">
                 <div className="text-[9px] font-extrabold text-zinc-500 uppercase tracking-widest flex items-center gap-1.5 mb-2 select-none">
                   <span className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse" />
                   WORKSPACE TREE
@@ -734,16 +1229,28 @@ export default function AiConfigPage() {
                 
                 <div className="space-y-1 pl-1">
                   {treeNodes && treeNodes.length > 0 ? (
-                    renderTreeNodes(treeNodes, 0, ide === "antigravity-ide" && outputTab === "rules")
+                    renderTreeNodes(treeNodes, 0, ide === "antigravity-ide" && outputTab === "config")
                   ) : (
                     <span className="text-[10px] text-zinc-600 italic">No files available</span>
                   )}
                 </div>
               </div>
 
-              {/* Code Preview Pane */}
-              <div className="md:col-span-8 bg-zinc-950 p-5 overflow-y-auto max-h-[500px] font-mono text-[11px] md:text-xs leading-relaxed text-zinc-300 shadow-inner select-text whitespace-pre-wrap flex-grow border-t md:border-t-0 border-zinc-900">
-                {generatedData.content}
+              {/* Code Preview or VS Code Simulator Pane */}
+              <div className="md:col-span-8 bg-[#1e1e1e] overflow-hidden flex flex-col min-h-[500px] border-t md:border-t-0 border-zinc-900">
+                {ide === "antigravity-ide" && activeFile === ".agent/config-overview.md" ? (
+                  <VsCodeSimulator 
+                    framework={framework}
+                    language={language}
+                    database={database}
+                    styling={styling}
+                    testing={testing}
+                  />
+                ) : (
+                  <div className="p-5 overflow-y-auto overscroll-contain max-h-[500px] font-mono text-[11px] md:text-xs leading-relaxed text-zinc-300 shadow-inner select-text whitespace-pre-wrap flex-grow">
+                    {generatedData.content}
+                  </div>
+                )}
               </div>
               
             </div>
