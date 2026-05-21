@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import logo from "../app/favicon.ico";
 
 // Custom Premium Icons
@@ -96,11 +97,11 @@ function DatabaseIcon({ className }: { className?: string }) {
 }
 
 interface HeaderProps {
-  seeding: boolean;
-  onRunSeeding: () => void;
+  seeding?: boolean;
+  onRunSeeding?: () => void;
 }
 
-export default function Header({ seeding, onRunSeeding }: HeaderProps) {
+export default function Header({ seeding = false, onRunSeeding }: HeaderProps) {
   const [isDonateOpen, setIsDonateOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -139,8 +140,8 @@ export default function Header({ seeding, onRunSeeding }: HeaderProps) {
       <header className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-40 px-4 md:px-6 py-3">
         <div className="max-w-8xl mx-auto flex items-center justify-between gap-4">
           {/* Logo & Title */}
-          <div className="flex items-center gap-3 shrink-0">
-            <h1 className="text-zinc-50 before:-inset-x-1 before:-rotate-1 relative z-4 before:pointer-events-none before:absolute before:inset-y-0 before:z-4 before:from-blue-500 before:via-cyan-500 before:to-blue-600 before:opacity-15 before:mix-blend-hard-light font-bold text-sm md:text-base tracking-tight flex items-center gap-2 select-none">
+          <div className="flex items-center gap-6 shrink-0">
+            <Link href="/" className="flex items-center gap-3 select-none hover:opacity-90 transition-opacity">
               <Image
                 src={logo}
                 alt="Logo"
@@ -148,19 +149,38 @@ export default function Header({ seeding, onRunSeeding }: HeaderProps) {
                 height={36}
                 className="object-contain rounded-full border border-zinc-800/80 p-0.5 bg-zinc-900"
               />
-              <span className="hidden sm:inline bg-gradient-to-r from-zinc-150 to-zinc-350 bg-clip-text text-transparent">
-                DEV-VIBE-CHEATSHEET
-              </span>
-              <span className="sm:hidden bg-gradient-to-r from-zinc-150 to-zinc-350 bg-clip-text text-transparent">
-                DEV-VIBE
-              </span>
-            </h1>
+              <h1 className="text-zinc-50 font-bold text-sm md:text-base tracking-tight flex items-center gap-2">
+                <span className="hidden sm:inline bg-gradient-to-r from-zinc-150 to-zinc-350 bg-clip-text text-transparent">
+                  DEV-VIBE-CHEATSHEET
+                </span>
+                <span className="sm:hidden bg-gradient-to-r from-zinc-150 to-zinc-350 bg-clip-text text-transparent">
+                  DEV-VIBE
+                </span>
+              </h1>
+            </Link>
+
+            {/* Navigation Tabs */}
+            <nav className="hidden md:flex items-center gap-1 p-0.5 bg-zinc-950/80 border border-zinc-900 rounded-lg text-xs">
+              <Link
+                href="/"
+                className="px-3 py-1.5 rounded-md font-semibold text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900/40 transition-all duration-150"
+              >
+                Cheatsheet
+              </Link>
+              <Link
+                href="/ai-config"
+                className="px-3 py-1.5 rounded-md font-semibold text-violet-400 hover:text-violet-300 hover:bg-violet-950/15 border border-transparent hover:border-violet-900/30 transition-all duration-150 flex items-center gap-1.5"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse shrink-0" />
+                <span>AI Rules Hub</span>
+              </Link>
+            </nav>
           </div>
 
           {/* Right Action Controls */}
           <div className="flex items-center gap-2 md:gap-3">
             {/* Database Seed Button */}
-            {!isProduction && (
+            {!isProduction && onRunSeeding && (
               <button
                 onClick={onRunSeeding}
                 disabled={seeding}
