@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import { Category } from '@/models/Category';
 import { getCachedCategories, setCachedCategories, invalidateCache } from '@/lib/dataCache';
+import { getClientIp, rateLimit } from '@/lib/rateLimiter';
 import { ICategory } from '@/types';
 
 export async function GET() {
@@ -30,6 +31,21 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const ip = getClientIp(request);
+    const limitResult = rateLimit(ip, 'post_category', 5, 60 * 1000);
+
+    const rlHeaders = {
+      'X-RateLimit-Limit': limitResult.limit.toString(),
+      'X-RateLimit-Remaining': limitResult.remaining.toString(),
+      'X-RateLimit-Reset': limitResult.resetTime.toString(),
+    };
+
+    if (!limitResult.success) {
+      return NextResponse.json(
+        { success: false, error: 'Thao tác quá nhanh! Vui lòng thử lại sau 1 phút.' },
+        { status: 429, headers: rlHeaders }
+      );
+    }
     await dbConnect();
     const body = await request.json();
 
@@ -42,7 +58,7 @@ export async function POST(request: Request) {
     // Invalidate categories and commands cache on any new creation
     invalidateCache();
     
-    return NextResponse.json({ success: true, data: newCategory }, { status: 201 });
+    return NextResponse.json({ success: true, data: newCategory }, { status: 201, headers: rlHeaders });
   } catch (error) {
     const err = error as Error;
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });

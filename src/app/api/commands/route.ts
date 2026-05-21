@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import { Command } from '@/models/Command';
 import { getCachedCommands, setCachedCommands, invalidateCache } from '@/lib/dataCache';
+import { getClientIp, rateLimit } from '@/lib/rateLimiter';
 import { ICommand } from '@/types';
 
 export async function GET(request: Request) {
@@ -13,7 +14,7 @@ export async function GET(request: Request) {
     let commands = getCachedCommands();
     if (!commands) {
       await dbConnect();
-      const dbCommands = await Command.find({}).sort({ createdAt: -1 }).lean() as unknown as ICommand[];
+      const dbCommands = await Command.find({}).sort({ createdAt: 1 }).lean() as unknown as ICommand[];
       
       // Ensure all ObjectIds are converted to strings if lean() returns them as ObjectIds
       commands = dbCommands.map(cmd => ({
@@ -42,6 +43,21 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const ip = getClientIp(request);
+    const limitResult = rateLimit(ip, 'post_command', 5, 60 * 1000);
+
+    const rlHeaders = {
+      'X-RateLimit-Limit': limitResult.limit.toString(),
+      'X-RateLimit-Remaining': limitResult.remaining.toString(),
+      'X-RateLimit-Reset': limitResult.resetTime.toString(),
+    };
+
+    if (!limitResult.success) {
+      return NextResponse.json(
+        { success: false, error: 'Thao tác quá nhanh! Vui lòng thử lại sau 1 phút.' },
+        { status: 429, headers: rlHeaders }
+      );
+    }
     await dbConnect();
     const body = await request.json();
 
@@ -57,7 +73,7 @@ export async function POST(request: Request) {
     // Invalidate categories and commands cache on any new creation
     invalidateCache();
 
-    return NextResponse.json({ success: true, data: newCommand }, { status: 201 });
+    return NextResponse.json({ success: true, data: newCommand }, { status: 201, headers: rlHeaders });
   } catch (error) {
     const err = error as Error;
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });

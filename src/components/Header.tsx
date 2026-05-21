@@ -105,6 +105,7 @@ export default function Header({ seeding, onRunSeeding }: HeaderProps) {
   const [copied, setCopied] = useState(false);
 
   const accountNumber = "1026696842";
+  const isProduction = process.env.NODE_ENV === 'production';
 
   // Handle ESC key to close modal
   useEffect(() => {
@@ -159,25 +160,27 @@ export default function Header({ seeding, onRunSeeding }: HeaderProps) {
           {/* Right Action Controls */}
           <div className="flex items-center gap-2 md:gap-3">
             {/* Database Seed Button */}
-            <button
-              onClick={onRunSeeding}
-              disabled={seeding}
-              className="px-3 py-1.5 rounded-md text-xs font-semibold border border-zinc-800/80 bg-zinc-900/40 hover:bg-zinc-900 hover:border-zinc-700 text-zinc-300 disabled:opacity-50 transition-all duration-150 cursor-pointer flex items-center gap-1.5 active:scale-95 select-none shrink-0"
-              title="Seed hoặc đặt lại dữ liệu cơ sở dữ liệu mẫu"
-            >
-              {seeding ? (
-                <>
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping" />
-                  <span>Seeding...</span>
-                </>
-              ) : (
-                <>
-                  <DatabaseIcon className="text-zinc-450" />
-                  <span className="hidden sm:inline">Đặt lại Database</span>
-                  <span className="sm:hidden">Reset DB</span>
-                </>
-              )}
-            </button>
+            {!isProduction && (
+              <button
+                onClick={onRunSeeding}
+                disabled={seeding}
+                className="px-3 py-1.5 rounded-md text-xs font-semibold border border-zinc-800/80 bg-zinc-900/40 hover:bg-zinc-900 hover:border-zinc-700 text-zinc-300 disabled:opacity-50 transition-all duration-150 cursor-pointer flex items-center gap-1.5 active:scale-95 select-none shrink-0"
+                title="Seed hoặc đặt lại dữ liệu cơ sở dữ liệu mẫu"
+              >
+                {seeding ? (
+                  <>
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping" />
+                    <span>Seeding...</span>
+                  </>
+                ) : (
+                  <>
+                    <DatabaseIcon className="text-zinc-450" />
+                    <span className="hidden sm:inline">Đặt lại Database</span>
+                    <span className="sm:hidden">Reset DB</span>
+                  </>
+                )}
+              </button>
+            )}
 
             {/* Premium Glowing Donate Button */}
             <button

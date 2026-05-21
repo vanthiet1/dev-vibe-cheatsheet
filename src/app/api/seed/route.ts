@@ -3,9 +3,40 @@ import dbConnect from '@/lib/dbConnect';
 import { Category, ICategory } from '@/models/Category';
 import { Command } from '@/models/Command';
 import { invalidateCache } from '@/lib/dataCache';
+import { getClientIp, rateLimit } from '@/lib/rateLimiter';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const ip = getClientIp(request);
+    const limitResult = rateLimit(ip, 'seed', 2, 60 * 1000);
+
+    const rlHeaders = {
+      'X-RateLimit-Limit': limitResult.limit.toString(),
+      'X-RateLimit-Remaining': limitResult.remaining.toString(),
+      'X-RateLimit-Reset': limitResult.resetTime.toString(),
+    };
+
+    if (!limitResult.success) {
+      return NextResponse.json(
+        { success: false, error: 'Thao tác quá nhanh! Vui lòng đợi 1 phút trước khi bấm Đặt lại Database.' },
+        { status: 429, headers: rlHeaders }
+      );
+    }
+    // Secure the seed API on Production environment
+    const { searchParams } = new URL(request.url);
+    const secret = searchParams.get('secret');
+    const isProd = process.env.NODE_ENV === 'production';
+    const expectedSecret = process.env.SEED_SECRET;
+
+    if (isProd) {
+      if (!expectedSecret || secret !== expectedSecret) {
+        return NextResponse.json(
+          { success: false, error: 'Unauthorized: Seed API is locked on production.' },
+          { status: 401, headers: rlHeaders }
+        );
+      }
+    }
+
     await dbConnect();
 
     // 1. Clear existing database collections
@@ -2463,7 +2494,7 @@ Cung cấp các quy tắc hướng dẫn chi tiết dành cho Agent ở đây...
         categoriesCount: categories.length,
         commandsCount: seededCommands.length
       }
-    });
+    }, { headers: rlHeaders });
   } catch (error) {
     const err = error as Error;
     return NextResponse.json({ success: false, error: err.message },

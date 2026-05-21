@@ -1,9 +1,25 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import { Command } from '@/models/Command';
+import { getClientIp, rateLimit } from '@/lib/rateLimiter';
 
 export async function GET(request: Request) {
   try {
+    const ip = getClientIp(request);
+    const limitResult = rateLimit(ip, 'search', 30, 60 * 1000); // 30 requests per minute
+
+    const rlHeaders = {
+      'X-RateLimit-Limit': limitResult.limit.toString(),
+      'X-RateLimit-Remaining': limitResult.remaining.toString(),
+      'X-RateLimit-Reset': limitResult.resetTime.toString(),
+    };
+
+    if (!limitResult.success) {
+      return NextResponse.json(
+        { success: false, error: 'Tìm kiếm quá nhanh! Vui lòng thử lại sau vài giây.' },
+        { status: 429, headers: rlHeaders }
+      );
+    }
     await dbConnect();
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('q');
@@ -14,7 +30,7 @@ export async function GET(request: Request) {
         .sort({ viewCount: -1 })
         .limit(10)
         .lean();
-      return NextResponse.json({ success: true, data: popularCommands });
+      return NextResponse.json({ success: true, data: popularCommands }, { headers: rlHeaders });
     }
 
     const filter: Record<string, unknown> = {
@@ -33,7 +49,7 @@ export async function GET(request: Request) {
       .limit(10)
       .lean();
 
-    return NextResponse.json({ success: true, data: results });
+    return NextResponse.json({ success: true, data: results }, { headers: rlHeaders });
   } catch (error) {
     const err = error as Error;
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
