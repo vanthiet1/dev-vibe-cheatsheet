@@ -181,8 +181,13 @@ export function generateRulesContent(params: RuleGeneratorParams): { content: st
   let content = "";
   let filename = activeFile.split("/").pop() || activeFile;
 
+  let activeFileCheck = activeFile;
+  if (activeFile.startsWith("plugins/my-plugin/")) {
+    activeFileCheck = activeFile.replace("plugins/my-plugin/", "");
+  }
+
   // 2. Main File Generator router
-  if (activeFile === ".antigravityrules") {
+  if (activeFileCheck === ".antigravityrules") {
     if (isVi) {
       content = `# Hướng dẫn ${ideLabel} (.antigravityrules)
 # Công nghệ: ${frameworkLabel} | ${languageLabel} | ${dbLabel} | ${stylingLabel}
@@ -256,7 +261,7 @@ ${
 - Align code changes with workspace settings.json standards.`
 }`;
     }
-  } else if (activeFile === ".editorconfig") {
+  } else if (activeFileCheck === ".editorconfig") {
     content = `# EditorConfig root setting
 root = true
 
@@ -272,7 +277,7 @@ insert_final_newline = true
 indent_style = space
 indent_size = ${language === "python" || language === "csharp" ? "4" : "2"}
 `;
-  } else if (activeFile === "skills/clean-code/SKILL.md") {
+  } else if (activeFileCheck === "skills/clean-code/SKILL.md") {
     if (isVi) {
       content = `---
 name: clean-code-skill
@@ -346,7 +351,7 @@ This guideline defines the coding patterns and quality expectations for ${langua
 }
 `;
     }
-  } else if (activeFile === "skills/database-optimization/SKILL.md") {
+  } else if (activeFileCheck === "skills/database-optimization/SKILL.md") {
     if (isVi) {
       content = `---
 name: database-optimization-skill
@@ -568,7 +573,7 @@ The agent can execute automated validations:
 }
 `;
     }
-  } else if (activeFile === "skills/testing-patterns/SKILL.md") {
+  } else if (activeFileCheck === "skills/testing-patterns/SKILL.md") {
     if (isVi) {
       content = `---
 name: testing-patterns-skill
@@ -620,7 +625,7 @@ This guideline enforces strict TDD and AAA testing flows.
   \`\`\`
 `;
     }
-  } else if (activeFile === "skills/security-scanner/SKILL.md") {
+  } else if (activeFileCheck === "skills/security-scanner/SKILL.md") {
     if (isVi) {
       content = `---
 name: security-scanner-skill
@@ -666,7 +671,7 @@ This file governs security policies for the active stack.
 - Ensure strict HTTP response headers (CORS, Rate-Limiting, Content-Security-Policy).
 `;
     }
-  } else if (activeFile === "workflows/debug.md") {
+  } else if (activeFileCheck === "workflows/debug.md") {
     if (isVi) {
       content = `# Quy trình Gỡ lỗi Socratic (workflows/debug.md)
 # Công nghệ: ${frameworkLabel} & ${languageLabel}
@@ -714,7 +719,7 @@ This file guides the agent through systematic root cause identification.
   \`\`\`
 `;
     }
-  } else if (activeFile === "workflows/test.md") {
+  } else if (activeFileCheck === "workflows/test.md") {
     if (isVi) {
       content = `# Quy trình Phát triển hướng Kiểm thử TDD (workflows/test.md)
 # Framework áp dụng: ${testingLabel}
@@ -752,7 +757,7 @@ This file outlines the closed-loop TDD cycle.
 - Rerun tests to ensure no regressions occur.
 `;
     }
-  } else if (activeFile === "workflows/verify.md") {
+  } else if (activeFileCheck === "workflows/verify.md") {
     if (isVi) {
       content = `# Quy trình Xác thực tự động (workflows/verify.md)
 
@@ -798,7 +803,7 @@ This file defines the pre-flight verification checks.
   \`\`\`
 `;
     }
-  } else if (activeFile === "workflows/coordinate.md") {
+  } else if (activeFileCheck === "workflows/coordinate.md") {
     if (isVi) {
       content = `# Quy trình Phân phối Đa Agent (workflows/coordinate.md)
 
@@ -826,6 +831,208 @@ This file defines the orchestrator coordination patterns.
 - Run security scanners before deploying any updates.
 `;
     }
+  } else if (activeFileCheck === "settings.json") {
+    content = `{
+  "enableTerminalSandbox": true,
+  "permissions": {
+    "allow": [
+      "command(git)",
+      "command(npm test)",
+      "command(npx tsc)"
+    ],
+    "deny": [
+      "command(rm -rf)",
+      "command(del /s)",
+      "command(format)"
+    ]
+  }
+}`;
+  } else if (activeFileCheck === "import_manifest.json") {
+    content = `{
+  "plugins": {
+    "antigravity-clean-code": {
+      "version": "1.0.0",
+      "enabled": true,
+      "importedAt": "2026-05-21T23:00:00Z"
+    }
+  },
+  "settingsLoaded": true,
+  "lastSyncTimestamp": 1779380400000
+}`;
+  } else if (activeFileCheck === "plugin.json") {
+    content = `{
+  "name": "antigravity-clean-code",
+  "version": "1.0.0",
+  "description": "Essential plugin extending coding capability for Next.js and TypeScript",
+  "entryPoint": "index.js",
+  "required": true
+}`;
+  } else if (activeFileCheck === "mcp_config.json") {
+    content = `{
+  "mcpServers": {
+    "vulnerability-scanner": {
+      "command": "python",
+      "args": [".agent/skills/vulnerability-scanner/scripts/security_scan.py"],
+      "env": {},
+      "disabled": false
+    }
+  }
+}`;
+  } else if (activeFileCheck === "hooks.json") {
+    content = `{
+  "onAgentActivate": [
+    "run_command(npx eslint .)"
+  ],
+  "beforeFileSave": [
+    "run_command(npx tsc --noEmit)"
+  ]
+}`;
+  } else if (activeFileCheck === "plugins/structure") {
+    if (isVi) {
+      content = `# Cấu trúc Thư mục Plugins Antigravity CLI
+
+Thư mục lưu trữ cấu hình môi trường CLI cục bộ tại:
+\`~/.gemini/antigravity-cli/\`
+
+## Sơ đồ Cây thư mục:
+├── plugins/
+│   └── <plugin_name>/
+│       ├── plugin.json         # File cấu hình Plugin đánh dấu (Bắt buộc)
+│       ├── mcp_config.json     # Định nghĩa các dịch vụ MCP Server đi kèm
+│       ├── hooks.json          # Tự động hóa sự kiện (Event Hooks)
+│       ├── skills/             # Thư mục kỹ năng cục bộ (.md)
+│       ├── agents/             # Thư mục Agent con bổ trợ (.md)
+│       └── rules/              # Các quy tắc và tệp .rules bổ sung
+└── import_manifest.json        # Danh sách theo dõi nạp plugin tự động
+
+## Ý nghĩa & Định nghĩa chi tiết:
+1. **plugin.json (Bắt buộc):** Chứa metadata của plugin (tên, phiên bản, tính năng kích hoạt). Nếu thiếu file này, CLI sẽ bỏ qua toàn bộ folder plugin.
+2. **mcp_config.json:** Cung cấp thông tin kết nối các máy chủ Model Context Protocol (MCP) chuyên biệt để AI gọi các tool tùy biến.
+3. **hooks.json:** Cấu hình tự động chạy lệnh khi có sự kiện (ví dụ: tự động lint khi lưu file, chạy typecheck trước khi commit).
+4. **skills/ Thư mục kỹ năng:** Chứa các file \`SKILL.md\` định nghĩa tác vụ giúp AI giải quyết bài toán nghiệp vụ phức tạp.
+5. **agents/ Thư mục Agent phụ:** Định nghĩa các agent chuyên trách (Socratic Debugger, UX Specialist) với vai trò cụ thể.
+6. **rules/ Thư mục Rules:** Chứa các chỉ thị prompt bổ trợ riêng biệt cho plugin đó.
+7. **import_manifest.json:** Tệp quản lý cấp cao nhất ghi nhận tất cả plugin đã được đăng ký và tải thành công.
+`;
+    } else {
+      content = `# Antigravity CLI Plugins Directory Structure
+
+Local CLI environment configurations storage located at:
+\`~/.gemini/antigravity-cli/\`
+
+## Directory Tree Map:
+├── plugins/
+│   └── <plugin_name>/
+│       ├── plugin.json         # Required marker file
+│       ├── mcp_config.json     # Optional MCP server definitions
+│       ├── hooks.json          # Optional event hooks definition
+│       ├── skills/             # Optional skills folder (.md)
+│       ├── agents/             # Optional subagents folder (.md)
+│       └── rules/              # Optional rules folder (.rules)
+└── import_manifest.json        # Loaded plugins tracking manifest
+
+## Detailed Definitions:
+1. **plugin.json (Required):** Houses metadata of the plugin (name, version, options). If this file is missing, the CLI completely ignores the folder.
+2. **mcp_config.json:** Defines connections to external Model Context Protocol (MCP) servers allowing the AI to use custom local tools.
+3. **hooks.json:** Setup automation callbacks (e.g. running linter on file save, running typecheck before committing code).
+4. **skills/ folder:** Contains modular \`SKILL.md\` guidelines explaining how to solve complex business domains.
+5. **agents/ folder:** Houses subagent definition profiles (Socratic Debugger, Security Analyst) with targeted system prompts.
+6. **rules/ folder:** Custom prompt guidelines and \`.rules\` files specific to this plugin.
+7. **import_manifest.json:** High-level central registry tracking all registered and successfully loaded CLI plugins.
+`;
+    }
+  } else if (activeFileCheck === "agents/debugger.md") {
+    if (isVi) {
+      content = `# Đặc tả Agent gỡ lỗi Socratic (Debugger Agent)
+Tệp tin nằm tại: \`plugins/my-plugin/agents/debugger.md\`
+
+## 1. Vai trò chính
+- Đóng vai trò là Socratic Debugger chuyên sâu trên môi trường Antigravity CLI.
+- Không vội vàng đưa ra code sửa lỗi. Đặt câu hỏi thăm dò nguyên nhân gốc rễ trước.
+
+## 2. Quy trình gỡ lỗi 4 bước
+- **Bước 1: Thu thập bằng chứng lỗi** (Logs, stacktrace, exception message).
+- **Bước 2: Phân tích vùng ảnh hưởng** (Blast radius hypothesis).
+- **Bước 3: Đề xuất giải pháp tối giản nhất** để kiểm chứng.
+- **Bước 4: Chạy kiểm thử tự động** để xác nhận lỗi hoàn toàn được khắc phục.
+`;
+    } else {
+      content = `# Socratic Debugger Agent Specification
+File path: \`plugins/my-plugin/agents/debugger.md\`
+
+## 1. Core Persona
+- Serve as an expert Socratic Debugger integrated inside the Antigravity CLI environment.
+- Do not rush to provide code fixes. Ask targeted questions to understand the root cause first.
+
+## 2. Four-Phase Debugging
+- **Phase 1: Gather error evidence** (logs, stacktrace, exception message).
+- **Phase 2: Formulate blast radius hypothesis** before changing any code.
+- **Phase 3: Propose the most minimal code fix possible** to verify the fix.
+- **Phase 4: Execute compiler lints and test suites** to ensure successful resolution.
+`;
+    }
+  } else if (activeFileCheck === "agents/orchestrator.md") {
+    if (isVi) {
+      content = `# Đặc tả Agent Điều phối (Orchestrator Agent)
+Tệp tin nằm tại: \`plugins/my-plugin/agents/orchestrator.md\`
+
+## 1. Trách nhiệm điều phối
+- Phân tích các yêu cầu phức tạp từ người dùng CLI và chia nhỏ thành các tác vụ độc lập.
+- Phân phối công việc và kiểm soát vòng đời thực thi của các agent chuyên trách.
+
+## 2. Tiêu chuẩn bàn giao
+- Yêu cầu kiểm tra biên dịch tĩnh (\`npx tsc --noEmit\`) sau mỗi tác vụ.
+- Đảm bảo kiểm thử tự động vượt qua trước khi tích hợp code.
+`;
+    } else {
+      content = `# Orchestrator Agent Specification
+File path: \`plugins/my-plugin/agents/orchestrator.md\`
+
+## 1. Core Responsibility
+- Parse complex feature instructions inside the Antigravity CLI and divide them into independent sub-tasks.
+- Coordinate execution lifecycles and verify integration of all domain specialist updates.
+
+## 2. Integration Criteria
+- Enforce static compilation checks (\`npx tsc --noEmit\`) at every task boundary.
+- Ensure all automated unit tests pass cleanly before final deployment.
+`;
+    }
+  } else if (activeFileCheck === "rules/clean-code.rules") {
+    if (isVi) {
+      content = `# Quy tắc Prompt Viết Mã Sạch (.rules)
+Đường dẫn: \`plugins/my-plugin/rules/clean-code.rules\`
+
+- Luôn viết code tường minh, dễ đọc và tự giải thích.
+- Giới hạn độ dài hàm dưới 25 dòng code.
+- Không sử dụng các từ viết tắt tối nghĩa hoặc biến vô nghĩa.
+`;
+    } else {
+      content = `# Clean Code Rules Specification (.rules)
+File path: \`plugins/my-plugin/rules/clean-code.rules\`
+
+- Enforce highly clean, readable, and self-documenting code.
+- Restrict function blocks to a maximum of 25 lines.
+- Ban obfuscated shorthand variable names and lazy comments.
+`;
+    }
+  } else if (activeFileCheck === "rules/performance.rules") {
+    if (isVi) {
+      content = `# Quy tắc Prompt Tối ưu Hiệu năng (.rules)
+Đường dẫn: \`plugins/my-plugin/rules/performance.rules\`
+
+- Tránh re-render không đáng có bằng cách tối ưu useMemo và useCallback.
+- Thực thi song song các câu lệnh bất đồng bộ độc lập (Promise.all).
+- Tối ưu hóa chỉ mục cơ sở dữ liệu để ngăn chặn quét toàn bảng.
+`;
+    } else {
+      content = `# Performance Rules Specification (.rules)
+File path: \`plugins/my-plugin/rules/performance.rules\`
+
+- Prevent wasteful re-renders using optimized useMemo and useCallback bindings.
+- Enforce parallel execution of independent async operations (Promise.all).
+- Optimize index layouts to eliminate full table sweeps.
+`;
+    }
   } else {
     // GEMINI.md
     const compilerCommand = 
@@ -840,7 +1047,7 @@ This file defines the orchestrator coordination patterns.
     if (isVi) {
       content = `# GEMINI.md - AG Kit
 
-> Tệp tin cấu hình hành vi của AI trong không gian làm việc này.
+> Tệp tin cấu hình hành vi của AI trong không gian làm việc này. Bắt buộc lưu tệp tin này dưới đường dẫn: \`rules/GEMINI.md\`
 
 ---
 
@@ -895,7 +1102,7 @@ Khi người dùng yêu cầu kiểm tra cuối cùng hoặc bàn giao dự án:
     } else {
       content = `# GEMINI.md - AG Kit
 
-> This file defines how the AI behaves in this workspace.
+> This file defines how the AI behaves in this workspace. Mandatory path to save: \`rules/GEMINI.md\`
 
 ---
 

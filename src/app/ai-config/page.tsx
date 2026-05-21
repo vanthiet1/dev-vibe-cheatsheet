@@ -41,27 +41,43 @@ function LightningIcon({ className }: { className?: string }) {
   );
 }
 
-// File Explorer Database Map definition
-const filesByTab = {
-  rules: [
-    { path: ".antigravityrules", label: ".antigravityrules" },
-    { path: ".editorconfig", label: ".editorconfig" }
-  ],
-  skills: [
-    { path: "skills/clean-code/SKILL.md", label: "clean-code/SKILL.md" },
-    { path: "skills/database-optimization/SKILL.md", label: "database-optimization/SKILL.md" },
-    { path: "skills/testing-patterns/SKILL.md", label: "testing-patterns/SKILL.md" },
-    { path: "skills/security-scanner/SKILL.md", label: "security-scanner/SKILL.md" }
-  ],
-  workflows: [
-    { path: "workflows/debug.md", label: "debug.md" },
-    { path: "workflows/test.md", label: "test.md" },
-    { path: "workflows/verify.md", label: "verify.md" },
-    { path: "workflows/coordinate.md", label: "coordinate.md" }
-  ],
-  gemini: [
-    { path: "GEMINI.md", label: "GEMINI.md" }
-  ]
+// Hierarchical visual directory tree interface
+interface TreeNode {
+  name: string;
+  path?: string;
+  isFolder: boolean;
+  children: TreeNode[];
+}
+
+// Visual Directory Tree builder
+const buildTree = (files: { path: string; label: string }[]): TreeNode[] => {
+  const root: TreeNode[] = [];
+  
+  files.forEach(file => {
+    const parts = file.path.split('/');
+    let currentLevel = root;
+    
+    parts.forEach((part, index) => {
+      const isLast = index === parts.length - 1;
+      let existing = currentLevel.find(node => node.name === part && node.isFolder === !isLast);
+      
+      if (!existing) {
+        existing = {
+          name: part,
+          isFolder: !isLast,
+          path: isLast ? file.path : undefined,
+          children: []
+        };
+        currentLevel.push(existing);
+      }
+      
+      if (!isLast && existing.children) {
+        currentLevel = existing.children;
+      }
+    });
+  });
+  
+  return root;
 };
 
 export default function AiConfigPage() {
@@ -73,17 +89,87 @@ export default function AiConfigPage() {
   const [styling, setStyling] = useState("shadcn");
   const [testing, setTesting] = useState("jest");
 
-  // Output format state: 'rules' | 'skills' | 'workflows' | 'gemini'
-  const [outputTab, setOutputTab] = useState<"rules" | "skills" | "workflows" | "gemini">("rules");
-  const [activeFile, setActiveFile] = useState(".antigravityrules");
+  // Output format state: 'rules' | 'cli' | 'skills' | 'workflows' | 'agents'
+  const [outputTab, setOutputTab] = useState<"rules" | "cli" | "skills" | "workflows" | "agents">("rules");
+  const [activeFile, setActiveFile] = useState(".editorconfig");
   const [contentLanguage, setContentLanguage] = useState<"en" | "vi">("vi");
   const [copied, setCopied] = useState(false);
 
-  // Tab change handler that automatically resets active file cleanly
-  const handleTabChange = (tab: "rules" | "skills" | "workflows" | "gemini") => {
-    setOutputTab(tab);
-    setActiveFile(filesByTab[tab][0].path);
+  // File Explorer Database Map definition (No separate gemini tab - integrated into rules tab for IDE!)
+  const filesByTab = useMemo(() => {
+    const isCli = ide === "antigravity-cli";
+    if (isCli) {
+      return {
+        rules: [
+          { path: "plugins/my-plugin/rules/clean-code.rules", label: "clean-code.rules" },
+          { path: "plugins/my-plugin/rules/performance.rules", label: "performance.rules" }
+        ],
+        cli: [
+          { path: "settings.json", label: "settings.json" },
+          { path: "import_manifest.json", label: "import_manifest.json" },
+          { path: "plugin.json", label: "plugin.json" },
+          { path: "mcp_config.json", label: "mcp_config.json" },
+          { path: "hooks.json", label: "hooks.json" },
+          { path: "plugins/structure", label: "Plugins Tree Map" }
+        ],
+        skills: [
+          { path: "plugins/my-plugin/skills/clean-code/SKILL.md", label: "clean-code/SKILL.md" },
+          { path: "plugins/my-plugin/skills/security-scanner/SKILL.md", label: "security-scanner/SKILL.md" }
+        ],
+        agents: [
+          { path: "plugins/my-plugin/agents/debugger.md", label: "debugger.md" },
+          { path: "plugins/my-plugin/agents/orchestrator.md", label: "orchestrator.md" }
+        ],
+        workflows: [] // Not used in CLI
+      };
+    }
+
+    return {
+      rules: [
+        { path: ".editorconfig", label: ".editorconfig" },
+        { path: "rules/GEMINI.md", label: "rules/GEMINI.md" }
+      ],
+      cli: [], // Not used in IDE
+      skills: [
+        { path: "skills/clean-code/SKILL.md", label: "clean-code/SKILL.md" },
+        { path: "skills/database-optimization/SKILL.md", label: "database-optimization/SKILL.md" },
+        { path: "skills/testing-patterns/SKILL.md", label: "testing-patterns/SKILL.md" },
+        { path: "skills/security-scanner/SKILL.md", label: "security-scanner/SKILL.md" }
+      ],
+      agents: [], // Not used in IDE
+      workflows: [
+        { path: "workflows/debug.md", label: "debug.md" },
+        { path: "workflows/test.md", label: "test.md" },
+        { path: "workflows/verify.md", label: "verify.md" },
+        { path: "workflows/coordinate.md", label: "coordinate.md" }
+      ]
+    };
+  }, [ide]);
+
+  // IDE/CLI Change Helper to switch states cleanly without breaking selection
+  const handleIdeChange = (newIde: string) => {
+    setIde(newIde);
+    if (newIde === "antigravity-cli") {
+      setOutputTab("cli");
+      setActiveFile("settings.json");
+    } else {
+      setOutputTab("rules");
+      setActiveFile(".editorconfig");
+    }
   };
+
+  // Tab change handler that automatically resets active file cleanly
+  const handleTabChange = (tab: "rules" | "cli" | "skills" | "workflows" | "agents") => {
+    setOutputTab(tab);
+    if (filesByTab[tab] && filesByTab[tab].length > 0) {
+      setActiveFile(filesByTab[tab][0].path);
+    }
+  };
+
+  // Build current directory tree
+  const treeNodes = useMemo(() => {
+    return buildTree(filesByTab[outputTab] || []);
+  }, [filesByTab, outputTab]);
 
   // Dynamic Content compiler
   const generatedData = useMemo(() => {
@@ -121,6 +207,50 @@ export default function AiConfigPage() {
     document.body.removeChild(link);
   };
 
+  // Recursive Tree visual renderer with vertical guides
+  const renderTreeNodes = (nodes: TreeNode[], depth = 0) => {
+    return nodes.map((node) => {
+      if (node.isFolder) {
+        return (
+          <div key={node.name} className="space-y-0.5">
+            <div 
+              style={{ paddingLeft: `${depth * 14}px` }} 
+              className="flex items-center gap-1.5 py-1 text-[11px] font-mono text-zinc-500 font-bold select-none"
+            >
+              <span>📂</span>
+              <span className="text-zinc-400 font-mono tracking-wide">{node.name}/</span>
+            </div>
+            <div className="relative border-l border-zinc-800/80 ml-[6px] space-y-0.5">
+              {renderTreeNodes(node.children, depth + 1)}
+            </div>
+          </div>
+        );
+      }
+      
+      const isActive = activeFile === node.path;
+      return (
+        <button
+          key={node.path}
+          onClick={() => node.path && setActiveFile(node.path)}
+          style={{ paddingLeft: `${depth * 14 + 6}px` }}
+          className={`w-full text-left py-1.5 pr-2 rounded text-[11px] font-mono transition-all flex items-center justify-between cursor-pointer border group ${
+            isActive
+              ? "bg-violet-950/15 text-violet-300 border-violet-850/30 shadow-[0_0_10px_rgba(139,92,246,0.05)]"
+              : "text-zinc-450 hover:bg-zinc-900/30 hover:text-zinc-200 border-transparent"
+          }`}
+        >
+          <div className="flex items-center gap-1.5 truncate">
+            <span className="text-xs group-hover:scale-110 transition-transform select-none shrink-0">
+              {node.path?.endsWith(".md") || node.path?.includes("structure") ? "📄" : "⚙️"}
+            </span>
+            <span className="font-semibold truncate">{node.name}</span>
+          </div>
+          {isActive && <span className="w-1.5 h-1.5 rounded-full bg-violet-400 shrink-0 ml-1.5" />}
+        </button>
+      );
+    });
+  };
+
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-300 selection:bg-blue-500 selection:text-white flex flex-col">
       <Header />
@@ -137,7 +267,7 @@ export default function AiConfigPage() {
             Cấu hình Agent & Rules
           </h2>
           <p className="text-zinc-400 text-sm max-w-2xl">
-            Tạo cấu hình chỉ thị prompt (<code className="text-violet-400 bg-violet-950/20 px-1 py-0.5 rounded">.rules</code>), kỹ năng phân rã (<code className="text-violet-400 bg-violet-950/20 px-1 py-0.5 rounded">SKILL.md</code>) và bộ quy tắc ứng xử (<code className="text-violet-400 bg-violet-950/20 px-1 py-0.5 rounded">GEMINI.md</code>) chuẩn Google Antigravity.
+            Tạo cấu hình chỉ thị prompt (<code className="text-violet-400 bg-violet-950/20 px-1 py-0.5 rounded">.rules</code>), kỹ năng phân rã (<code className="text-violet-400 bg-violet-950/20 px-1 py-0.5 rounded">SKILL.md</code>) và bộ quy tắc ứng xử (<code className="text-violet-400 bg-violet-950/20 px-1 py-0.5 rounded">rules/GEMINI.md</code>) chuẩn Google Antigravity.
           </p>
         </div>
 
@@ -157,7 +287,7 @@ export default function AiConfigPage() {
               <div className="grid grid-cols-1 gap-2.5">
                 {/* Antigravity IDE Select */}
                 <button
-                  onClick={() => setIde("antigravity-ide")}
+                  onClick={() => handleIdeChange("antigravity-ide")}
                   className={`p-3.5 rounded-lg border text-left transition-all duration-200 flex items-start gap-3 cursor-pointer ${
                     ide === "antigravity-ide"
                       ? "border-violet-600 bg-violet-950/15 shadow-[0_0_15px_rgba(139,92,246,0.1)]"
@@ -182,7 +312,7 @@ export default function AiConfigPage() {
 
                 {/* Antigravity CLI Select */}
                 <button
-                  onClick={() => setIde("antigravity-cli")}
+                  onClick={() => handleIdeChange("antigravity-cli")}
                   className={`p-3.5 rounded-lg border text-left transition-all duration-200 flex items-start gap-3 cursor-pointer ${
                     ide === "antigravity-cli"
                       ? "border-violet-600 bg-violet-950/15 shadow-[0_0_15px_rgba(139,92,246,0.1)]"
@@ -359,16 +489,35 @@ export default function AiConfigPage() {
             
             {/* Output File Switcher Tabs */}
             <div className="flex items-center gap-1.5 p-1 bg-zinc-900/60 border border-zinc-900 rounded-lg text-xs self-start overflow-x-auto max-w-full">
-              <button
-                onClick={() => handleTabChange("rules")}
-                className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border ${
-                  outputTab === "rules"
-                    ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
-                    : "border-transparent text-zinc-450 hover:text-zinc-200 hover:bg-zinc-800/20"
-                }`}
-              >
-                RULE.md / .rules
-              </button>
+              {/* Dynamic rules tab for IDE */}
+              {ide === "antigravity-ide" && (
+                <button
+                  onClick={() => handleTabChange("rules")}
+                  className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border ${
+                    outputTab === "rules"
+                      ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
+                      : "border-transparent text-zinc-450 hover:text-zinc-200 hover:bg-zinc-800/20"
+                  }`}
+                >
+                  RULE.md / rules/
+                </button>
+              )}
+
+              {/* Dynamic CLI Config tab for CLI */}
+              {ide === "antigravity-cli" && (
+                <button
+                  onClick={() => handleTabChange("cli")}
+                  className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer whitespace-nowrap border ${
+                    outputTab === "cli"
+                      ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
+                      : "border-transparent text-zinc-450 hover:text-zinc-200 hover:bg-zinc-800/20"
+                  }`}
+                >
+                  CLI Config
+                </button>
+              )}
+
+              {/* Dynamic skills tab label based on IDE vs CLI selection */}
               <button
                 onClick={() => handleTabChange("skills")}
                 className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap border ${
@@ -378,30 +527,53 @@ export default function AiConfigPage() {
                 }`}
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                SKILL.md (Module)
+                {ide === "antigravity-cli" ? "skills/ (Module)" : "SKILL.md (Module)"}
               </button>
-              <button
-                onClick={() => handleTabChange("workflows")}
-                className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap border ${
-                  outputTab === "workflows"
-                    ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
-                    : "border-transparent text-zinc-450 hover:text-zinc-200 hover:bg-zinc-800/20"
-                }`}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse shrink-0" />
-                WORKFLOW.md (Workflow)
-              </button>
-              <button
-                onClick={() => handleTabChange("gemini")}
-                className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap border ${
-                  outputTab === "gemini"
-                    ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
-                    : "border-transparent text-zinc-450 hover:text-zinc-200 hover:bg-zinc-800/20"
-                }`}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse shrink-0" />
-                GEMINI.md (Behavior)
-              </button>
+
+              {/* Dynamic agents tab for CLI only */}
+              {ide === "antigravity-cli" && (
+                <button
+                  onClick={() => handleTabChange("agents")}
+                  className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap border ${
+                    outputTab === "agents"
+                      ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
+                      : "border-transparent text-zinc-450 hover:text-zinc-200 hover:bg-zinc-800/20"
+                  }`}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse shrink-0" />
+                  agents/ (Subagents)
+                </button>
+              )}
+
+              {/* Dynamic rules tab for CLI only */}
+              {ide === "antigravity-cli" && (
+                <button
+                  onClick={() => handleTabChange("rules")}
+                  className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap border ${
+                    outputTab === "rules"
+                      ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
+                      : "border-transparent text-zinc-450 hover:text-zinc-200 hover:bg-zinc-800/20"
+                  }`}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-pink-500 animate-pulse shrink-0" />
+                  rules/ (Rules)
+                </button>
+              )}
+
+              {/* Dynamic workflows tab for IDE only */}
+              {ide === "antigravity-ide" && (
+                <button
+                  onClick={() => handleTabChange("workflows")}
+                  className={`px-3.5 py-1.5 rounded-md font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap border ${
+                    outputTab === "workflows"
+                      ? "bg-violet-950/60 text-violet-200 border-violet-600/70 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
+                      : "border-transparent text-zinc-450 hover:text-zinc-200 hover:bg-zinc-800/20"
+                  }`}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse shrink-0" />
+                  WORKFLOW.md (Workflow)
+                </button>
+              )}
             </div>
 
             {/* Header of code preview console */}
@@ -465,43 +637,19 @@ export default function AiConfigPage() {
             {/* Split-pane File Explorer Simulator container */}
             <div className="grid grid-cols-1 md:grid-cols-12 border border-zinc-900 rounded-b-xl overflow-hidden min-h-[500px] bg-zinc-950 shadow-2xl">
               
-              {/* File Explorer Sidebar */}
+              {/* File Explorer Sidebar: Visual Nested Tree Directory Structure */}
               <div className="md:col-span-4 bg-zinc-950/40 border-r border-zinc-900 p-4 space-y-4 select-none shrink-0 overflow-y-auto max-h-[500px]">
                 <div className="text-[9px] font-extrabold text-zinc-500 uppercase tracking-widest flex items-center gap-1.5 mb-2 select-none">
                   <span className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse" />
-                  FILE EXPLORER
+                  WORKSPACE TREE
                 </div>
                 
-                <div className="space-y-1">
-                  {filesByTab[outputTab].map((file) => {
-                    const isActive = activeFile === file.path;
-                    const pathSegments = file.path.split("/");
-                    const displayName = pathSegments[pathSegments.length - 1];
-                    const folderName = pathSegments.length > 1 ? pathSegments.slice(0, -1).join("/") + "/" : "";
-                    
-                    return (
-                      <button
-                        key={file.path}
-                        onClick={() => setActiveFile(file.path)}
-                        className={`w-full text-left p-2.5 rounded-md text-[11px] font-mono transition-all flex items-center justify-between cursor-pointer border group ${
-                          isActive
-                            ? "bg-violet-950/15 text-violet-300 border-violet-850/30 shadow-[0_0_10px_rgba(139,92,246,0.05)]"
-                            : "text-zinc-400 hover:bg-zinc-900/40 hover:text-zinc-200 border-transparent"
-                        }`}
-                      >
-                        <div className="flex items-center gap-2 truncate">
-                          <span className="text-xs group-hover:scale-110 transition-transform select-none">
-                            {file.path.endsWith(".md") ? "📄" : "⚙️"}
-                          </span>
-                          <div className="truncate">
-                            {folderName && <span className="text-zinc-650 text-[10px] block truncate leading-none mb-1 select-none">{folderName}</span>}
-                            <span className="font-semibold block truncate leading-none">{displayName}</span>
-                          </div>
-                        </div>
-                        {isActive && <span className="w-1.5 h-1.5 rounded-full bg-violet-400 shrink-0" />}
-                      </button>
-                    );
-                  })}
+                <div className="space-y-1 pl-1">
+                  {treeNodes && treeNodes.length > 0 ? (
+                    renderTreeNodes(treeNodes)
+                  ) : (
+                    <span className="text-[10px] text-zinc-600 italic">No files available</span>
+                  )}
                 </div>
               </div>
 
@@ -512,34 +660,59 @@ export default function AiConfigPage() {
               
             </div>
 
-            {/* Step-by-step Directory installation walkthrough */}
+            {/* Step-by-step Directory installation walkthrough (Dynamic based on IDE vs CLI) */}
             <div className="bg-zinc-900/10 border border-zinc-900 rounded-xl p-5 space-y-4">
               <h3 className="text-xs font-extrabold text-zinc-200 uppercase tracking-widest flex items-center gap-2">
                 🚀 HƯỚNG DẪN MODULE CẤU TRÚC 3 BƯỚC:
               </h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                <div className="space-y-1.5 border-l-2 border-violet-600/40 pl-3">
-                  <h4 className="font-bold text-zinc-200">Bước 1: Duyệt & Tải file</h4>
-                  <p className="text-[11px] text-zinc-400 leading-normal">
-                    Chọn các thông số Stack ở bảng bên trái. Chọn Tab cấu hình và nhấp vào các tệp tin trong **File Explorer** để xem trước, copy hoặc tải về.
-                  </p>
-                </div>
-                
-                <div className="space-y-1.5 border-l-2 border-violet-600/40 pl-3">
-                  <h4 className="font-bold text-zinc-200">Bước 2: Phân tách Thư mục</h4>
-                  <p className="text-[11px] text-zinc-400 leading-normal">
-                    Tạo folder riêng biệt cho Skill dưới đường dẫn: <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded">.antigravity/skills/&#123;tên_skill&#125;/</code> và lưu file <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded">SKILL.md</code> tương ứng vào đó.
-                  </p>
-                </div>
+              {ide === "antigravity-cli" ? (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                  <div className="space-y-1.5 border-l-2 border-violet-600/40 pl-3">
+                    <h4 className="font-bold text-zinc-200">Bước 1: Khởi tạo thư mục gốc</h4>
+                    <p className="text-[11px] text-zinc-400 leading-normal">
+                      Bắt buộc tạo thư mục cấu hình toàn cục <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded">~/.gemini/antigravity-cli/</code> trên máy tính trước tiên.
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-1.5 border-l-2 border-violet-600/40 pl-3">
+                    <h4 className="font-bold text-zinc-200">Bước 2: Tổ chức thư mục con</h4>
+                    <p className="text-[11px] text-zinc-400 leading-normal">
+                      Tạo tiếp thư mục plugin <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded">plugins/my-plugin/</code> và các folder con tương ứng: <code className="text-zinc-400 font-mono">skills/</code>, <code className="text-zinc-400 font-mono">agents/</code>, <code className="text-zinc-400 font-mono">rules/</code>.
+                    </p>
+                  </div>
 
-                <div className="space-y-1.5 border-l-2 border-violet-600/40 pl-3">
-                  <h4 className="font-bold text-zinc-200">Bước 3: AI tự động nhận diện</h4>
-                  <p className="text-[11px] text-zinc-400 leading-normal">
-                    AI Agent sẽ quét và chỉ load duy nhất Kỹ năng cần thiết cho phân khu làm việc hiện tại, tiết kiệm 90% lượng token.
-                  </p>
+                  <div className="space-y-1.5 border-l-2 border-violet-600/40 pl-3">
+                    <h4 className="font-bold text-zinc-200">Bước 3: Lưu và kích hoạt</h4>
+                    <p className="text-[11px] text-zinc-400 leading-normal">
+                      Lưu tệp tin cấu hình (`plugin.json`, các file `.rules` và `.md` chỉ thị...) vào đúng vị trí cây thư mục của bạn để CLI tự động nhận dạng.
+                    </p>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                  <div className="space-y-1.5 border-l-2 border-violet-600/40 pl-3">
+                    <h4 className="font-bold text-zinc-200">Bước 1: Tạo tệp .editorconfig</h4>
+                    <p className="text-[11px] text-zinc-400 leading-normal">
+                      Lưu tệp cấu hình mã hóa <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded">.editorconfig</code> trực tiếp tại thư mục gốc dự án của bạn.
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-1.5 border-l-2 border-violet-600/40 pl-3">
+                    <h4 className="font-bold text-zinc-200">Bước 2: Tạo folder rules & GEMINI.md</h4>
+                    <p className="text-[11px] text-zinc-400 leading-normal">
+                      Tạo thư mục tên là <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded">rules/</code> tại thư mục gốc dự án, sau đó lưu file quy tắc <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded">GEMINI.md</code> vào bên trong thư mục đó (<code className="text-violet-400">rules/GEMINI.md</code>).
+                    </p>
+                  </div>
+
+                  <div className="space-y-1.5 border-l-2 border-violet-600/40 pl-3">
+                    <h4 className="font-bold text-zinc-200">Bước 3: Phân chia Skill rõ ràng</h4>
+                    <p className="text-[11px] text-zinc-400 leading-normal">
+                      Đặt các tệp kỹ năng của bạn vào folder riêng lẻ <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded">skills/&#123;tên_skill&#125;/SKILL.md</code> để AI Agent tải thông tin thông minh, tiết kiệm tối đa lượng token.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
 
           </div>
