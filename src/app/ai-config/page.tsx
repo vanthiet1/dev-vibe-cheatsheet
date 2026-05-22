@@ -909,6 +909,32 @@ export default function AiConfigPage() {
                     Quy tắc chuyên biệt cho dòng lệnh CLI.
                   </p>
                 </button>
+
+                {/* Claude Code - Coming Soon */}
+                <div className="p-3 rounded-lg border border-zinc-900/50 bg-zinc-950/10 opacity-40 relative select-none flex flex-col gap-1 overflow-hidden">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-zinc-400">Claude Code</span>
+                    <span className="text-[8px] font-extrabold bg-violet-950/40 text-violet-400 border border-violet-800/30 px-1.5 py-0.5 rounded tracking-wide uppercase select-none shrink-0 scale-90">
+                      Sắp ra mắt
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-zinc-500 leading-relaxed">
+                    Tương thích tệp chỉ thị chỉ lệnh riêng cho Anthropic.
+                  </p>
+                </div>
+
+                {/* Codex - Coming Soon */}
+                <div className="p-3 rounded-lg border border-zinc-900/50 bg-zinc-950/10 opacity-40 relative select-none flex flex-col gap-1 overflow-hidden">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-zinc-400">OpenAI Codex</span>
+                    <span className="text-[8px] font-extrabold bg-violet-950/40 text-violet-400 border border-violet-800/30 px-1.5 py-0.5 rounded tracking-wide uppercase select-none shrink-0 scale-90">
+                      Sắp ra mắt
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-zinc-500 leading-relaxed">
+                    Kiến trúc tối ưu tự động hóa mã nguồn tầm thế hệ mới từ OpenAI.
+                  </p>
+                </div>
               </div>
             </div>
 
