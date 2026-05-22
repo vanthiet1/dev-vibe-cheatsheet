@@ -98,7 +98,7 @@ const TECH_ICONS: Record<string, React.ReactNode> = {
   javascript: <i className="devicon-javascript-plain colored text-sm shrink-0" />,
   python: <i className="devicon-python-plain colored text-sm shrink-0" />,
   go: <i className="devicon-go-plain colored text-sm shrink-0" />,
-  rust: <i className="devicon-rust-plain colored text-sm shrink-0" />,
+  rust: <i className="devicon-rust-plain text-[#e05a47] text-sm shrink-0" style={{ color: "#e05a47" }} />,
   csharp: <i className="devicon-csharp-plain colored text-sm shrink-0" />,
   // Databases
   postgres: <i className="devicon-postgresql-plain colored text-sm shrink-0" />,
@@ -560,6 +560,45 @@ export default function AiConfigPage() {
   const [contentLanguage, setContentLanguage] = useState<"en" | "vi">("vi");
   const [copied, setCopied] = useState(false);
 
+  // Scroll variables for Workspace Tree sidebar
+  const treeContainerRef = useRef<HTMLDivElement>(null);
+  const [showScrollArrow, setShowScrollArrow] = useState(false);
+
+  const checkScroll = () => {
+    const el = treeContainerRef.current;
+    if (el) {
+      const canScroll = el.scrollHeight > el.clientHeight;
+      const isAtBottom = el.scrollHeight - el.scrollTop <= el.clientHeight + 15;
+      setShowScrollArrow(canScroll && !isAtBottom);
+    }
+  };
+
+  const handleScrollDown = () => {
+    const el = treeContainerRef.current;
+    if (el) {
+      el.scrollTo({
+        top: el.scrollTop + 80,
+        behavior: "smooth"
+      });
+    }
+  };
+
+  // Check scroll state when tree structure changes or tab changes
+  useEffect(() => {
+    const el = treeContainerRef.current;
+    if (el) {
+      el.addEventListener("scroll", checkScroll);
+      window.addEventListener("resize", checkScroll);
+    }
+    // Set a slight delay to allow rendering pipeline to lay out elements
+    const timer = setTimeout(checkScroll, 150);
+    return () => {
+      if (el) el.removeEventListener("scroll", checkScroll);
+      window.removeEventListener("resize", checkScroll);
+      clearTimeout(timer);
+    };
+  }, [outputTab, ide, language, database, framework, styling, testing]);
+
   // File Explorer Database Map definition (Dynamic based on selected Tech Stack)
   const filesByTab = useMemo(() => {
     const isCli = ide === "antigravity-cli";
@@ -574,6 +613,12 @@ export default function AiConfigPage() {
     // Base Skills (always present)
     dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/clean-code/SKILL.md`, label: "clean-code/SKILL.md" });
     dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/security-scanner/SKILL.md`, label: "security-scanner/SKILL.md" });
+    dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/seo-fundamentals/SKILL.md`, label: "seo-fundamentals/SKILL.md" });
+    dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/i18n-localization/SKILL.md`, label: "i18n-localization/SKILL.md" });
+    dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/powershell-windows/SKILL.md`, label: "powershell-windows/SKILL.md" });
+    dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/git-workflows/SKILL.md`, label: "git-workflows/SKILL.md" });
+    dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/performance-profiling/SKILL.md`, label: "performance-profiling/SKILL.md" });
+    dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/clean-architecture/SKILL.md`, label: "clean-architecture/SKILL.md" });
 
     // Dynamic Stack Skills
     if (language === "typescript") {
@@ -877,11 +922,11 @@ export default function AiConfigPage() {
               {/* Ngôn ngữ */}
               <div className="space-y-2">
                 <label className="text-[10px] font-extrabold text-zinc-450 block">Ngôn ngữ:</label>
-                <div className="grid grid-cols-3 gap-1.5">
+                <div className="grid grid-cols-2 gap-1.5">
                   {[
-                    { key: "typescript", label: "TS" },
-                    { key: "javascript", label: "JS" },
-                    { key: "python", label: "Py" },
+                    { key: "typescript", label: "TypeScript" },
+                    { key: "javascript", label: "JavaScript" },
+                    { key: "python", label: "Python" },
                     { key: "go", label: "Go" },
                     { key: "rust", label: "Rust" },
                     { key: "csharp", label: "C#" }
@@ -1199,19 +1244,36 @@ export default function AiConfigPage() {
             <div className="grid grid-cols-1 md:grid-cols-12 border border-zinc-900 rounded-b-xl overflow-hidden min-h-[500px] bg-zinc-950 shadow-2xl">
               
               {/* File Explorer Sidebar: Visual Nested Tree Directory Structure */}
-              <div className="md:col-span-4 bg-zinc-950/40 border-r border-zinc-900 p-4 space-y-4 select-none shrink-0">
-                <div className="text-[9px] font-extrabold text-zinc-500 uppercase tracking-widest flex items-center gap-1.5 mb-2 select-none">
+              <div className="relative md:col-span-4 bg-zinc-950/40 border-r border-zinc-900 p-4 select-none flex flex-col h-[500px] shrink-0">
+                <div className="text-[9px] font-extrabold text-zinc-500 uppercase tracking-widest flex items-center gap-1.5 mb-2 select-none shrink-0">
                   <span className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse" />
                   WORKSPACE TREE
                 </div>
                 
-                <div className="space-y-1 pl-1">
+                <div 
+                  ref={treeContainerRef}
+                  onScroll={checkScroll}
+                  className="flex-grow overflow-y-auto space-y-1 pl-1 pr-1 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent"
+                >
                   {treeNodes && treeNodes.length > 0 ? (
                     renderTreeNodes(treeNodes, 0, ide === "antigravity-ide" && outputTab === "config")
                   ) : (
                     <span className="text-[10px] text-zinc-600 italic">No files available</span>
                   )}
                 </div>
+
+                {/* Animated down-pointing scrolling pointer indicator */}
+                {showScrollArrow && (
+                  <div 
+                    onClick={handleScrollDown}
+                    className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 bg-zinc-900/90 border border-violet-850/40 px-3 py-1.5 rounded-full text-[9px] font-extrabold text-violet-300 shadow-xl shadow-violet-950/50 animate-bounce cursor-pointer hover:bg-violet-900/20 transition-all select-none backdrop-blur-sm z-20"
+                  >
+                    <span>Cuộn xuống</span>
+                    <svg className="w-2.5 h-2.5 text-violet-400 animate-pulse" fill="none" stroke="currentColor" strokeWidth="3.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                    </svg>
+                  </div>
+                )}
               </div>
 
               {/* Code Preview or VS Code Simulator Pane */}
