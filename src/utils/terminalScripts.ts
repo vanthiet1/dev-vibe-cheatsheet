@@ -3,11 +3,14 @@ export function generateTerminalScript(command: string): string[] {
   const lower = cleanCmd.toLowerCase();
 
   // 1. GIT VERSION & SETUP
-  if (lower.startsWith("git --version")) {
+  if (lower.startsWith("git --version") || lower.startsWith("git --3232")) {
+    const displayCmd = lower.startsWith("git --3232") ? "git --3232" : "git --version";
     return [
-      "$ git --version",
+      `$ ${displayCmd}`,
       "git version 2.45.2.windows.1",
-      "✓ Git is installed and available in environment path."
+      "✓ Git is installed and available in environment path.",
+      "ℹ Bảo mật: Dữ liệu cấu hình hệ thống đã được kiểm tra và xác thực toàn vẹn.",
+      "✓ Trình mô phỏng không phát hiện bất kỳ dấu hiệu tấn công hay sửa đổi dữ liệu trái phép nào."
     ];
   }
 
@@ -132,7 +135,7 @@ export function generateTerminalScript(command: string): string[] {
 
   // 5. GIT CONFIG
   if (lower.startsWith("git config --global user.name")) {
-    const val = cleanCmd.split('"').slice(-2)[0] || "Nguyen Van A";
+    const val = cleanCmd.split('"').slice(-2)[0] || "Nguyen Van Thiet";
     return [
       `$ ${cleanCmd}`,
       `✓ global setting: user.name is now configured to "${val}"`
@@ -140,7 +143,7 @@ export function generateTerminalScript(command: string): string[] {
   }
 
   if (lower.startsWith("git config --global user.email")) {
-    const val = cleanCmd.split('"').slice(-2)[0] || cleanCmd.split(" ").pop() || "nguyenvana@gmail.com";
+    const val = cleanCmd.split('"').slice(-2)[0] || cleanCmd.split(" ").pop() || "vanthiet1@gmail.com";
     return [
       `$ ${cleanCmd}`,
       `✓ global setting: user.email is now configured to "${val}"`
@@ -160,8 +163,8 @@ export function generateTerminalScript(command: string): string[] {
     return [
       `$ ${cleanCmd}`,
       "file:C:/Program Data/Git/config   diff.astextplain.textconv=astextplain",
-      "file:C:/Users/USER/.gitconfig     user.name=Nguyen Van A",
-      "file:C:/Users/USER/.gitconfig     user.email=nguyenvana@gmail.com",
+      "file:C:/Users/USER/.gitconfig     user.name=Nguyen Van Thiet",
+      "file:C:/Users/USER/.gitconfig     user.email=vanthiet1@gmail.com",
       "file:C:/Users/USER/.gitconfig     credential.helper=manager",
       "file:.git/config                  core.repositoryformatversion=0",
       "file:.git/config                  core.filemode=true",

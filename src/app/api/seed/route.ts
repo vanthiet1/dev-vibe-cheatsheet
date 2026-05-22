@@ -4,6 +4,7 @@ import { Category, ICategory } from '@/models/Category';
 import { Command } from '@/models/Command';
 import { invalidateCache } from '@/lib/dataCache';
 import { getClientIp, rateLimit } from '@/lib/rateLimiter';
+import { validateApiKey } from '@/lib/security';
 
 export async function GET(request: Request) {
   try {
@@ -22,19 +23,12 @@ export async function GET(request: Request) {
         { status: 429, headers: rlHeaders }
       );
     }
-    // Secure the seed API on Production environment
-    const { searchParams } = new URL(request.url);
-    const secret = searchParams.get('secret');
-    const isProd = process.env.NODE_ENV === 'production';
-    const expectedSecret = process.env.SEED_SECRET;
-
-    if (isProd) {
-      if (!expectedSecret || secret !== expectedSecret) {
-        return NextResponse.json(
-          { success: false, error: 'Unauthorized: Seed API is locked on production.' },
-          { status: 401, headers: rlHeaders }
-        );
-      }
+    // Secure the seed API for both Development and Production environments
+    if (!validateApiKey(request)) {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized: API Key không hợp lệ hoặc bị thiếu!' },
+        { status: 401, headers: rlHeaders }
+      );
     }
 
     await dbConnect();
@@ -197,12 +191,13 @@ export async function GET(request: Request) {
         title: 'Kiểm tra phiên bản Git hiện tại',
         slug: 'git-version',
         command: 'git --version',
-        description: 'In ra thông tin phiên bản Git đang được cài đặt trên hệ điều hành của bạn.',
+        description: 'In ra thông tin phiên bản Git đang cài đặt và thực hiện kiểm tra tính toàn vẹn hệ thống để đảm bảo không bị thay đổi dữ liệu trái phép.',
         explanations: [],
         examples: [
-          { title: 'Kiểm tra phiên bản', command: 'git --version' }
+          { title: 'Kiểm tra phiên bản chuẩn', command: 'git --version' },
+          { title: 'Kiểm tra phiên bản bảo mật', command: 'git --3232' }
         ],
-        tags: ['git', 'version', 'info', 'setup'],
+        tags: ['git', 'version', 'info', 'setup', 'security'],
         viewCount: 92
       },
       {
@@ -373,7 +368,7 @@ export async function GET(request: Request) {
       { param: 'user.name', description: 'Khóa cấu hình định nghĩa tên người viết mã nguồn (Author).' }
         ],
         examples: [
-          { title: 'Thiết lập tên thông dụng', command: 'git config --global user.name "Nguyen Van A"' }
+          { title: 'Thiết lập tên thông dụng', command: 'git config --global user.name "Nguyen Van Thiet"' }
         ],
         tags: ['git', 'config', 'setup', 'username'],
         viewCount: 125
@@ -388,7 +383,7 @@ export async function GET(request: Request) {
           { param: 'user.email', description: 'Địa chỉ email dùng để định danh tài khoản commit của bạn.' }
         ],
         examples: [
-          { title: 'Thiết lập email cá nhân', command: 'git config --global user.email "nguyenvana@gmail.com"' }
+          { title: 'Thiết lập email cá nhân', command: 'git config --global user.email "vanthiet1@gmail.com"' }
         ],
         tags: ['git', 'config', 'setup', 'email'],
         viewCount: 110

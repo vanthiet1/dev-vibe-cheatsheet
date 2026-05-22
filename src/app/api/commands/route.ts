@@ -4,6 +4,7 @@ import { Command } from '@/models/Command';
 import { getCachedCommands, setCachedCommands, invalidateCache } from '@/lib/dataCache';
 import { getClientIp, rateLimit } from '@/lib/rateLimiter';
 import { ICommand } from '@/types';
+import { validateApiKey, validateCsrf, sanitizeObject, encodeResponse } from '@/lib/security';
 
 export async function GET(request: Request) {
   try {
@@ -58,13 +59,33 @@ export async function POST(request: Request) {
         { status: 429, headers: rlHeaders }
       );
     }
+
+    // 1. Kiểm tra tấn công CSRF
+    if (!validateCsrf(request)) {
+      return NextResponse.json(
+        { success: false, error: 'Yêu cầu bị chặn bởi chính sách CSRF!' },
+        { status: 403, headers: rlHeaders }
+      );
+    }
+
+    // 2. Xác thực API Key ngăn chặn thao tác bậy ngoài ý muốn
+    if (!validateApiKey(request)) {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized: API Key không hợp lệ hoặc bị thiếu!' },
+        { status: 401, headers: rlHeaders }
+      );
+    }
+
     await dbConnect();
-    const body = await request.json();
+    const rawBody = await request.json();
+
+    // 3. Làm sạch input chống chèn script XSS độc hại trước khi xử lý
+    const body = sanitizeObject(rawBody);
 
     const requiredFields = ['categoryId', 'title', 'slug', 'command', 'description'];
     for (const field of requiredFields) {
       if (!body[field]) {
-        return NextResponse.json({ success: false, error: `Field '${field}' is required.` }, { status: 400 });
+        return NextResponse.json({ success: false, error: `Trường '${field}' là bắt buộc.` }, { status: 400 });
       }
     }
 
@@ -73,9 +94,17 @@ export async function POST(request: Request) {
     // Invalidate categories and commands cache on any new creation
     invalidateCache();
 
-    return NextResponse.json({ success: true, data: newCommand }, { status: 201, headers: rlHeaders });
+    // 4. Chuẩn hóa dữ liệu trả về và mã hóa an toàn (securePayload)
+    const responsePayload = {
+      success: true,
+      data: newCommand,
+      securePayload: encodeResponse(newCommand)
+    };
+
+    return NextResponse.json(responsePayload, { status: 201, headers: rlHeaders });
   } catch (error) {
     const err = error as Error;
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }
 }
+
