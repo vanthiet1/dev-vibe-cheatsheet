@@ -17,7 +17,6 @@ export async function GET(request: Request) {
       await dbConnect();
       const dbCommands = await Command.find({}).sort({ createdAt: 1 }).lean() as unknown as ICommand[];
       
-      // Ensure all ObjectIds are converted to strings if lean() returns them as ObjectIds
       commands = dbCommands.map(cmd => ({
         ...cmd,
         _id: cmd._id.toString(),
@@ -26,7 +25,6 @@ export async function GET(request: Request) {
       setCachedCommands(commands);
     }
 
-    // Perform sub-millisecond in-memory filtering on the cached array
     let filtered = commands;
     if (categoryId) {
       filtered = filtered.filter(cmd => cmd.categoryId === categoryId);
@@ -60,7 +58,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // 1. Kiểm tra tấn công CSRF
     if (!validateCsrf(request)) {
       return NextResponse.json(
         { success: false, error: 'Yêu cầu bị chặn bởi chính sách CSRF!' },
@@ -68,7 +65,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // 2. Xác thực API Key ngăn chặn thao tác bậy ngoài ý muốn
     if (!validateApiKey(request)) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized: API Key không hợp lệ hoặc bị thiếu!' },
@@ -79,7 +75,6 @@ export async function POST(request: Request) {
     await dbConnect();
     const rawBody = await request.json();
 
-    // 3. Làm sạch input chống chèn script XSS độc hại trước khi xử lý
     const body = sanitizeObject(rawBody);
 
     const requiredFields = ['categoryId', 'title', 'slug', 'command', 'description'];
@@ -91,10 +86,8 @@ export async function POST(request: Request) {
 
     const newCommand = await Command.create(body);
     
-    // Invalidate categories and commands cache on any new creation
     invalidateCache();
 
-    // 4. Chuẩn hóa dữ liệu trả về và mã hóa an toàn (securePayload)
     const responsePayload = {
       success: true,
       data: newCommand,

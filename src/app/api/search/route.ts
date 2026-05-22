@@ -6,7 +6,7 @@ import { getClientIp, rateLimit } from '@/lib/rateLimiter';
 export async function GET(request: Request) {
   try {
     const ip = getClientIp(request);
-    const limitResult = rateLimit(ip, 'search', 30, 60 * 1000); // 30 requests per minute
+    const limitResult = rateLimit(ip, 'search', 30, 60 * 1000);
 
     const rlHeaders = {
       'X-RateLimit-Limit': limitResult.limit.toString(),
@@ -24,7 +24,6 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('q');
 
-    // If query is empty, return top 10 most viewed/popular commands
     if (!query || query.trim() === '') {
       const popularCommands = await Command.find({})
         .sort({ viewCount: -1 })
@@ -37,7 +36,6 @@ export async function GET(request: Request) {
       $text: { $search: query }
     };
 
-    // Perform text search, fetch textScore and sort by score and popularity
     const results = await Command.find(
       filter,
       { score: { $meta: 'textScore' } }

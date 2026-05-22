@@ -12,7 +12,6 @@ import { decodePayload } from "@/lib/security";
 export function useCheatsheetData(options?: { securePayload?: string }) {
   const { securePayload } = options || {};
 
-  // Decode the secure payload if provided to populate initial states
   const initialData = useMemo(() => {
     if (securePayload) {
       const decoded = decodePayload(securePayload) as {
@@ -53,13 +52,11 @@ export function useCheatsheetData(options?: { securePayload?: string }) {
     return initialExpanded;
   });
 
-  // Filtered commands by scope and search query
   const filteredCommands = useMemo(() => {
     return commands.filter((cmd) => {
       const cat = categories.find((c) => c._id === cmd.categoryId);
       if (!cat) return false;
 
-      // Scope filter
       const isGit = isGitCategory(cat);
       const isAntigravity = isAntigravityCategory(cat);
       if (selectedGroup === "git" && !isGit) return false;
@@ -67,7 +64,6 @@ export function useCheatsheetData(options?: { securePayload?: string }) {
         return false;
       if (selectedGroup === "antigravity" && !isAntigravity) return false;
 
-      // Search query filter
       if (searchQuery.trim() !== "") {
         const q = searchQuery.toLowerCase();
         const matchesTitle = cmd.title.toLowerCase().includes(q);
@@ -102,7 +98,6 @@ export function useCheatsheetData(options?: { securePayload?: string }) {
     });
   }, [commands, categories, selectedGroup, searchQuery]);
 
-  // Group filtered commands by categoryId
   const commandsByCategory = useMemo(() => {
     const map: Record<string, ICommand[]> = {};
     filteredCommands.forEach((cmd) => {
@@ -114,7 +109,6 @@ export function useCheatsheetData(options?: { securePayload?: string }) {
     return map;
   }, [filteredCommands]);
 
-  // Active command logic
   const activeCommand = useMemo(() => {
     if (selectedCommandId) {
       const found = filteredCommands.find((c) => c._id === selectedCommandId);
@@ -123,7 +117,6 @@ export function useCheatsheetData(options?: { securePayload?: string }) {
     return filteredCommands[0] || null;
   }, [filteredCommands, selectedCommandId]);
 
-  // Split categories by group
   const gitCategories = useMemo(
     () => categories.filter(isGitCategory),
     [categories],
@@ -139,9 +132,7 @@ export function useCheatsheetData(options?: { securePayload?: string }) {
     [categories],
   );
 
-  // Fetch initial data
   const fetchInitialData = useCallback(async () => {
-    // Nếu dữ liệu đã được hydrate từ Server, bỏ qua việc gọi API client-side
     if (categories.length > 0 && commands.length > 0) {
       setLoading(false);
       return;
@@ -158,7 +149,6 @@ export function useCheatsheetData(options?: { securePayload?: string }) {
         const cats = catsData.data || [];
         setCategories(cats);
 
-        // Auto-expand all categories on initial load
         const initialExpanded: Record<string, boolean> = {};
         cats.forEach((cat: ICategory) => {
           initialExpanded[cat._id] = true;
@@ -181,7 +171,6 @@ export function useCheatsheetData(options?: { securePayload?: string }) {
     });
   }, [fetchInitialData]);
 
-  // Auto-expand active command's category
   useEffect(() => {
     if (activeCommand) {
       Promise.resolve().then(() => {
@@ -195,7 +184,6 @@ export function useCheatsheetData(options?: { securePayload?: string }) {
     }
   }, [activeCommand]);
 
-  // Auto-expand categories with matching search results
   useEffect(() => {
     if (searchQuery.trim() !== "") {
       const expanded: Record<string, boolean> = {};
@@ -285,7 +273,6 @@ export function useCheatsheetData(options?: { securePayload?: string }) {
     selectedGroup !== "all";
 
   return {
-    // State
     categories,
     commands,
     searchQuery,
@@ -297,8 +284,6 @@ export function useCheatsheetData(options?: { securePayload?: string }) {
     selectedCommandId,
     expandedCategories,
     showDetailOnMobile,
-
-    // Computed
     filteredCommands,
     commandsByCategory,
     activeCommand,
@@ -306,8 +291,6 @@ export function useCheatsheetData(options?: { securePayload?: string }) {
     terminalCategories,
     antigravityCategories,
     hasActiveFilters,
-
-    // Actions
     setSearchQuery,
     setSelectedGroup: selectGroup,
     setSelectedCommandId: selectCommand,

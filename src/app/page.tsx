@@ -11,7 +11,6 @@ import { ICategory, ICommand } from "@/types";
 import CheatsheetClient from "@/components/CheatsheetClient";
 import { encodeResponse } from "@/lib/security";
 
-// Thiết lập chế độ Dynamic để đảm bảo Next.js luôn thực hiện kết xuất phía Server (SSR) khi có request mới
 export const dynamic = "force-dynamic";
 
 async function getInitialData() {
@@ -46,9 +45,6 @@ async function getInitialData() {
 
 export default async function Home() {
   const { categories, commands } = await getInitialData();
-
-  // Mã hóa Base64 toàn bộ danh sách Categories và Commands truyền ngầm xuống Client
-  // Phương pháp này loại bỏ dữ liệu JSON thô trong mã nguồn HTML của trình duyệt, bảo vệ dữ liệu tối đa
   const securePayload = encodeResponse({ categories, commands });
 
   return <CheatsheetClient securePayload={securePayload} />;

@@ -16,7 +16,6 @@ export async function GET() {
     await dbConnect();
     const categories = await Category.find({}).sort({ parentId: 1, order: 1 }).lean() as unknown as ICategory[];
     
-    // Ensure all ObjectIds are converted to strings if lean() returns them as ObjectIds
     const serializedCategories = categories.map(cat => ({
       ...cat,
       _id: cat._id.toString(),
@@ -48,7 +47,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // 1. Kiểm tra tấn công CSRF
     if (!validateCsrf(request)) {
       return NextResponse.json(
         { success: false, error: 'Yêu cầu bị chặn bởi chính sách CSRF!' },
@@ -56,7 +54,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // 2. Xác thực API Key ngăn chặn thao tác bậy ngoài ý muốn
     if (!validateApiKey(request)) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized: API Key không hợp lệ hoặc bị thiếu!' },
@@ -67,7 +64,6 @@ export async function POST(request: Request) {
     await dbConnect();
     const rawBody = await request.json();
 
-    // 3. Làm sạch input chống chèn script XSS độc hại trước khi xử lý
     const body = sanitizeObject(rawBody);
 
     if (!body.name || !body.slug) {
@@ -76,10 +72,8 @@ export async function POST(request: Request) {
 
     const newCategory = await Category.create(body);
     
-    // Invalidate categories and commands cache on any new creation
     invalidateCache();
     
-    // 4. Chuẩn hóa dữ liệu trả về và mã hóa an toàn (securePayload)
     const responsePayload = {
       success: true,
       data: newCategory,

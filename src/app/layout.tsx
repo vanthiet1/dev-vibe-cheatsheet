@@ -82,12 +82,10 @@ export default function RootLayout({
                 var isBot = /bot|google|baidu|bing|msn|duckduckgo|teoma|slurp|yandex|lighthouse|lighthouse-speed/i.test(ua);
                 if (isBot) return;
 
-                // Chặn chuột phải ngay lập tức trước khi paint DOM
                 document.addEventListener('contextmenu', function(e) {
                   e.preventDefault();
                 }, false);
 
-                // Chặn phím Inspect phím tắt xem nguồn ngay lập tức
                 document.addEventListener('keydown', function(e) {
                   if (e.key === 'F12' || e.keyCode === 123) {
                     e.preventDefault();

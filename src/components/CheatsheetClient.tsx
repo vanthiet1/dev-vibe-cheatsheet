@@ -17,7 +17,6 @@ interface CheatsheetClientProps {
 }
 
 export default function CheatsheetClient({ securePayload }: CheatsheetClientProps) {
-  // Kích hoạt các chốt chặn bảo mật DOM phía Client (chống F12, chuột phải, debugger loop)
   useEffect(() => {
     initDomDefender();
   }, []);
@@ -55,7 +54,6 @@ export default function CheatsheetClient({ securePayload }: CheatsheetClientProp
       <Header seeding={seeding} onRunSeeding={runSeeding} />
 
       <main className="max-w-8xl mx-auto px-6 py-8">
-        {/* Seed status message */}
         {seedMessage && (
           <div className="mb-6 p-4 border border-zinc-800 bg-zinc-900 text-zinc-200 text-xs flex items-center justify-between animate-fade-in rounded-md">
             <div className="flex items-center gap-2">
@@ -73,9 +71,7 @@ export default function CheatsheetClient({ securePayload }: CheatsheetClientProp
           />
         </div>
 
-        {/* Two-Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Left Column: Navigation Sidebar */}
           <aside
             className={`lg:col-span-1 space-y-6 lg:sticky lg:top-24 self-start max-h-[calc(100vh-8rem)] overflow-y-auto pr-2 ${
               showDetailOnMobile ? "hidden lg:block" : "block"
@@ -101,7 +97,6 @@ export default function CheatsheetClient({ securePayload }: CheatsheetClientProp
             />
           </aside>
 
-          {/* Right Column: Active Command Detail */}
           <div
             className={`lg:col-span-3 space-y-6 ${
               !showDetailOnMobile ? "hidden lg:block" : "block"

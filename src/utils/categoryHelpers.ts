@@ -17,9 +17,6 @@ export const isTerminalCategory = (cat: ICategory): boolean => {
   return !isGitCategory(cat) && !isAntigravityCategory(cat);
 };
 
-/**
- * Map category slugs to custom inline SVGs with consistent styling.
- */
 export const getCategoryIcon = (slug: string, color?: string) => {
   const c = color || "currentColor";
   const cls = "h-4.5 w-4.5 shrink-0";
@@ -59,7 +56,6 @@ export const getCategoryIcon = (slug: string, color?: string) => {
       "M13 10V3L4 14h7v7l9-11h-7z",
   };
 
-  // git-config has a secondary circle path
   const secondaryPaths: Record<string, string> = {
     "git-config": "M15 12a3 3 0 11-6 0 3 3 0 016 0z",
     "git-branch": "M6 17V9m0 0a3 3 0 013-3h3m-3 3a3 3 0 003 3h3",
