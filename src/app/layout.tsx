@@ -73,6 +73,43 @@ export default function RootLayout({
     >
       <head>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                if (typeof window === 'undefined') return;
+                var ua = navigator.userAgent || '';
+                var isBot = /bot|google|baidu|bing|msn|duckduckgo|teoma|slurp|yandex|lighthouse|lighthouse-speed/i.test(ua);
+                if (isBot) return;
+
+                // Chặn chuột phải ngay lập tức trước khi paint DOM
+                document.addEventListener('contextmenu', function(e) {
+                  e.preventDefault();
+                }, false);
+
+                // Chặn phím Inspect phím tắt xem nguồn ngay lập tức
+                document.addEventListener('keydown', function(e) {
+                  if (e.key === 'F12' || e.keyCode === 123) {
+                    e.preventDefault();
+                    return false;
+                  }
+                  if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C' || e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) {
+                    e.preventDefault();
+                    return false;
+                  }
+                  if (e.ctrlKey && (e.key === 'u' || e.key === 'U' || e.keyCode === 85)) {
+                    e.preventDefault();
+                    return false;
+                  }
+                  if (e.ctrlKey && (e.key === 's' || e.key === 'S' || e.keyCode === 83)) {
+                    e.preventDefault();
+                    return false;
+                  }
+                }, false);
+              })();
+            `
+          }}
+        />
       </head>
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         {children}

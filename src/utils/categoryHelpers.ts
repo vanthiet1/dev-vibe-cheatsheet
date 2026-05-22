@@ -57,8 +57,6 @@ export const getCategoryIcon = (slug: string, color?: string) => {
       "M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z",
     "antigravity-cli":
       "M13 10V3L4 14h7v7l9-11h-7z",
-    "ai-agent-playbook":
-      "M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z",
   };
 
   // git-config has a secondary circle path

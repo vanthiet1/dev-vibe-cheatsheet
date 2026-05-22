@@ -71,11 +71,22 @@ export function encodeResponse(data: unknown): string {
   return Buffer.from(jsonStr).toString('base64');
 }
 
-// 6. Giải mã payload từ Client nếu Client gửi dạng mã hóa
+// 6. Giải mã payload từ Client hoặc Server (hỗ trợ cả Node.js và trình duyệt)
 export function decodePayload(base64Str: string): unknown {
   try {
-    const jsonStr = Buffer.from(base64Str, 'base64').toString('utf8');
-    return JSON.parse(jsonStr);
+    if (typeof window === 'undefined') {
+      const jsonStr = Buffer.from(base64Str, 'base64').toString('utf8');
+      return JSON.parse(jsonStr);
+    } else {
+      const binaryString = window.atob(base64Str);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      const decoder = new TextDecoder('utf-8');
+      const jsonStr = decoder.decode(bytes);
+      return JSON.parse(jsonStr);
+    }
   } catch {
     return null;
   }

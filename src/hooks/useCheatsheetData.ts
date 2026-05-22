@@ -7,13 +7,33 @@ import {
   isAntigravityCategory,
   isTerminalCategory,
 } from "@/utils/categoryHelpers";
+import { decodePayload } from "@/lib/security";
 
-export function useCheatsheetData() {
-  const [categories, setCategories] = useState<ICategory[]>([]);
-  const [commands, setCommands] = useState<ICommand[]>([]);
+export function useCheatsheetData(options?: { securePayload?: string }) {
+  const { securePayload } = options || {};
+
+  // Decode the secure payload if provided to populate initial states
+  const initialData = useMemo(() => {
+    if (securePayload) {
+      const decoded = decodePayload(securePayload) as {
+        categories?: ICategory[];
+        commands?: ICommand[];
+      } | null;
+      if (decoded && decoded.categories && decoded.commands) {
+        return {
+          categories: decoded.categories,
+          commands: decoded.commands,
+        };
+      }
+    }
+    return { categories: [], commands: [] };
+  }, [securePayload]);
+
+  const [categories, setCategories] = useState<ICategory[]>(initialData.categories);
+  const [commands, setCommands] = useState<ICommand[]>(initialData.commands);
   const [searchQuery, setSearchQuery] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(initialData.categories.length === 0);
   const [seeding, setSeeding] = useState(false);
   const [seedMessage, setSeedMessage] = useState<string | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<ScopeGroup>("all");
@@ -23,7 +43,15 @@ export function useCheatsheetData() {
   const [showDetailOnMobile, setShowDetailOnMobile] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<
     Record<string, boolean>
-  >({});
+  >(() => {
+    const initialExpanded: Record<string, boolean> = {};
+    if (initialData.categories) {
+      initialData.categories.forEach((cat) => {
+        initialExpanded[cat._id] = true;
+      });
+    }
+    return initialExpanded;
+  });
 
   // Filtered commands by scope and search query
   const filteredCommands = useMemo(() => {
@@ -113,6 +141,11 @@ export function useCheatsheetData() {
 
   // Fetch initial data
   const fetchInitialData = useCallback(async () => {
+    // Nếu dữ liệu đã được hydrate từ Server, bỏ qua việc gọi API client-side
+    if (categories.length > 0 && commands.length > 0) {
+      setLoading(false);
+      return;
+    }
     try {
       const [catsRes, cmdsRes] = await Promise.all([
         fetch("/api/categories"),
@@ -140,7 +173,7 @@ export function useCheatsheetData() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [categories.length, commands.length]);
 
   useEffect(() => {
     Promise.resolve().then(() => {
