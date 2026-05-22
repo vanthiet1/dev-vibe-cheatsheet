@@ -3,14 +3,11 @@ export function generateTerminalScript(command: string): string[] {
   const lower = cleanCmd.toLowerCase();
 
   // 1. GIT VERSION & SETUP
-  if (lower.startsWith("git --version") || lower.startsWith("git --3232")) {
-    const displayCmd = lower.startsWith("git --3232") ? "git --3232" : "git --version";
+  if (lower.startsWith("git --version")) {
     return [
-      `$ ${displayCmd}`,
+      "$ git --version",
       "git version 2.45.2.windows.1",
-      "✓ Git is installed and available in environment path.",
-      "ℹ Bảo mật: Dữ liệu cấu hình hệ thống đã được kiểm tra và xác thực toàn vẹn.",
-      "✓ Trình mô phỏng không phát hiện bất kỳ dấu hiệu tấn công hay sửa đổi dữ liệu trái phép nào."
+      "✓ Git is installed and available in environment path."
     ];
   }
 

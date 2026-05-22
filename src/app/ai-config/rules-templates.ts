@@ -179,7 +179,7 @@ export function generateRulesContent(params: RuleGeneratorParams): { content: st
   }
 
   let content = "";
-  let filename = activeFile.split("/").pop() || activeFile;
+  const filename = activeFile.split("/").pop() || activeFile;
 
   let activeFileCheck = activeFile;
   if (activeFile.startsWith(".gemini/antigravity-cli/")) {

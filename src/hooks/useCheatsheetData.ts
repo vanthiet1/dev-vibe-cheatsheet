@@ -143,7 +143,9 @@ export function useCheatsheetData() {
   }, []);
 
   useEffect(() => {
-    fetchInitialData();
+    Promise.resolve().then(() => {
+      fetchInitialData();
+    });
   }, [fetchInitialData]);
 
   // Auto-expand active command's category
@@ -196,7 +198,7 @@ export function useCheatsheetData() {
     setSeeding(true);
     setSeedMessage(null);
     try {
-      const res = await fetch("/api/seed");
+      const res = await fetch("/api/seed?apiKey=dev-vibe-super-secret-key-2026");
       const result = await res.json();
       if (result.success) {
         setSeedMessage("Khởi tạo dữ liệu mẫu thành công!");

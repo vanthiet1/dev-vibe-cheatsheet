@@ -56,16 +56,20 @@ export default function TerminalSimulator({ script }: TerminalSimulatorProps) {
     const currentItem = script[currentLineIndex];
 
     if (!currentItem) {
-      setIsFinished(true);
+      Promise.resolve().then(() => {
+        setIsFinished(true);
+      });
       return;
     }
 
     if (currentItem.startsWith("$ ")) {
       // It's a command input, play typing animation
-      setIsTyping(true);
+      Promise.resolve().then(() => {
+        setIsTyping(true);
+        setTypedCommand("");
+      });
       const commandText = currentItem.substring(2);
       let charIndex = 0;
-      setTypedCommand("");
 
       const typingTimer = setInterval(() => {
         const currentChar = commandText[charIndex];
@@ -111,7 +115,9 @@ export default function TerminalSimulator({ script }: TerminalSimulatorProps) {
 
   // Run on mount
   useEffect(() => {
-    startAnimation();
+    Promise.resolve().then(() => {
+      startAnimation();
+    });
   }, [script]);
 
   const getLineColorClass = (line: string) => {

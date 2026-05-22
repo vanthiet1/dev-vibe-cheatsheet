@@ -191,13 +191,12 @@ export async function GET(request: Request) {
         title: 'Kiểm tra phiên bản Git hiện tại',
         slug: 'git-version',
         command: 'git --version',
-        description: 'In ra thông tin phiên bản Git đang cài đặt và thực hiện kiểm tra tính toàn vẹn hệ thống để đảm bảo không bị thay đổi dữ liệu trái phép.',
+        description: 'In ra thông tin phiên bản Git đang được cài đặt trên hệ điều hành của bạn.',
         explanations: [],
         examples: [
-          { title: 'Kiểm tra phiên bản chuẩn', command: 'git --version' },
-          { title: 'Kiểm tra phiên bản bảo mật', command: 'git --3232' }
+          { title: 'Kiểm tra phiên bản', command: 'git --version' }
         ],
-        tags: ['git', 'version', 'info', 'setup', 'security'],
+        tags: ['git', 'version', 'info', 'setup'],
         viewCount: 92
       },
       {

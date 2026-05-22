@@ -234,7 +234,7 @@ function VsCodeSimulator({
       // Phase 3: Character-by-character typing ".agent"
       const folderChars = ".agent".split("");
       let folderTemp = "";
-      for (let char of folderChars) {
+      for (const char of folderChars) {
         if (!active) return;
         folderTemp += char;
         setFolderInputVal(folderTemp);
@@ -267,7 +267,7 @@ function VsCodeSimulator({
       // Phase 7: Character-by-character typing "GEMINI.md"
       const fileChars = "GEMINI.md".split("");
       let fileTemp = "";
-      for (let char of fileChars) {
+      for (const char of fileChars) {
         if (!active) return;
         fileTemp += char;
         setFileInputVal(fileTemp);
@@ -302,7 +302,7 @@ function VsCodeSimulator({
       ];
       
       let typedEditor = "";
-      for (let line of lines) {
+      for (const line of lines) {
         if (!active) return;
         typedEditor += line + "\n";
         setEditorText(typedEditor);
