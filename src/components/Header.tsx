@@ -106,7 +106,20 @@ export default function Header({ seeding = false, onRunSeeding }: HeaderProps) {
   const [copied, setCopied] = useState(false);
 
   const accountNumber = "1026696842";
-  const isProduction = process.env.NODE_ENV === 'production';
+  const [isLocal, setIsLocal] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname;
+      const local =
+        hostname === "localhost" ||
+        hostname === "127.0.0.1" ||
+        hostname === "[::1]";
+      Promise.resolve().then(() => {
+        setIsLocal(local);
+      });
+    }
+  }, []);
 
   // Handle ESC key to close modal
   useEffect(() => {
@@ -180,7 +193,7 @@ export default function Header({ seeding = false, onRunSeeding }: HeaderProps) {
           {/* Right Action Controls */}
           <div className="flex items-center gap-2 md:gap-3">
             {/* Database Seed Button */}
-            {!isProduction && onRunSeeding && (
+            {isLocal && onRunSeeding && (
               <button
                 onClick={onRunSeeding}
                 disabled={seeding}

@@ -1,7 +1,6 @@
 interface LoadingStateProps {
   hasCategories: boolean;
   onResetFilters: () => void;
-  onRunSeeding?: () => void;
 }
 
 export function LoadingSpinner() {
@@ -34,9 +33,8 @@ export function LoadingSpinner() {
 }
 
 export function EmptyState({
-  hasCategories,
   onResetFilters,
-}: LoadingStateProps) {
+}: Omit<LoadingStateProps, 'hasCategories'>) {
   return (
     <div className="border border-zinc-800 bg-zinc-900/20 p-12 text-center rounded-md">
       <p className="text-sm text-zinc-400 mb-4">
