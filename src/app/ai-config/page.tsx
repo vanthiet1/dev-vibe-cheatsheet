@@ -584,7 +584,7 @@ export default function AiConfigPage() {
 
     const ideFlag = ide === "antigravity-ide" ? "antigravity" : ide;
 
-    return `npx @vanthiet/dev-vibe-cheatsheet --ide ${ideFlag} --tech ${techFlags.join(",")} --skills ${skillFlags.join(",")}`;
+    return `npx @vanthiet/dev-vibe --ide ${ideFlag} --tech ${techFlags.join(",")} --skills ${skillFlags.join(",")}`;
   }, [ide, language, database, framework, styling, testing]);
 
   const handleCopyCli = () => {

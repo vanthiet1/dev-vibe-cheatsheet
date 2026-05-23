@@ -1,5 +1,5 @@
 {
-  "name": "@vanthiet/dev-vibe-cheatsheet",
+  "name": "@vanthiet/dev-vibe",
   "version": "1.0.0",
   "description": "Dev-Vibe CLI Initializer for Antigravity rules, skills, agents and workflows",
   "main": "dist/index.js",
