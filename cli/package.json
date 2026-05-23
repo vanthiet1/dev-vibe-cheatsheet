@@ -1,0 +1,39 @@
+{
+  "name": "@vanthiet/dev-vibe-cheatsheet",
+  "version": "1.0.0",
+  "description": "Dev-Vibe CLI Initializer for Antigravity rules, skills, agents and workflows",
+  "main": "dist/index.js",
+  "bin": {
+    "dev-vibe": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "dev-vibe",
+    "antigravity",
+    "cursorrules",
+    "skills",
+    "agents",
+    "cli"
+  ],
+  "author": "vanthiet",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^11.1.0",
+    "prompts": "^2.4.2",
+    "ora": "^5.4.1",
+    "chalk": "^4.1.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0",
+    "@types/prompts": "^2.4.9"
+  }
+}

@@ -559,6 +559,39 @@ export default function AiConfigPage() {
   const [activeFile, setActiveFile] = useState(".agent/config-overview.md");
   const [contentLanguage, setContentLanguage] = useState<"en" | "vi">("vi");
   const [copied, setCopied] = useState(false);
+  const [cliCopied, setCliCopied] = useState(false);
+
+  // Dynamic CLI initialisation command generation based on selections
+  const cliCommand = useMemo(() => {
+    const techFlags: string[] = [];
+    if (language) techFlags.push(language);
+    
+    if (framework === "nextjs-app") techFlags.push("nextjs");
+    else if (framework === "react-vite") techFlags.push("vite");
+    else if (framework) techFlags.push(framework);
+
+    if (database) techFlags.push(database);
+    if (styling === "tailwind-v4") techFlags.push("tailwind");
+    else if (styling) techFlags.push(styling);
+    if (testing) techFlags.push(testing);
+
+    const skillFlags: string[] = ["clean-code", "vulnerability-scanner"];
+    if (database) skillFlags.push("database-design");
+    if (styling === "tailwind-v4") skillFlags.push("tailwind-patterns");
+    if (styling === "shadcn") skillFlags.push("frontend-design");
+    if (framework === "nextjs-app") skillFlags.push("nextjs-react-expert");
+    if (testing) skillFlags.push("testing-patterns");
+
+    const ideFlag = ide === "antigravity-ide" ? "antigravity" : ide;
+
+    return `npx @vanthiet/dev-vibe-cheatsheet --ide ${ideFlag} --tech ${techFlags.join(",")} --skills ${skillFlags.join(",")}`;
+  }, [ide, language, database, framework, styling, testing]);
+
+  const handleCopyCli = () => {
+    navigator.clipboard.writeText(cliCommand);
+    setCliCopied(true);
+    setTimeout(() => setCliCopied(false), 2000);
+  };
 
   // Scroll variables for Workspace Tree sidebar
   const treeContainerRef = useRef<HTMLDivElement>(null);
@@ -1080,6 +1113,55 @@ export default function AiConfigPage() {
           {/* Right Presentation Screen (Expanded to lg:col-span-9) */}
           <div className="lg:col-span-9 flex flex-col space-y-4">
             
+            {/* Dynamic Premium CLI Setup Command Block */}
+            <div className="bg-zinc-950/80 border border-zinc-800/80 rounded-xl p-4 md:p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-[0_4px_30px_rgba(0,0,0,0.4)] backdrop-blur relative overflow-hidden group">
+              {/* Inner glowing top-border */}
+              <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-violet-500/0 via-violet-500/30 to-violet-500/0" />
+              
+              <div className="space-y-1.5 max-w-full md:max-w-[45%]">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-2 w-2 relative">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  </span>
+                  <h4 className="text-xs font-bold text-zinc-200 uppercase tracking-wider flex items-center gap-1.5">
+                    ⚡ Cài đặt nhanh qua CLI / NPX
+                  </h4>
+                </div>
+                <p className="text-[11px] text-zinc-450 leading-relaxed">
+                  Tự động tải và cấu hình toàn bộ rules, skills đã chọn trực tiếp vào thư mục gốc của dự án.
+                </p>
+              </div>
+
+              {/* Glowing Terminal Code Block */}
+              <div className="flex items-center bg-zinc-900/60 border border-zinc-850/80 rounded-lg p-2.5 font-mono text-[11px] text-violet-300 w-full md:w-auto flex-grow max-w-full md:max-w-[55%] justify-between gap-4 shadow-inner relative group-hover:border-zinc-800 transition-all select-all">
+                <div className="overflow-x-auto whitespace-nowrap scrollbar-none flex-grow select-text pr-2">
+                  <span className="text-zinc-500 select-none mr-1.5">$</span>
+                  {cliCommand}
+                </div>
+                <button
+                  onClick={handleCopyCli}
+                  className={`px-3 py-1.5 rounded-md text-[10px] font-extrabold cursor-pointer transition-all duration-150 flex items-center gap-1 shrink-0 ${
+                    cliCopied
+                      ? "bg-emerald-950/60 border border-emerald-800/40 text-emerald-300 shadow-[0_0_10px_rgba(16,185,129,0.15)]"
+                      : "bg-zinc-950 border border-zinc-800 text-zinc-400 hover:bg-zinc-900 hover:border-zinc-700 hover:text-zinc-150 active:scale-95"
+                  }`}
+                >
+                  {cliCopied ? (
+                    <>
+                      <CheckIcon className="text-xs shrink-0" />
+                      <span>Đã copy</span>
+                    </>
+                  ) : (
+                    <>
+                      <CopyIcon className="text-xs shrink-0" />
+                      <span>Sao chép</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
             {/* Output File Switcher Tabs */}
             <div className="flex items-center gap-1.5 p-1 bg-zinc-900/60 border border-zinc-900 rounded-lg text-xs self-start overflow-x-auto max-w-full animate-fade-in">
               
