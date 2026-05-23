@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import logo from "../app/favicon.ico";
 
 // Custom Premium Icons
@@ -96,12 +97,53 @@ function DatabaseIcon({ className }: { className?: string }) {
   );
 }
 
+function TerminalIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      viewBox="0 0 24 24"
+      width="1em"
+      height="1em"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+      />
+    </svg>
+  );
+}
+
+function SparklesIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      viewBox="0 0 24 24"
+      width="1em"
+      height="1em"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L18 14l-6.857 2.286L9 23l-2.286-6.857L0 14l6.857-2.286L9 5z"
+      />
+    </svg>
+  );
+}
+
 interface HeaderProps {
   seeding?: boolean;
   onRunSeeding?: () => void;
 }
 
 export default function Header({ seeding = false, onRunSeeding }: HeaderProps) {
+  const pathname = usePathname();
   const [isDonateOpen, setIsDonateOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -150,66 +192,76 @@ export default function Header({ seeding = false, onRunSeeding }: HeaderProps) {
 
   return (
     <>
-      <header className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-40 px-4 md:px-6 py-3">
-        <div className="max-w-8xl mx-auto flex items-center justify-between gap-4">
+      <header className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-40 px-3 md:px-6 py-2.5">
+        <div className="max-w-8xl mx-auto flex items-center justify-between gap-2 md:gap-4">
           {/* Logo & Title */}
-          <div className="flex items-center gap-6 shrink-0">
-            <Link href="/" className="flex items-center gap-3 select-none hover:opacity-90 transition-opacity">
+          <div className="flex items-center gap-3 md:gap-6 shrink-0">
+            <Link href="/" className="flex items-center gap-2 select-none hover:opacity-90 transition-opacity">
               <Image
                 src={logo}
                 alt="Logo"
-                width={36}
-                height={36}
-                className="object-contain rounded-full border border-zinc-800/80 p-0.5 bg-zinc-900"
+                width={32}
+                height={32}
+                className="object-contain rounded-full border border-zinc-800/80 p-0.5 bg-zinc-900 shrink-0"
               />
-              <h1 className="text-zinc-50 font-bold text-sm md:text-base tracking-tight flex items-center gap-2">
-                <span className="hidden sm:inline bg-gradient-to-r from-zinc-150 to-zinc-350 bg-clip-text text-transparent">
+              <h1 className="hidden sm:flex text-zinc-50 font-bold text-sm tracking-tight items-center gap-2">
+                <span className="hidden md:inline bg-gradient-to-r from-zinc-100 via-zinc-200 to-zinc-400 bg-clip-text text-transparent uppercase">
                   DEV-VIBE-CHEATSHEET
                 </span>
-                <span className="sm:hidden bg-gradient-to-r from-zinc-150 to-zinc-350 bg-clip-text text-transparent">
+                <span className="md:hidden bg-gradient-to-r from-zinc-100 via-zinc-200 to-zinc-400 bg-clip-text text-transparent uppercase">
                   DEV-VIBE
                 </span>
               </h1>
             </Link>
 
             {/* Navigation Tabs */}
-            <nav className="hidden md:flex items-center gap-1 p-0.5 bg-zinc-950/80 border border-zinc-900 rounded-lg text-xs">
+            <nav className="flex items-center gap-1 p-0.5 bg-zinc-900/60 border border-zinc-800/60 rounded-xl text-xs backdrop-blur shadow-inner shrink-0">
               <Link
                 href="/"
-                className="px-3 py-1.5 rounded-md font-semibold text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900/40 transition-all duration-150"
+                className={`px-3 py-1.5 rounded-lg font-bold transition-all duration-200 flex items-center gap-1.5 ${
+                  pathname === "/"
+                    ? "bg-gradient-to-r from-blue-500/10 to-blue-600/10 text-blue-400 border border-blue-500/20 shadow-[0_0_12px_rgba(59,130,246,0.08)]"
+                    : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40 border border-transparent"
+                }`}
               >
-                Cheatsheet
+                <TerminalIcon className={`text-sm shrink-0 ${pathname === "/" ? "text-blue-400" : "text-zinc-500"}`} />
+                <span className="hidden sm:inline">Cheatsheet</span>
+                <span className="sm:hidden">Cheat</span>
               </Link>
               <Link
                 href="/ai-config"
-                className="px-3 py-1.5 rounded-md font-semibold text-violet-400 hover:text-violet-300 hover:bg-violet-950/15 border border-transparent hover:border-violet-900/30 transition-all duration-150 flex items-center gap-1.5"
+                className={`px-3 py-1.5 rounded-lg font-bold transition-all duration-200 flex items-center gap-1.5 ${
+                  pathname === "/ai-config"
+                    ? "bg-gradient-to-r from-violet-500/10 to-violet-600/10 text-violet-400 border border-violet-500/20 shadow-[0_0_12px_rgba(139,92,246,0.08)]"
+                    : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40 border border-transparent"
+                }`}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse shrink-0" />
-                <span>AI Rules Hub</span>
+                <SparklesIcon className={`text-sm shrink-0 ${pathname === "/ai-config" ? "text-violet-400" : "text-zinc-500"}`} />
+                <span className="hidden sm:inline">Cấu hình Agent Antigravity</span>
+                <span className="sm:hidden">Cấu hình Agent</span>
               </Link>
             </nav>
           </div>
 
           {/* Right Action Controls */}
-          <div className="flex items-center gap-2 md:gap-3">
+          <div className="flex items-center gap-1.5 md:gap-3 shrink-0">
             {/* Database Seed Button */}
             {isLocal && onRunSeeding && (
               <button
                 onClick={onRunSeeding}
                 disabled={seeding}
-                className="px-3 py-1.5 rounded-md text-xs font-semibold border border-zinc-800/80 bg-zinc-900/40 hover:bg-zinc-900 hover:border-zinc-700 text-zinc-300 disabled:opacity-50 transition-all duration-150 cursor-pointer flex items-center gap-1.5 active:scale-95 select-none shrink-0"
+                className="px-2.5 sm:px-3 py-1.5 rounded-md text-xs font-semibold border border-zinc-800/80 bg-zinc-900/40 hover:bg-zinc-900 hover:border-zinc-700 text-zinc-300 disabled:opacity-50 transition-all duration-150 cursor-pointer flex items-center gap-1.5 active:scale-95 select-none shrink-0"
                 title="Seed hoặc đặt lại dữ liệu cơ sở dữ liệu mẫu"
               >
                 {seeding ? (
                   <>
                     <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping" />
-                    <span>Seeding...</span>
+                    <span className="hidden sm:inline">Seeding...</span>
                   </>
                 ) : (
                   <>
-                    <DatabaseIcon className="text-zinc-450" />
+                    <DatabaseIcon className="text-zinc-450 text-sm sm:text-xs shrink-0" />
                     <span className="hidden sm:inline">Đặt lại Database</span>
-                    <span className="sm:hidden">Reset DB</span>
                   </>
                 )}
               </button>
@@ -218,10 +270,11 @@ export default function Header({ seeding = false, onRunSeeding }: HeaderProps) {
             {/* Premium Glowing Donate Button */}
             <button
               onClick={() => setIsDonateOpen(true)}
-              className="px-3 md:px-4 py-1.5 rounded-md text-xs font-bold bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.1)] hover:shadow-[0_0_20px_rgba(16,185,129,0.25)] transition-all duration-200 cursor-pointer flex items-center gap-1.5 active:scale-95 hover:-translate-y-0.5 select-none shrink-0"
+              className="px-2.5 sm:px-4 py-1.5 rounded-md text-xs font-bold bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.1)] hover:shadow-[0_0_20px_rgba(16,185,129,0.25)] transition-all duration-200 cursor-pointer flex items-center gap-1.5 active:scale-95 hover:-translate-y-0.5 select-none shrink-0"
+              title="Ủng hộ tác giả"
             >
               <HeartIcon className="text-sm text-red-100 animate-pulse shrink-0" />
-              <span>Ủng hộ tác giả</span>
+              <span className="hidden sm:inline">Ủng hộ tác giả</span>
             </button>
           </div>
         </div>

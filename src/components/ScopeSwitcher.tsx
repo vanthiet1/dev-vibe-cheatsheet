@@ -70,18 +70,33 @@ export default function ScopeSwitcher({
       <div className="grid grid-cols-2 gap-1.5 p-1.5 bg-zinc-950 border border-zinc-800/60 rounded-lg">
         {SCOPE_TABS.map((tab) => {
           const isActive = selectedGroup === tab.key;
+          
+          // Determine brand colors based on active state
+          let currentIconColor = "";
+          if (tab.key === "all") {
+            currentIconColor = isActive ? "text-zinc-50" : "text-zinc-500 group-hover:text-zinc-300";
+          } else if (tab.key === "git") {
+            currentIconColor = isActive ? "text-[#F05032]" : "text-[#F05032]/60 group-hover:text-[#F05032]";
+          } else if (tab.key === "terminal") {
+            currentIconColor = isActive ? "text-emerald-400" : "text-emerald-500/60 group-hover:text-emerald-400";
+          } else if (tab.key === "antigravity") {
+            currentIconColor = isActive ? "text-cyan-400" : "text-cyan-500/60 group-hover:text-cyan-400";
+          }
+
           return (
             <button
               key={tab.key}
               onClick={() => onGroupChange(tab.key)}
               aria-pressed={isActive}
-              className={`relative py-2 px-2.5 text-[11px] sm:text-xs font-semibold rounded-md transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 border ${
+              className={`relative py-2 px-2.5 text-[11px] sm:text-xs font-semibold rounded-md transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 border group ${
                 isActive
                   ? `${tab.activeClass} font-bold`
                   : `border-transparent text-zinc-500 ${tab.inactiveHover}`
               }`}
             >
-              {tab.icon}
+              <span className={`${currentIconColor} flex items-center shrink-0 transition-colors duration-150`}>
+                {tab.icon}
+              </span>
               <span className="truncate">{tab.label}</span>
             </button>
           );
