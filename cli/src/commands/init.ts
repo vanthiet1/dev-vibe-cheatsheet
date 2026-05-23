@@ -330,6 +330,69 @@ ${techString}
       } else {
         fs.writeFileSync(path.join(targetDir, rulesFilename), rulesContent, "utf8");
       }
+
+      // NOW: Generate the complete workspace tree for standard IDE mode
+      const agentDir = path.join(targetDir, ".agent");
+      const rulesFolder = path.join(agentDir, "rules");
+      const workflowsFolder = path.join(agentDir, "workflows");
+
+      if (!fs.existsSync(rulesFolder)) fs.mkdirSync(rulesFolder, { recursive: true });
+      if (!fs.existsSync(agentsDir)) fs.mkdirSync(agentsDir, { recursive: true });
+      if (!fs.existsSync(workflowsFolder)) fs.mkdirSync(workflowsFolder, { recursive: true });
+
+      // 1. Write config-overview.md
+      const configOverviewContent = `# Cấu hình Antigravity IDE (.agent/)
+Chào mừng bạn đến với trình cấu hình nâng cao dành cho Google Antigravity IDE.
+
+Thư mục \`.agent/\` đặt tại gốc dự án là nơi lưu trữ toàn bộ chỉ thị, kỹ năng và quy trình hoạt động để huấn luyện AI coding assistant hiểu sâu sắc về codebase của bạn.
+
+## 📁 Sơ đồ cấu trúc thư mục tối ưu:
+- **Rules (\`.agent/rules/\`):** Nơi chứa quy chuẩn hành vi cốt lõi \`GEMINI.md\`.
+- **Skills (\`.agent/skills/\`):** Các mô-đun kỹ năng phân rã thông minh (\`SKILL.md\`) giúp AI hoạt động chuẩn xác theo từng công nghệ mà không làm tràn bộ nhớ token.
+- **Agents (\`.agent/agents/\`):** Định nghĩa vai trò các tác nhân AI chuyên biệt (Subagents) như Debugger, Orchestrator, Database Architect...
+- **Workflows (\`.agent/workflows/\`):** Kịch bản tự động hóa các tác vụ lặp đi lặp lại như chạy test, xác minh code, điều phối tác nhân.
+`;
+      fs.writeFileSync(path.join(agentDir, "config-overview.md"), configOverviewContent, "utf8");
+
+      // 2. Download Rules/GEMINI.md
+      spinner.text = chalk.blue("Đang tải quy chuẩn cốt lõi GEMINI.md...");
+      try {
+        const geminiContent = await fetchRawContent(`${baseRepoUrl}/.agent/rules/GEMINI.md`);
+        fs.writeFileSync(path.join(rulesFolder, "GEMINI.md"), geminiContent, "utf8");
+      } catch (err) {
+        fs.writeFileSync(path.join(rulesFolder, "GEMINI.md"), rulesContent, "utf8");
+      }
+
+      // 3. Download default and dynamic stack-specific Agents
+      const targetAgents = ["debugger", "orchestrator"];
+      if (tech.includes("typescript") || tech.includes("nextjs")) {
+        targetAgents.push("frontend-specialist");
+      }
+      if (tech.includes("postgres") || tech.includes("mongodb")) {
+        targetAgents.push("database-architect");
+      }
+
+      for (const agent of targetAgents) {
+        spinner.text = chalk.blue(`Đang tải agent chuyên trách: ${chalk.bold(agent)}...`);
+        try {
+          const agentContent = await fetchRawContent(`${baseRepoUrl}/.agent/agents/${agent}.md`);
+          fs.writeFileSync(path.join(agentsDir, `${agent}.md`), agentContent, "utf8");
+        } catch (err) {
+          // ignore or fallback
+        }
+      }
+
+      // 4. Download standard Workflows
+      const workflows = ["debug", "test", "verify", "coordinate"];
+      for (const workflow of workflows) {
+        spinner.text = chalk.blue(`Đang tải workflow tự động: ${chalk.bold(workflow)}...`);
+        try {
+          const workflowContent = await fetchRawContent(`${baseRepoUrl}/.agent/workflows/${workflow}.md`);
+          fs.writeFileSync(path.join(workflowsFolder, `${workflow}.md`), workflowContent, "utf8");
+        } catch (err) {
+          // ignore or fallback
+        }
+      }
     }
 
     spinner.succeed(chalk.bold.green("Đã hoàn thành thiết lập Quy chuẩn Dev-Vibe thành công! 🎉"));
@@ -346,20 +409,22 @@ ${techString}
       skills.forEach((s) => {
         console.log(chalk.gray(`  └── .gemini/antigravity-cli/plugins/my-plugin/skills/${s}/SKILL.md`));
       });
+      console.log(chalk.gray(`- [Tạo mới] .gemini/antigravity-cli/plugins/my-plugin/agents/`));
     } else {
       let rulesFilename = ".antigravityrules";
       if (ide === "cursor") rulesFilename = ".cursorrules";
       else if (ide === "windsurf") rulesFilename = ".windsurfrules";
+      else if (ide === "vscode") rulesFilename = ".vscode/settings.json";
 
-      if (ide === "vscode") {
-        console.log(chalk.gray(`- [Tạo mới / Cập nhật] .vscode/settings.json`));
-      } else {
-        console.log(chalk.gray(`- [Tạo mới] ${rulesFilename}`));
-      }
+      console.log(chalk.gray(`- [Tạo mới] ${rulesFilename}`));
+      console.log(chalk.gray(`- [Tạo mới] .agent/config-overview.md`));
+      console.log(chalk.gray(`- [Tạo mới] .agent/rules/GEMINI.md`));
       console.log(chalk.gray(`- [Tạo mới] .agent/skills/`));
       skills.forEach((s) => {
         console.log(chalk.gray(`  └── .agent/skills/${s}/SKILL.md`));
       });
+      console.log(chalk.gray(`- [Tạo mới] .agent/agents/ (debugger, orchestrator, v.v...)`));
+      console.log(chalk.gray(`- [Tạo mới] .agent/workflows/ (debug, test, verify, coordinate)`));
     }
 
     console.log(chalk.bold.yellow("\n💡 Gợi ý tiếp theo:"));
@@ -367,7 +432,7 @@ ${techString}
     if (isCliMode) {
       console.log(chalk.white(`2. Các plugin, rules và hooks của Antigravity CLI đã sẵn sàng trong thư mục \`.gemini/antigravity-cli/\`!`));
     } else {
-      console.log(chalk.white(`2. AI sẽ tự động đọc quy chuẩn skills từ thư mục \`.agent/skills/\` để lập trình đúng ý bạn nhất!\n`));
+      console.log(chalk.white(`2. AI sẽ tự động đọc quy chuẩn từ thư mục \`.agent/\` (Rules, Skills, Agents, Workflows) để lập trình đúng ý bạn nhất!\n`));
     }
 
   } catch (error: any) {
