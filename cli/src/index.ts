@@ -13,7 +13,7 @@ program
   .option("-t, --tech <techs>", "Comma-separated list of technologies (e.g., nextjs,typescript)")
   .option("-s, --skills <skills>", "Comma-separated list of skills (e.g., clean-code,database-design)")
   .option("-i, --ide <ide>", "Target IDE rules (cursor, windsurf, vscode, antigravity)")
-  .action(async (options) => {
+  .action(async (options: { tech?: string; skills?: string; ide?: string }) => {
     try {
       await initCommand({
         tech: options.tech ? options.tech.split(",").map((s: string) => s.trim().toLowerCase()) : undefined,

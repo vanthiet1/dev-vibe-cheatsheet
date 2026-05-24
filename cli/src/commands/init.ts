@@ -44,15 +44,51 @@ const AVAILABLE_TECHS = [
 
 // Available modular skills
 const AVAILABLE_SKILLS = [
+  { title: "API Patterns (api-patterns)", value: "api-patterns" },
+  { title: "App Builder (app-builder)", value: "app-builder" },
+  { title: "Architecture (architecture)", value: "architecture" },
+  { title: "Bash/Linux Terminal Patterns (bash-linux)", value: "bash-linux" },
+  { title: "Batch Operations (batch-operations)", value: "batch-operations" },
+  { title: "Behavioral Modes (behavioral-modes)", value: "behavioral-modes" },
+  { title: "Brainstorming Protocol (brainstorming)", value: "brainstorming" },
   { title: "Pragmatic Clean Code (clean-code)", value: "clean-code" },
+  { title: "Code Review Checklist (code-review-checklist)", value: "code-review-checklist" },
+  { title: "Code Review Graph (code-review-graph)", value: "code-review-graph" },
+  { title: "Context Compression (context-compression)", value: "context-compression" },
+  { title: "Coordinator Mode (coordinator-mode)", value: "coordinator-mode" },
   { title: "Database Architecture (database-design)", value: "database-design" },
+  { title: "Deployment Procedures (deployment-procedures)", value: "deployment-procedures" },
+  { title: "Documentation Templates (documentation-templates)", value: "documentation-templates" },
   { title: "Premium UI/UX Design (frontend-design)", value: "frontend-design" },
-  { title: "OWASP Security Scanner (vulnerability-scanner)", value: "vulnerability-scanner" },
-  { title: "Advanced Testing Pyramid (testing-patterns)", value: "testing-patterns" },
-  { title: "Tailwind CSS v4 Patterns (tailwind-patterns)", value: "tailwind-patterns" },
+  { title: "Game Development Orchestrator (game-development)", value: "game-development" },
+  { title: "Generative Engine Optimization (geo-fundamentals)", value: "geo-fundamentals" },
+  { title: "Internationalization & Localization (i18n-localization)", value: "i18n-localization" },
+  { title: "Intelligent Routing (intelligent-routing)", value: "intelligent-routing" },
+  { title: "Lint and Validate (lint-and-validate)", value: "lint-and-validate" },
+  { title: "MCP Server Builder (mcp-builder)", value: "mcp-builder" },
+  { title: "Memory System (memory-system)", value: "memory-system" },
+  { title: "Mobile-First Design (mobile-design)", value: "mobile-design" },
   { title: "Next.js App Router Specialist (nextjs-react-expert)", value: "nextjs-react-expert" },
+  { title: "Node.js Best Practices (nodejs-best-practices)", value: "nodejs-best-practices" },
+  { title: "Parallel Multi-Agents (parallel-agents)", value: "parallel-agents" },
   { title: "Core Web Vitals Profiler (performance-profiling)", value: "performance-profiling" },
+  { title: "Structured Plan Writing (plan-writing)", value: "plan-writing" },
+  { title: "PowerShell Windows Patterns (powershell-windows)", value: "powershell-windows" },
+  { title: "Python Development Patterns (python-patterns)", value: "python-patterns" },
+  { title: "Red Team Tactics (red-team-tactics)", value: "red-team-tactics" },
+  { title: "Rust Pro Specialist (rust-pro)", value: "rust-pro" },
+  { title: "SEO Fundamentals (seo-fundamentals)", value: "seo-fundamentals" },
+  { title: "Server Process Management (server-management)", value: "server-management" },
+  { title: "Simplify Code (simplify-code)", value: "simplify-code" },
+  { title: "Skillify Automated Workflows (skillify)", value: "skillify" },
   { title: "Systematic Debugger (systematic-debugging)", value: "systematic-debugging" },
+  { title: "Tailwind CSS v4 Patterns (tailwind-patterns)", value: "tailwind-patterns" },
+  { title: "Test-Driven Development (tdd-workflow)", value: "tdd-workflow" },
+  { title: "Advanced Testing Pyramid (testing-patterns)", value: "testing-patterns" },
+  { title: "Automated Verification (verify-changes)", value: "verify-changes" },
+  { title: "OWASP Vulnerability Scanner (vulnerability-scanner)", value: "vulnerability-scanner" },
+  { title: "Web Design Guidelines (web-design-guidelines)", value: "web-design-guidelines" },
+  { title: "Playwright WebApp Testing (webapp-testing)", value: "webapp-testing" }
 ];
 
 export async function initCommand(options: InitOptions) {
@@ -382,16 +418,34 @@ Thư mục \`.agent/\` đặt tại gốc dự án là nơi lưu trữ toàn b�
         }
       }
 
-      // 4. Download standard Workflows
-      const workflows = ["debug", "test", "verify", "coordinate"];
-      for (const workflow of workflows) {
-        spinner.text = chalk.blue(`Đang tải workflow tự động: ${chalk.bold(workflow)}...`);
-        try {
-          const workflowContent = await fetchRawContent(`${baseRepoUrl}/.agent/workflows/${workflow}.md`);
-          fs.writeFileSync(path.join(workflowsFolder, `${workflow}.md`), workflowContent, "utf8");
-        } catch (err) {
-          // ignore or fallback
-        }
+    }
+
+    // 4. Download standard Workflows for both IDE and CLI configurations
+    const workflowsDir = isCliMode
+      ? path.join(targetDir, ".gemini", "antigravity-cli", "workflows")
+      : path.join(targetDir, ".agent", "workflows");
+
+    if (!fs.existsSync(workflowsDir)) {
+      fs.mkdirSync(workflowsDir, { recursive: true });
+    }
+
+    const workflows = [
+      { name: "feat", source: "create" },
+      { name: "refactor", source: "enhance" },
+      { name: "plan", source: "plan" },
+      { name: "debug", source: "debug" },
+      { name: "test", source: "test" },
+      { name: "verify", source: "verify" },
+      { name: "ui-ux", source: "ui-ux-pro-max" }
+    ];
+
+    for (const w of workflows) {
+      spinner.text = chalk.blue(`Đang tải workflow tự động: ${chalk.bold(w.name)}...`);
+      try {
+        const workflowContent = await fetchRawContent(`${baseRepoUrl}/.agent/workflows/${w.source}.md`);
+        fs.writeFileSync(path.join(workflowsDir, `${w.name}.md`), workflowContent, "utf8");
+      } catch (err) {
+        // ignore or fallback
       }
     }
 
@@ -410,6 +464,7 @@ Thư mục \`.agent/\` đặt tại gốc dự án là nơi lưu trữ toàn b�
         console.log(chalk.gray(`  └── .gemini/antigravity-cli/plugins/my-plugin/skills/${s}/SKILL.md`));
       });
       console.log(chalk.gray(`- [Tạo mới] .gemini/antigravity-cli/plugins/my-plugin/agents/`));
+      console.log(chalk.gray(`- [Tạo mới] .gemini/antigravity-cli/workflows/ (feat, refactor, plan, debug, test, verify, ui-ux)`));
     } else {
       let rulesFilename = ".antigravityrules";
       if (ide === "cursor") rulesFilename = ".cursorrules";
@@ -424,7 +479,7 @@ Thư mục \`.agent/\` đặt tại gốc dự án là nơi lưu trữ toàn b�
         console.log(chalk.gray(`  └── .agent/skills/${s}/SKILL.md`));
       });
       console.log(chalk.gray(`- [Tạo mới] .agent/agents/ (debugger, orchestrator, v.v...)`));
-      console.log(chalk.gray(`- [Tạo mới] .agent/workflows/ (debug, test, verify, coordinate)`));
+      console.log(chalk.gray(`- [Tạo mới] .agent/workflows/ (feat, refactor, plan, debug, test, verify, ui-ux)`));
     }
 
     console.log(chalk.bold.yellow("\n💡 Gợi ý tiếp theo:"));

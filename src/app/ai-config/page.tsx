@@ -164,6 +164,153 @@ const buildTree = (files: { path: string; label: string }[]): TreeNode[] => {
   return root;
 };
 
+// High-fidelity rules content from .agent/rules/GEMINI.md for visual simulator
+const GEMINI_RULES_CONTENT = `---
+trigger: always_on
+---
+
+# GEMINI.md - AG Kit
+
+> This file defines how the AI behaves in this workspace.
+
+---
+
+## CRITICAL: AGENT & SKILL PROTOCOL (START HERE)
+
+> **MANDATORY:** You MUST read the appropriate agent file and its skills BEFORE performing any implementation. This is the highest priority rule.
+
+### 1. Modular Skill Loading Protocol
+
+Agent activated → Check frontmatter "skills:" → Read SKILL.md (INDEX) → Read specific sections.
+
+- **Selective Reading:** DO NOT read ALL files in a skill folder. Read \`SKILL.md\` first, then only read sections matching the user's request.
+- **Rule Priority:** P0 (GEMINI.md) > P1 (Agent .md) > P2 (SKILL.md). All rules are binding.
+
+### 2. Enforcement Protocol
+
+1. **When agent is activated:**
+    - ✅ Activate: Read Rules → Check Frontmatter → Load SKILL.md → Apply All.
+2. **Forbidden:** Never skip reading agent rules or skill instructions. "Read → Understand → Apply" is mandatory.
+
+---
+
+## 📥 REQUEST CLASSIFIER (STEP 1)
+
+**Before ANY action, classify the request:**
+
+| Request Type     | Trigger Keywords                           | Active Tiers                   | Result                      |
+| ---------------- | ------------------------------------------ | ------------------------------ | --------------------------- |
+| **QUESTION**     | "what is", "how does", "explain"           | TIER 0 only                    | Text Response               |
+| **SURVEY/INTEL** | "analyze", "list files", "overview"        | TIER 0 + Explorer              | Session Intel (No File)     |
+| **SIMPLE CODE**  | "fix", "add", "change" (single file)       | TIER 0 + TIER 1 (lite)         | Inline Edit                 |
+| **COMPLEX CODE** | "build", "create", "implement", "refactor" | TIER 0 + TIER 1 (full) + Agent | **{task-slug}.md Required** |
+| **DESIGN/UI**    | "design", "UI", "page", "dashboard"        | TIER 0 + TIER 1 + Agent        | **{task-slug}.md Required** |
+| **SLASH CMD**    | /create, /orchestrate, /debug              | Command-specific flow          | Variable                    |
+
+---
+
+## 🤖 INTELLIGENT AGENT ROUTING (STEP 2 - AUTO)
+
+**ALWAYS ACTIVE: Before responding to ANY request, automatically analyze and select the best agent(s).**
+
+> 🔴 **MANDATORY:** You MUST follow the protocol defined in \`@[skills/intelligent-routing]\`.
+
+### Auto-Selection Protocol
+
+1. **Analyze (Silent)**: Detect domains (Frontend, Backend, Security, etc.) from user request.
+2. **Select Agent(s)**: Choose the most appropriate specialist(s).
+3. **Inform User**: Concisely state which expertise is being applied.
+4. **Apply**: Generate response using the selected agent's persona and rules.
+
+### Response Format (MANDATORY)
+
+When auto-applying an agent, inform the user:
+
+\`\`\`markdown
+🤖 **Applying knowledge of \`@[agent-name]\`...**
+
+[Continue with specialized response]
+\`\`\`
+
+**Rules:**
+
+1. **Silent Analysis**: No verbose meta-commentary ("I am analyzing...").
+2. **Respect Overrides**: If user mentions \`@agent\`, use it.
+3. **Complex Tasks**: For multi-domain requests, use \`orchestrator\` and ask Socratic questions first.
+
+### ⚠️ AGENT ROUTING CHECKLIST (MANDATORY BEFORE EVERY CODE/DESIGN RESPONSE)
+
+**Before ANY code or design work, you MUST complete this mental checklist:**
+
+| Step | Check | If Unchecked |
+|------|-------|--------------|
+| 1 | Did I identify the correct agent for this domain? | → STOP. Analyze request domain first. |
+| 2 | Did I READ the agent's \`.md\` file (or recall its rules)? | → STOP. Open \`.agent/agents/{agent}.md\` |
+| 3 | Did I announce \`🤖 Applying knowledge of @[agent]...\`? | → STOP. Add announcement before response. |
+| 4 | Did I load required skills from agent's frontmatter? | → STOP. Check \`skills:\` field and read them. |
+
+**Failure Conditions:**
+
+- ❌ Writing code without identifying an agent = **PROTOCOL VIOLATION**
+- ❌ Skipping the announcement = **USER CANNOT VERIFY AGENT WAS USED**
+- ❌ Ignoring agent-specific rules (e.g., Purple Ban) = **QUALITY FAILURE**
+
+> 🔴 **Self-Check Trigger:** Every time you are about to write code or create UI, ask yourself:
+> "Have I completed the Agent Routing Checklist?" If NO → Complete it first.
+
+---
+
+## TIER 0: UNIVERSAL RULES (Always Active)
+
+### 🌐 Language Handling
+
+When user's prompt is NOT in English:
+
+1. **Internally translate** for better comprehension
+2. **Respond in user's language** - match their communication
+3. **Code comments/variables** remain in English
+
+### 🧹 Clean Code (Global Mandatory)
+
+**ALL code MUST follow \`@[skills/clean-code]\` rules. No exceptions.**
+
+- **Code**: Concise, direct, no over-engineering. Self-documenting.
+- **Testing**: Mandatory. Pyramid (Unit > Int > E2E) + AAA Pattern.
+- **Performance**: Measure first. Adhere to 2025 standards (Core Web Vitals).
+- **Infra/Safety**: 5-Phase Deployment. Verify secrets security.
+
+### 📁 File Dependency Awareness
+
+**Before modifying ANY file:**
+
+1. Check \`CODEBASE.md\` → File Dependencies
+2. Identify dependent files
+3. Update ALL affected files together
+
+### 🗺️ System Map Read
+
+> 🔴 **MANDATORY:** Read \`ARCHITECTURE.md\` at session start to understand Agents, Skills, and Scripts.
+
+**Path Awareness:**
+
+- Agents: \`.agent/\` (Project)
+- Skills: \`.agent/skills/\` (Project)
+- Runtime Scripts: \`.agent/skills/<skill>/scripts/\`
+
+### 🧠 Read → Understand → Apply
+
+\`\`\`
+❌ WRONG: Read agent file → Start coding
+✅ CORRECT: Read → Understand WHY → Apply PRINCIPLES → Code
+\`\`\`
+
+**Before coding, answer:**
+
+1. What is the GOAL of this agent/skill?
+2. What PRINCIPLES must I apply?
+3. How does this DIFFER from generic output?
+`;
+
 // High-fidelity interactive VS Code workspace simulation with visual auto-gliding mouse pointer
 function VsCodeSimulator({ 
   framework, 
@@ -192,6 +339,16 @@ function VsCodeSimulator({
   // Laser editor compiling sweep state
   const [editorText, setEditorText] = useState("");
   const [showLaser, setShowLaser] = useState(false);
+
+  const editorContainerRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll the typing visual terminal/editor panel
+  useEffect(() => {
+    const el = editorContainerRef.current;
+    if (el) {
+      el.scrollTop = el.scrollHeight;
+    }
+  }, [editorText]);
 
   // Visual Autopilot sequence runner inside simulator
   useEffect(() => {
@@ -289,27 +446,32 @@ function VsCodeSimulator({
       await new Promise(resolve => setTimeout(resolve, 1200));
       if (!active) return;
 
-      // Phase 10: Laser compile sweep and print out behavior rules inside VS Code editor
+      // Phase 10: Character-by-character typing with realistic human-like speed variation
       setShowLaser(true);
-      const lines = [
-        `# Antigravity behaviour specifications (GEMINI.md)`,
-        `# Primary stack loaded: ${framework} (${language})`,
-        ``,
-        `## Universal direct rules:`,
-        `- Restrict function blocks to a maximum of 25 lines.`,
-        `- Reuse existing modular abstractions before writing new code.`,
-        `- Enforce zero-exception TypeScript type safety.`
-      ];
+      const fullContent = GEMINI_RULES_CONTENT;
       
       let typedEditor = "";
-      for (const line of lines) {
+      for (let i = 0; i < fullContent.length; i++) {
         if (!active) return;
-        typedEditor += line + "\n";
+        const char = fullContent[i];
+        typedEditor += char;
         setEditorText(typedEditor);
-        await new Promise(resolve => setTimeout(resolve, 250));
+
+        // Realistic speed: slower at newlines/punctuation, faster for normal chars
+        let delay: number;
+        if (char === "\n") {
+          delay = 80 + Math.random() * 100; // pause at line breaks
+        } else if (".,;:!?".includes(char)) {
+          delay = 60 + Math.random() * 80;  // slight pause after punctuation
+        } else if (char === " ") {
+          delay = 15 + Math.random() * 25;  // fast space
+        } else {
+          delay = 18 + Math.random() * 32;  // normal keystroke ~18-50ms
+        }
+        await new Promise(resolve => setTimeout(resolve, delay));
       }
       
-      await new Promise(resolve => setTimeout(resolve, 400));
+      await new Promise(resolve => setTimeout(resolve, 600));
       setShowLaser(false);
 
       // Loop cooldown delay before resetting
@@ -527,16 +689,25 @@ function VsCodeSimulator({
           </div>
 
           {/* Interactive laser compilation sweep sweep block */}
-          <div className="flex-grow font-mono text-[11px] leading-relaxed text-zinc-300 overflow-y-hidden whitespace-pre relative border border-zinc-900/60 rounded bg-[#151515] p-4 select-text">
+          <div 
+            ref={editorContainerRef}
+            className="flex-grow font-mono text-[11px] leading-relaxed text-zinc-300 overflow-y-auto max-h-[360px] whitespace-pre relative border border-zinc-900/60 rounded bg-[#151515] p-4 select-text scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent"
+          >
             {showLaser && (
               <div className="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-violet-500 to-transparent animate-pulse shadow-[0_0_15px_rgba(139,92,246,0.8)]" style={{ top: "35%" }} />
             )}
             
-            {editorText ? editorText : (
+            {editorText ? (
+              <>
+                {editorText}
+                {showLaser && (
+                  <span className="inline-block w-[2px] h-[14px] bg-zinc-200 align-middle animate-[blink_1s_step-end_infinite] ml-px" />
+                )}
+              </>
+            ) : (
               <span className="text-zinc-600 italic select-none">Đang chờ khởi động quy chuẩn hành vi từ Explorer...</span>
             )}
           </div>
-
         </div>
 
       </div>
@@ -584,7 +755,7 @@ export default function AiConfigPage() {
 
     const ideFlag = ide === "antigravity-ide" ? "antigravity" : ide;
 
-    return `npx @vanthiet/dev-vibe --ide ${ideFlag} --tech ${techFlags.join(",")} --skills ${skillFlags.join(",")}`;
+    return `npx @vanthiet/dev-vibe@latest --ide ${ideFlag} --tech ${techFlags.join(",")} --skills ${skillFlags.join(",")}`;
   }, [ide, language, database, framework, styling, testing]);
 
   const handleCopyCli = () => {
@@ -643,50 +814,61 @@ export default function AiConfigPage() {
     const prefix = isCli ? ".gemini/antigravity-cli/" : ".agent/";
     const pluginPrefix = isCli ? "plugins/my-plugin/" : "";
 
-    // Base Skills (always present)
-    dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/clean-code/SKILL.md`, label: "clean-code/SKILL.md" });
-    dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/security-scanner/SKILL.md`, label: "security-scanner/SKILL.md" });
-    dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/seo-fundamentals/SKILL.md`, label: "seo-fundamentals/SKILL.md" });
-    dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/i18n-localization/SKILL.md`, label: "i18n-localization/SKILL.md" });
-    dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/powershell-windows/SKILL.md`, label: "powershell-windows/SKILL.md" });
-    dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/git-workflows/SKILL.md`, label: "git-workflows/SKILL.md" });
-    dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/performance-profiling/SKILL.md`, label: "performance-profiling/SKILL.md" });
-    dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/clean-architecture/SKILL.md`, label: "clean-architecture/SKILL.md" });
+    // All 45 Skills list from .agent/skills
+    const allSkillsList = [
+      "api-patterns",
+      "app-builder",
+      "architecture",
+      "bash-linux",
+      "batch-operations",
+      "behavioral-modes",
+      "brainstorming",
+      "clean-code",
+      "code-review-checklist",
+      "code-review-graph",
+      "context-compression",
+      "coordinator-mode",
+      "database-design",
+      "deployment-procedures",
+      "documentation-templates",
+      "frontend-design",
+      "game-development",
+      "geo-fundamentals",
+      "i18n-localization",
+      "intelligent-routing",
+      "lint-and-validate",
+      "mcp-builder",
+      "memory-system",
+      "mobile-design",
+      "nextjs-react-expert",
+      "nodejs-best-practices",
+      "parallel-agents",
+      "performance-profiling",
+      "plan-writing",
+      "powershell-windows",
+      "python-patterns",
+      "red-team-tactics",
+      "rust-pro",
+      "seo-fundamentals",
+      "server-management",
+      "simplify-code",
+      "skillify",
+      "systematic-debugging",
+      "tailwind-patterns",
+      "tdd-workflow",
+      "testing-patterns",
+      "verify-changes",
+      "vulnerability-scanner",
+      "web-design-guidelines",
+      "webapp-testing"
+    ];
 
-    // Dynamic Stack Skills
-    if (language === "typescript") {
-      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/typescript-best-practices/SKILL.md`, label: "typescript-best-practices/SKILL.md" });
-    } else if (language === "python") {
-      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/python-patterns/SKILL.md`, label: "python-patterns/SKILL.md" });
-    } else if (language === "go") {
-      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/go-standards/SKILL.md`, label: "go-standards/SKILL.md" });
-    } else if (language === "rust") {
-      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/rust-performance/SKILL.md`, label: "rust-performance/SKILL.md" });
-    } else if (language === "csharp") {
-      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/csharp-net-practices/SKILL.md`, label: "csharp-net-practices/SKILL.md" });
-    }
-
-    if (database === "postgres") {
-      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/postgres-optimization/SKILL.md`, label: "postgres-optimization/SKILL.md" });
-    } else if (database === "mongodb") {
-      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/mongodb-indexing/SKILL.md`, label: "mongodb-indexing/SKILL.md" });
-    } else if (database === "sqlite") {
-      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/sqlite-embedded-db/SKILL.md`, label: "sqlite-embedded-db/SKILL.md" });
-    } else if (database === "redis") {
-      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/redis-caching-patterns/SKILL.md`, label: "redis-caching-patterns/SKILL.md" });
-    }
-
-    if (styling === "tailwind-v4") {
-      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/tailwind-patterns/SKILL.md`, label: "tailwind-patterns/SKILL.md" });
-    } else if (styling === "shadcn") {
-      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/shadcn-ui-components/SKILL.md`, label: "shadcn-ui-components/SKILL.md" });
-    }
-
-    if (testing === "jest") {
-      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/jest-unit-tests/SKILL.md`, label: "jest-unit-tests/SKILL.md" });
-    } else if (testing === "playwright") {
-      dynamicSkills.push({ path: `${prefix}${pluginPrefix}skills/playwright-e2e/SKILL.md`, label: "playwright-e2e/SKILL.md" });
-    }
+    allSkillsList.forEach((skill) => {
+      dynamicSkills.push({
+        path: `${prefix}${pluginPrefix}skills/${skill}/SKILL.md`,
+        label: `${skill}/SKILL.md`
+      });
+    });
 
     // Base Agents (always present)
     dynamicAgents.push({ path: `${prefix}${pluginPrefix}agents/debugger.md`, label: "debugger.md" });
@@ -721,6 +903,16 @@ export default function AiConfigPage() {
       dynamicRules.push({ path: ".agent/rules/GEMINI.md", label: "rules/GEMINI.md" });
     }
 
+    const dynamicWorkflows = [
+      { path: `${prefix}workflows/feat.md`, label: "feat.md" },
+      { path: `${prefix}workflows/refactor.md`, label: "refactor.md" },
+      { path: `${prefix}workflows/plan.md`, label: "plan.md" },
+      { path: `${prefix}workflows/debug.md`, label: "debug.md" },
+      { path: `${prefix}workflows/test.md`, label: "test.md" },
+      { path: `${prefix}workflows/verify.md`, label: "verify.md" },
+      { path: `${prefix}workflows/ui-ux.md`, label: "ui-ux.md" }
+    ];
+
     if (isCli) {
       return {
         config: [],
@@ -735,7 +927,7 @@ export default function AiConfigPage() {
         ],
         skills: dynamicSkills,
         agents: dynamicAgents,
-        workflows: [] // Not used in CLI
+        workflows: dynamicWorkflows
       };
     }
 
@@ -747,12 +939,7 @@ export default function AiConfigPage() {
       cli: [], // Not used in IDE
       skills: dynamicSkills,
       agents: dynamicAgents,
-      workflows: [
-        { path: ".agent/workflows/debug.md", label: "debug.md" },
-        { path: ".agent/workflows/test.md", label: "test.md" },
-        { path: ".agent/workflows/verify.md", label: "verify.md" },
-        { path: ".agent/workflows/coordinate.md", label: "coordinate.md" }
-      ]
+      workflows: dynamicWorkflows
     };
   }, [ide, language, database, framework, styling, testing]);
 
