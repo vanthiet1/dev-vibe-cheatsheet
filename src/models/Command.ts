@@ -1,21 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-
-export interface IParameterExplanation {
-  param: string;
-  description: string;
-}
-
-export interface IExample {
-  title: string;
-  command: string;
-  description?: string;
-}
-
-export interface IWorkflow {
-  description: string;
-  content: string;
-  terminalScript?: string[];
-}
+import { IParameterExplanation, IExample, IWorkflow } from '@/types';
 
 export interface ICommand extends Document {
   categoryId: mongoose.Types.ObjectId;
@@ -31,6 +15,7 @@ export interface ICommand extends Document {
   createdAt: Date;
   updatedAt: Date;
 }
+
 
 const CommandSchema: Schema = new Schema(
   {

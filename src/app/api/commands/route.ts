@@ -2,9 +2,9 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import { Command } from '@/models/Command';
 import { getCachedCommands, setCachedCommands, invalidateCache } from '@/lib/dataCache';
-import { getClientIp, rateLimit } from '@/lib/rateLimiter';
 import { ICommand } from '@/types';
-import { validateApiKey, validateCsrf, sanitizeObject, encodeResponse } from '@/lib/security';
+import { encodeResponse } from '@/lib/security';
+import { withApiGuards } from '@/lib/apiHandler';
 
 export async function GET(request: Request) {
   try {
@@ -40,43 +40,8 @@ export async function GET(request: Request) {
   }
 }
 
-export async function POST(request: Request) {
-  try {
-    const ip = getClientIp(request);
-    const limitResult = rateLimit(ip, 'post_command', 5, 60 * 1000);
-
-    const rlHeaders = {
-      'X-RateLimit-Limit': limitResult.limit.toString(),
-      'X-RateLimit-Remaining': limitResult.remaining.toString(),
-      'X-RateLimit-Reset': limitResult.resetTime.toString(),
-    };
-
-    if (!limitResult.success) {
-      return NextResponse.json(
-        { success: false, error: 'Thao tác quá nhanh! Vui lòng thử lại sau 1 phút.' },
-        { status: 429, headers: rlHeaders }
-      );
-    }
-
-    if (!validateCsrf(request)) {
-      return NextResponse.json(
-        { success: false, error: 'Yêu cầu bị chặn bởi chính sách CSRF!' },
-        { status: 403, headers: rlHeaders }
-      );
-    }
-
-    if (!validateApiKey(request)) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized: API Key không hợp lệ hoặc bị thiếu!' },
-        { status: 401, headers: rlHeaders }
-      );
-    }
-
-    await dbConnect();
-    const rawBody = await request.json();
-
-    const body = sanitizeObject(rawBody);
-
+export const POST = withApiGuards<any>(
+  async (request, body, rlHeaders) => {
     const requiredFields = ['categoryId', 'title', 'slug', 'command', 'description'];
     for (const field of requiredFields) {
       if (!body[field]) {
@@ -95,9 +60,8 @@ export async function POST(request: Request) {
     };
 
     return NextResponse.json(responsePayload, { status: 201, headers: rlHeaders });
-  } catch (error) {
-    const err = error as Error;
-    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
-  }
-}
+  },
+  { rateLimitKey: 'post_command' }
+);
+
 

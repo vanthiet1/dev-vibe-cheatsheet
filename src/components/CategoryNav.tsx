@@ -1,5 +1,6 @@
 import type { ICategory, ICommand } from "@/types";
 import { getCategoryIcon } from "@/utils/categoryHelpers";
+import { GitIcon, TerminalIcon, LightningIcon } from "@/components/icons";
 
 interface CategoryGroupProps {
   label: string;
@@ -167,13 +168,7 @@ export default function CategoryNav({
           <CategoryGroup
             label="Git & GitHub"
             labelIcon={
-              <svg
-                className="h-4 w-4 shrink-0 text-[#F05032]"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M22.38 11.41L12.59 1.62c-.78-.78-2.05-.78-2.83 0L7.75 3.63l3.29 3.29c.8-.26 1.71-.06 2.33.56.62.62.82 1.53.56 2.33l3.29 3.29c.8-.26 1.71-.06 2.33.56.78.78.78 2.05 0 2.83-.78.78-2.05.78-2.83 0-.62-.62-.82-1.53-.56-2.33l-3.29-3.29c-.26.26-.61.43-.99.49l-.01.01c-.13 3.19-.13 3.19-.07 3.3l3.28 3.28c.78.78.78 2.05 0 2.83-.78.78-2.05.78-2.83 0-.78-.78-.78-2.05 0-2.83l-3.28-3.28c-.06-.11-.06-.11-.06-3.32-.38-.06-.73-.23-.99-.49-.62-.62-.82-1.53-.56-2.33L6.96 6.84 1.62 12.18c-.78.78-.78 2.05 0 2.83l9.79 9.79c.78.78 2.05.78 2.83 0l9.79-9.79c.79-.79.79-2.05.35-2.6z" />
-              </svg>
+              <GitIcon className="h-4 w-4 shrink-0 text-[#F05032]" />
             }
             borderColor="border-blue-500/50"
             categories={gitCategories}
@@ -191,19 +186,7 @@ export default function CategoryNav({
             <CategoryGroup
               label="Terminal & CMD"
               labelIcon={
-                <svg
-                  className="h-4 w-4 shrink-0 text-emerald-500"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2.2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
+                <TerminalIcon className="h-4 w-4 shrink-0 text-emerald-500" />
               }
               borderColor="border-emerald-500/50"
               categories={terminalCategories}
@@ -222,19 +205,7 @@ export default function CategoryNav({
             <CategoryGroup
               label="Antigravity"
               labelIcon={
-                <svg
-                  className="h-4 w-4 shrink-0 text-cyan-400 animate-pulse"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2.2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 3L2 12h10L8 21l14-9H12l4-9z"
-                  />
-                </svg>
+                <LightningIcon className="h-4 w-4 shrink-0 text-cyan-400 animate-pulse" />
               }
               borderColor="border-cyan-500/50"
               categories={antigravityCategories}
