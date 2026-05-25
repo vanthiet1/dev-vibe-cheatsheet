@@ -661,29 +661,8 @@ export default function AiConfigPage() {
 
   // Dynamic CLI initialisation command generation based on selections
   const cliCommand = useMemo(() => {
-    const techFlags: string[] = [];
-    if (language) techFlags.push(language);
-    
-    if (framework === "nextjs-app") techFlags.push("nextjs");
-    else if (framework === "react-vite") techFlags.push("vite");
-    else if (framework) techFlags.push(framework);
-
-    if (database) techFlags.push(database);
-    if (styling === "tailwind-v4") techFlags.push("tailwind");
-    else if (styling) techFlags.push(styling);
-    if (testing) techFlags.push(testing);
-
-    const skillFlags: string[] = ["clean-code", "vulnerability-scanner"];
-    if (database) skillFlags.push("database-design");
-    if (styling === "tailwind-v4") skillFlags.push("tailwind-patterns");
-    if (styling === "shadcn") skillFlags.push("frontend-design");
-    if (framework === "nextjs-app") skillFlags.push("nextjs-react-expert");
-    if (testing) skillFlags.push("testing-patterns");
-
-    const ideFlag = ide === "antigravity-ide" ? "antigravity" : ide;
-
-    return `npx @vanthiet/dev-vibe@latest --ide ${ideFlag} --tech ${techFlags.join(",")} --skills ${skillFlags.join(",")}`;
-  }, [ide, language, database, framework, styling, testing]);
+    return `npx @vanthiet/dev-vibe@latest`;
+  }, []);
 
   const handleCopyCli = () => {
     navigator.clipboard.writeText(cliCommand);

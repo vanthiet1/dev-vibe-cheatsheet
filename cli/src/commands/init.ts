@@ -117,37 +117,16 @@ export async function initCommand(options: InitOptions) {
     }
   }
 
-  // 2. Prompt for Technologies if not provided
+  // 2. Default to all Technologies if not provided via flags (non-interactive default)
   if (!tech || tech.length === 0) {
-    const response = await prompts({
-      type: "multiselect",
-      name: "tech",
-      message: "Chọn ngôn ngữ / công nghệ dự án của bạn (phím Space để chọn):",
-      choices: AVAILABLE_TECHS,
-      hint: "- Space để chọn, Enter để tiếp tục",
-    });
-    tech = response.tech;
-    if (!tech) {
-      console.log(chalk.yellow("👋 Đã hủy khởi tạo."));
-      return;
-    }
+    tech = AVAILABLE_TECHS.map((t) => t.value);
   }
 
-  // 3. Prompt for Skills if not provided
+  // 3. Default to all Skills if not provided via flags (non-interactive default)
   if (!skills || skills.length === 0) {
-    const response = await prompts({
-      type: "multiselect",
-      name: "skills",
-      message: "Chọn các Agent Skills quy chuẩn muốn áp dụng:",
-      choices: AVAILABLE_SKILLS,
-      hint: "- Space để chọn, Enter để tiếp tục",
-    });
-    skills = response.skills;
-    if (!skills) {
-      console.log(chalk.yellow("👋 Đã hủy khởi tạo."));
-      return;
-    }
+    skills = AVAILABLE_SKILLS.map((s) => s.value);
   }
+
 
   console.log("");
   const spinner = ora(chalk.blue("Đang tải tệp mẫu và cấu hình quy chuẩn từ GitHub...")).start();

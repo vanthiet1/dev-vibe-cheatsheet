@@ -1,6 +1,6 @@
 {
   "name": "@vanthiet/dev-vibe",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Dev-Vibe CLI Initializer for Antigravity rules, skills, agents and workflows",
   "main": "dist/index.js",
   "bin": {
