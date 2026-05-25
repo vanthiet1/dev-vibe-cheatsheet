@@ -1,6 +1,12 @@
+<p align="center">
+  <a href="https://unikorn.vn/p/dev-vibe-cheatsheet?ref=embed-dev-vibe-cheatsheet" target="_blank">
+    <img src="https://unikorn.vn/api/widgets/badge/dev-vibe-cheatsheet?theme=light" alt="Dev Vibe CheatSheet trên Unikorn.vn" width="256" height="64" />
+  </a>
+</p>
+
 # 🚀 dev-vibe-cheatsheet
 
-Một nền tảng tra cứu nhanh (Quick Reference) toàn diện, giúp lập trình viên đập tan nỗi lo "não cá vàng", tối ưu hóa 200% hiệu suất gõ lệnh và làm chủ không gian làm việc (Workspace) với một "vibe" cực kỳ mượt mà.
+Một nền tảng tra cứu nhanh (Quick Reference) toàn diện, giúp lập trình viên đập tan nỗi lo "não cá vàng", tối ưu hóa 200% hiệu suất gõ lệnh và làm chủ không gian làm việc (Workspace) với một "vibe" cực kỳ mượt mạc.
 
 👉 **Trải nghiệm ngay tại:** [https://dev-vibe-cheatsheet.vercel.app/](https://dev-vibe-cheatsheet.vercel.app/)
 
