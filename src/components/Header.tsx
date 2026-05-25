@@ -90,6 +90,9 @@ export default function Header({ seeding = false, onRunSeeding }: HeaderProps) {
                 <span className="md:hidden bg-gradient-to-r from-zinc-100 via-zinc-200 to-zinc-400 bg-clip-text text-transparent uppercase">
                   DEV-VIBE
                 </span>
+                <span className="px-1.5 py-0.5 text-[9px] font-mono font-medium rounded bg-zinc-800 text-zinc-400 border border-zinc-700/30 select-none tracking-normal">
+                  v1.1.1
+                </span>
               </h1>
             </Link>
 
