@@ -32,12 +32,12 @@ export default function Header({ seeding = false, onRunSeeding }: HeaderProps) {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const closedTimeStr = localStorage.getItem("dev-vibe-banner-v1.1.2-closed-time");
+      const closedTimeStr = localStorage.getItem("dev-vibe-banner-v1.1.3-closed-time");
       
       // If closed using the old permanent flag, clear it so they see it now as requested
-      const isClosedOld = localStorage.getItem("dev-vibe-banner-v1.1.2-closed");
+      const isClosedOld = localStorage.getItem("dev-vibe-banner-v1.1.3-closed");
       if (isClosedOld) {
-        localStorage.removeItem("dev-vibe-banner-v1.1.2-closed");
+        localStorage.removeItem("dev-vibe-banner-v1.1.3-closed");
         Promise.resolve().then(() => {
           setShowBanner(true);
         });
@@ -49,7 +49,7 @@ export default function Header({ seeding = false, onRunSeeding }: HeaderProps) {
         const oneWeek = 7 * 24 * 60 * 60 * 1000;
         if (Date.now() - closedTime > oneWeek) {
           // 1 week has passed, show again
-          localStorage.removeItem("dev-vibe-banner-v1.1.2-closed-time");
+          localStorage.removeItem("dev-vibe-banner-v1.1.3-closed-time");
           Promise.resolve().then(() => {
             setShowBanner(true);
           });
@@ -63,7 +63,7 @@ export default function Header({ seeding = false, onRunSeeding }: HeaderProps) {
   }, []);
 
   const handleCloseBanner = () => {
-    localStorage.setItem("dev-vibe-banner-v1.1.2-closed-time", Date.now().toString());
+    localStorage.setItem("dev-vibe-banner-v1.1.3-closed-time", Date.now().toString());
     setShowBanner(false);
   };
 
@@ -115,20 +115,11 @@ export default function Header({ seeding = false, onRunSeeding }: HeaderProps) {
           <div className="max-w-8xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left pr-8">
             <div className="flex flex-col md:flex-row items-center gap-2 md:gap-3">
               <span className="inline-flex items-center gap-1 bg-violet-500/20 text-violet-300 border border-violet-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider animate-pulse shrink-0">
-                <SparklesIcon className="text-xs shrink-0" /> Update v1.1.2
+                <SparklesIcon className="text-xs shrink-0" /> Update v1.1.3
               </span>
               <p className="text-[11px] text-zinc-300 leading-relaxed font-semibold">
-                Đã ra mắt bản cập nhật <strong className="text-zinc-50 font-bold">Rules Compiler v1.1.2</strong>! Hỗ trợ Multiple Selection và mở rộng Tech Stack đa dạng: ReactJS, Spring Boot, Laravel, Mobile Frameworks (React Native, Flutter, Swift, Kotlin).
+                Đã ra mắt bản cập nhật <strong className="text-zinc-50 font-bold">Rules Compiler v1.1.3</strong>! Hỗ trợ Multiple Selection và mở rộng Tech Stack đa dạng: ReactJS, Spring Boot, Laravel, Mobile Frameworks (React Native, Flutter, Swift, Kotlin).
               </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <Link 
-                href="/ai-config" 
-                className="text-[10px] font-bold text-violet-300 hover:text-violet-100 bg-violet-500/10 hover:bg-violet-500/20 border border-violet-500/20 rounded px-2.5 py-1 transition-all flex items-center gap-1 active:scale-95 shrink-0"
-              >
-                <span>Trải nghiệm ngay</span>
-                <span className="text-[10px]">→</span>
-              </Link>
             </div>
           </div>
           <button
@@ -160,7 +151,7 @@ export default function Header({ seeding = false, onRunSeeding }: HeaderProps) {
                   DEV-VIBE
                 </span>
                 <span className="px-1.5 py-0.5 text-[9px] font-mono font-medium rounded bg-zinc-800 text-zinc-400 border border-zinc-700/30 select-none tracking-normal">
-                  v1.1.2
+                  v1.1.3
                 </span>
               </h1>
             </Link>
