@@ -1,8 +1,11 @@
-<p align="center">
+<div style="display: flex; justify-content: center; align-items: center; gap: 15px;">
   <a href="https://unikorn.vn/p/dev-vibe-cheatsheet?ref=embed-dev-vibe-cheatsheet" target="_blank">
     <img src="https://unikorn.vn/api/widgets/badge/dev-vibe-cheatsheet?theme=light" alt="Dev Vibe CheatSheet trên Unikorn.vn" width="256" height="64" />
   </a>
-</p>
+  <a href="https://unikorn.vn/p/dev-vibe-cheatsheet?ref=embed-dev-vibe-cheatsheet" target="_blank">
+    <img src="https://unikorn.vn/api/widgets/badge/dev-vibe-cheatsheet/rank?theme=light&type=daily" alt="Dev Vibe Agent - Hàng ngày" width="250" height="64" />
+  </a>
+</div>
 
 # 🚀 dev-vibe-cheatsheet
 
