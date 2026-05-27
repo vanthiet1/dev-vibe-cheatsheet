@@ -760,122 +760,123 @@ export default function AiConfigPage() {
           {/* Right Presentation Screen (Expanded to lg:col-span-9) */}
           <div className="lg:col-span-9 flex flex-col space-y-4">
 
-            {/* Premium Antigravity CLI Installation Guide */}
-            <div className="bg-zinc-950/80 border border-zinc-800/80 rounded-xl p-4 md:p-5 flex flex-col gap-4 shadow-[0_4px_30px_rgba(0,0,0,0.4)] backdrop-blur relative overflow-hidden group">
-              <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-violet-500/0 via-violet-500/30 to-violet-500/0" />
-              
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 border-b border-zinc-900/60 pb-3">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-violet-400">🤖</span>
-                    <h4 className="text-xs font-extrabold text-zinc-200 uppercase tracking-wider">
-                      Bước 1: Cài đặt Google Antigravity CLI
-                    </h4>
+            {ide === "antigravity-cli" && (
+              <div className="bg-zinc-950/80 border border-zinc-800/80 rounded-xl p-4 md:p-5 flex flex-col gap-4 shadow-[0_4px_30px_rgba(0,0,0,0.4)] backdrop-blur relative overflow-hidden group">
+                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-violet-500/0 via-violet-500/30 to-violet-500/0" />
+                
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 border-b border-zinc-900/60 pb-3">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-violet-400">🤖</span>
+                      <h4 className="text-xs font-extrabold text-zinc-200 uppercase tracking-wider">
+                        Bước 1: Cài đặt Google Antigravity CLI
+                      </h4>
+                    </div>
+                    <p className="text-[10px] text-zinc-450 leading-relaxed">
+                      Vui lòng chạy lệnh tương ứng với hệ điều hành của bạn để cài đặt Antigravity Engine trước khi gọi lệnh khởi tạo rules:
+                    </p>
                   </div>
-                  <p className="text-[10px] text-zinc-450 leading-relaxed">
-                    Vui lòng chạy lệnh tương ứng với hệ điều hành của bạn để cài đặt Antigravity Engine trước khi gọi lệnh khởi tạo rules:
-                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  {/* macOS / Linux */}
+                  <div className="bg-zinc-900/30 border border-zinc-850 rounded-lg p-3 space-y-2 flex flex-col justify-between">
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-bold text-zinc-350 flex items-center gap-1">
+                        🍏 macOS & 🐧 Linux
+                      </span>
+                      <div className="bg-zinc-950 border border-zinc-900 rounded p-2 font-mono text-[9.5px] text-violet-300 overflow-x-auto select-all scrollbar-none whitespace-pre-wrap break-all relative group h-12">
+                        curl -fsSL https://antigravity.google/cli/install.sh | bash
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleCopyMac}
+                      className={`w-full mt-2 py-1.5 rounded transition-all font-semibold text-[9.5px] cursor-pointer text-center flex items-center justify-center gap-1 border ${
+                        macCopied
+                          ? "bg-emerald-950/60 border-emerald-800/40 text-emerald-300"
+                          : "bg-zinc-950 border-zinc-850 hover:border-zinc-700 text-zinc-400 hover:text-zinc-250"
+                      }`}
+                    >
+                      {macCopied ? (
+                        <>
+                          <CheckIcon className="text-xs" />
+                          <span>Đã copy</span>
+                        </>
+                      ) : (
+                        <>
+                          <CopyIcon className="text-xs" />
+                          <span>Sao chép lệnh</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Windows PowerShell */}
+                  <div className="bg-zinc-900/30 border border-zinc-850 rounded-lg p-3 space-y-2 flex flex-col justify-between">
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-bold text-zinc-350 flex items-center gap-1">
+                        🟦 Windows PowerShell
+                      </span>
+                      <div className="bg-zinc-950 border border-zinc-900 rounded p-2 font-mono text-[9.5px] text-violet-300 overflow-x-auto select-all scrollbar-none whitespace-pre-wrap break-all relative group h-12">
+                        irm https://antigravity.google/cli/install.ps1 | iex
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleCopyPs}
+                      className={`w-full mt-2 py-1.5 rounded transition-all font-semibold text-[9.5px] cursor-pointer text-center flex items-center justify-center gap-1 border ${
+                        psCopied
+                          ? "bg-emerald-950/60 border-emerald-800/40 text-emerald-300"
+                          : "bg-zinc-950 border-zinc-850 hover:border-zinc-700 text-zinc-400 hover:text-zinc-250"
+                      }`}
+                    >
+                      {psCopied ? (
+                        <>
+                          <CheckIcon className="text-xs" />
+                          <span>Đã copy</span>
+                        </>
+                      ) : (
+                        <>
+                          <CopyIcon className="text-xs" />
+                          <span>Sao chép lệnh</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Windows CMD */}
+                  <div className="bg-zinc-900/30 border border-zinc-850 rounded-lg p-3 space-y-2 flex flex-col justify-between">
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-bold text-zinc-350 flex items-center gap-1">
+                        ⬛ Windows CMD
+                      </span>
+                      <div className="bg-zinc-950 border border-zinc-900 rounded p-2 font-mono text-[9.5px] text-violet-300 overflow-x-auto select-all scrollbar-none whitespace-pre-wrap break-all relative group h-12">
+                        curl -fsSL https://antigravity.google/cli/install.cmd -o install.cmd && install.cmd && del install.cmd
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleCopyCmd}
+                      className={`w-full mt-2 py-1.5 rounded transition-all font-semibold text-[9.5px] cursor-pointer text-center flex items-center justify-center gap-1 border ${
+                        cmdCopied
+                          ? "bg-emerald-950/60 border-emerald-800/40 text-emerald-300"
+                          : "bg-zinc-950 border-zinc-850 hover:border-zinc-700 text-zinc-400 hover:text-zinc-250"
+                      }`}
+                    >
+                      {cmdCopied ? (
+                        <>
+                          <CheckIcon className="text-xs" />
+                          <span>Đã copy</span>
+                        </>
+                      ) : (
+                        <>
+                          <CopyIcon className="text-xs" />
+                          <span>Sao chép lệnh</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                {/* macOS / Linux */}
-                <div className="bg-zinc-900/30 border border-zinc-850 rounded-lg p-3 space-y-2 flex flex-col justify-between">
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-bold text-zinc-350 flex items-center gap-1">
-                      🍏 macOS & 🐧 Linux
-                    </span>
-                    <div className="bg-zinc-950 border border-zinc-900 rounded p-2 font-mono text-[9.5px] text-violet-300 overflow-x-auto select-all scrollbar-none whitespace-pre-wrap break-all relative group h-12">
-                      curl -fsSL https://antigravity.google/cli/install.sh | bash
-                    </div>
-                  </div>
-                  <button
-                    onClick={handleCopyMac}
-                    className={`w-full mt-2 py-1.5 rounded transition-all font-semibold text-[9.5px] cursor-pointer text-center flex items-center justify-center gap-1 border ${
-                      macCopied
-                        ? "bg-emerald-950/60 border-emerald-800/40 text-emerald-300"
-                        : "bg-zinc-950 border-zinc-850 hover:border-zinc-700 text-zinc-400 hover:text-zinc-250"
-                    }`}
-                  >
-                    {macCopied ? (
-                      <>
-                        <CheckIcon className="text-xs" />
-                        <span>Đã copy</span>
-                      </>
-                    ) : (
-                      <>
-                        <CopyIcon className="text-xs" />
-                        <span>Sao chép lệnh</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-
-                {/* Windows PowerShell */}
-                <div className="bg-zinc-900/30 border border-zinc-850 rounded-lg p-3 space-y-2 flex flex-col justify-between">
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-bold text-zinc-350 flex items-center gap-1">
-                      🟦 Windows PowerShell
-                    </span>
-                    <div className="bg-zinc-950 border border-zinc-900 rounded p-2 font-mono text-[9.5px] text-violet-300 overflow-x-auto select-all scrollbar-none whitespace-pre-wrap break-all relative group h-12">
-                      irm https://antigravity.google/cli/install.ps1 | iex
-                    </div>
-                  </div>
-                  <button
-                    onClick={handleCopyPs}
-                    className={`w-full mt-2 py-1.5 rounded transition-all font-semibold text-[9.5px] cursor-pointer text-center flex items-center justify-center gap-1 border ${
-                      psCopied
-                        ? "bg-emerald-950/60 border-emerald-800/40 text-emerald-300"
-                        : "bg-zinc-950 border-zinc-850 hover:border-zinc-700 text-zinc-400 hover:text-zinc-250"
-                    }`}
-                  >
-                    {psCopied ? (
-                      <>
-                        <CheckIcon className="text-xs" />
-                        <span>Đã copy</span>
-                      </>
-                    ) : (
-                      <>
-                        <CopyIcon className="text-xs" />
-                        <span>Sao chép lệnh</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-
-                {/* Windows CMD */}
-                <div className="bg-zinc-900/30 border border-zinc-850 rounded-lg p-3 space-y-2 flex flex-col justify-between">
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-bold text-zinc-350 flex items-center gap-1">
-                      ⬛ Windows CMD
-                    </span>
-                    <div className="bg-zinc-950 border border-zinc-900 rounded p-2 font-mono text-[9.5px] text-violet-300 overflow-x-auto select-all scrollbar-none whitespace-pre-wrap break-all relative group h-12">
-                      curl -fsSL https://antigravity.google/cli/install.cmd -o install.cmd && install.cmd && del install.cmd
-                    </div>
-                  </div>
-                  <button
-                    onClick={handleCopyCmd}
-                    className={`w-full mt-2 py-1.5 rounded transition-all font-semibold text-[9.5px] cursor-pointer text-center flex items-center justify-center gap-1 border ${
-                      cmdCopied
-                        ? "bg-emerald-950/60 border-emerald-800/40 text-emerald-300"
-                        : "bg-zinc-950 border-zinc-850 hover:border-zinc-700 text-zinc-400 hover:text-zinc-250"
-                    }`}
-                  >
-                    {cmdCopied ? (
-                      <>
-                        <CheckIcon className="text-xs" />
-                        <span>Đã copy</span>
-                      </>
-                    ) : (
-                      <>
-                        <CopyIcon className="text-xs" />
-                        <span>Sao chép lệnh</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-            </div>
+            )}
 
             {/* Dynamic Premium CLI Setup Command Block */}
             <div className="bg-zinc-950/80 border border-zinc-800/80 rounded-xl p-4 md:p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-[0_4px_30px_rgba(0,0,0,0.4)] backdrop-blur relative overflow-hidden group">
@@ -889,7 +890,7 @@ export default function AiConfigPage() {
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                   </span>
                   <h4 className="text-xs font-bold text-zinc-200 uppercase tracking-wider flex items-center gap-1.5">
-                    ⚡ Bước 2: Khởi tạo Rules qua CLI / NPX
+                    {ide === "antigravity-cli" ? "⚡ Bước 2: Khởi tạo Rules qua CLI / NPX" : "⚡ Cài đặt nhanh qua CLI / NPX"}
                   </h4>
                 </div>
                 <p className="text-[11px] text-zinc-450 leading-relaxed">
