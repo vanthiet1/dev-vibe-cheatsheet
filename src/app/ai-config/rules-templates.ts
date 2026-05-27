@@ -3,6 +3,7 @@ import { getWorkflowTemplate } from "./templates/workflows";
 import { getSkillTemplate } from "./templates/skills";
 import { getAgentTemplate } from "./templates/agents";
 import { getRulesTemplate } from "./templates/rules";
+import { SCRIPTS_REGISTRY } from "./templates/skills/scripts-registry";
 
 export interface RuleGeneratorParams {
   ide: string;
@@ -70,6 +71,12 @@ export function generateRulesContent(params: RuleGeneratorParams): { content: st
   }
   if (activeFileCheck.startsWith("plugins/my-plugin/")) {
     activeFileCheck = activeFileCheck.replace("plugins/my-plugin/", "");
+  }
+
+  // Intercept python scripts from registry
+  if (activeFile.endsWith(".py") || activeFileCheck.endsWith(".py")) {
+    const rawContent = SCRIPTS_REGISTRY[activeFile] || SCRIPTS_REGISTRY[activeFileCheck] || SCRIPTS_REGISTRY[filename] || "";
+    return { content: rawContent, filename };
   }
 
   // 1. Route to Workflows
