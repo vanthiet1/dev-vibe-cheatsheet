@@ -7,7 +7,7 @@ import { getRulesTemplate } from "./templates/rules";
 export interface RuleGeneratorParams {
   ide: string;
   framework: string;
-  language: string;
+  language: string | string[];
   database: string;
   styling: string;
   testing: string;
@@ -18,17 +18,29 @@ export interface RuleGeneratorParams {
 export function generateRulesContent(params: RuleGeneratorParams): { content: string; filename: string } {
   const { ide, framework, language, database, styling, testing, activeFile, contentLanguage } = params;
 
+  const langs = Array.isArray(language) ? language : [language];
+
   // Labels for display
   const frameworkLabel = 
     framework === "nextjs-app" ? "Next.js (App Router)" :
-    framework === "react-vite" ? "React (Vite)" : "Node.js (Backend API)";
+    framework === "react-vite" ? "React (Vite)" :
+    framework === "springboot" ? "Spring Boot (Java API)" :
+    framework === "laravel" ? "Laravel (PHP MVC)" : "Node.js (Backend API)";
 
-  const languageLabel = 
-    language === "typescript" ? "TypeScript (Strict)" :
-    language === "javascript" ? "JavaScript (ES6+)" :
-    language === "python" ? "Python (PEP 8)" :
-    language === "go" ? "Go (Idiomatic)" :
-    language === "rust" ? "Rust (Safe Core)" : "C# (.NET Core)";
+  const languageLabel = langs.map(lang => 
+    lang === "typescript" ? "TypeScript (Strict)" :
+    lang === "javascript" ? "JavaScript (ES6+)" :
+    lang === "python" ? "Python (PEP 8)" :
+    lang === "go" ? "Go (Idiomatic)" :
+    lang === "rust" ? "Rust (Safe Core)" :
+    lang === "react" ? "ReactJS (Hooks)" :
+    lang === "java" ? "Java (OOP)" :
+    lang === "php" ? "PHP (Modern)" :
+    lang === "react-native" ? "React Native (Native/JS)" :
+    lang === "flutter" ? "Flutter (Dart/Widgets)" :
+    lang === "swift" ? "Swift (iOS)" :
+    lang === "kotlin" ? "Kotlin (Android)" : "C# (.NET Core)"
+  ).join(" & ");
 
   const dbLabel = 
     database === "postgres" ? "PostgreSQL" :
@@ -67,7 +79,7 @@ export function generateRulesContent(params: RuleGeneratorParams): { content: st
       frameworkLabel,
       languageLabel,
       testingLabel,
-      language,
+      langs[0] || "typescript",
       testing,
       isVi
     );
@@ -107,7 +119,7 @@ effort: medium
 
 `;
 
-    const content = getSkillTemplate(processedSlug, formattedSlug, languageLabel, language, metadata, isVi);
+    const content = getSkillTemplate(processedSlug, formattedSlug, languageLabel, langs[0] || "typescript", metadata, isVi);
     return { content, filename };
   }
 
@@ -119,15 +131,22 @@ effort: medium
 
   // 4. Default: Route to Rules & General Configs (.antigravityrules, .editorconfig, settings.json, GEMINI.md, etc.)
   const frameworkSection = getFrameworkSection(framework, isVi);
-  const languageSection = getLanguageSection(language, isVi);
+  const languageSection = langs.map(lang => getLanguageSection(lang, isVi)).join("\n\n");
   const databaseSection = getDatabaseSection(database, isVi);
   const stylingSection = getStylingSection(styling, isVi);
 
-  const compilerCommand = 
-    language === "typescript" ? "npx tsc --noEmit" :
-    language === "python" ? "python -m mypy ." :
-    language === "go" ? "go vet ./..." :
-    language === "rust" ? "cargo check" : "dotnet build";
+  const compilerCommand = langs.map(lang =>
+    lang === "typescript" ? "npx tsc --noEmit" :
+    lang === "python" ? "python -m mypy ." :
+    lang === "go" ? "go vet ./..." :
+    lang === "rust" ? "cargo check" :
+    lang === "java" ? "mvn clean compile" :
+    lang === "php" ? "composer check-style" :
+    lang === "react-native" ? "npx react-native start" :
+    lang === "flutter" ? "flutter analyze" :
+    lang === "swift" ? "swift build" :
+    lang === "kotlin" ? "./gradlew assemble" : "dotnet build"
+  ).join(" | ");
 
   const testCommand = 
     testing === "jest" ? "npm run test" : "npx playwright test";
@@ -143,7 +162,7 @@ effort: medium
     languageSection,
     databaseSection,
     stylingSection,
-    language,
+    language: langs[0] || "typescript",
     ide,
     compilerCommand,
     testCommand,

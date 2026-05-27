@@ -18,639 +18,29 @@ import {
 } from "@/components/icons";
 
 
-// Brand SVG icons for Tech Stack buttons
-const TECH_ICONS: Record<string, React.ReactNode> = {
-  // Languages
-  typescript: <i className="devicon-typescript-plain colored text-sm shrink-0" />,
-  javascript: <i className="devicon-javascript-plain colored text-sm shrink-0" />,
-  python: <i className="devicon-python-plain colored text-sm shrink-0" />,
-  go: <i className="devicon-go-plain colored text-sm shrink-0" />,
-  rust: <i className="devicon-rust-plain text-[#e05a47] text-sm shrink-0" style={{ color: "#e05a47" }} />,
-  csharp: <i className="devicon-csharp-plain colored text-sm shrink-0" />,
-  // Databases
-  postgres: <i className="devicon-postgresql-plain colored text-sm shrink-0" />,
-  mongodb: <i className="devicon-mongodb-plain colored text-sm shrink-0" />,
-  sqlite: <i className="devicon-sqlite-plain colored text-sm shrink-0" />,
-  mysql: <i className="devicon-mysql-plain colored text-sm shrink-0" />,
-  redis: <i className="devicon-redis-plain colored text-sm shrink-0" />,
-  // Frameworks
-  "nextjs-app": <i className="devicon-nextjs-plain text-sm shrink-0" />,
-  "react-vite": <i className="devicon-vitejs-plain colored text-sm shrink-0" />,
-  nodejs: <i className="devicon-nodejs-plain colored text-sm shrink-0" />,
-  // UI Libraries
-  "tailwind-v4": <i className="devicon-tailwindcss-plain colored text-sm shrink-0" />,
-  shadcn: (
-    <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="24" height="24" rx="4" fill="black" />
-      <path d="m15 6-6 6M20 6l-10 10M17 16l-4 4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  ),
-  antd: <i className="devicon-antdesign-plain colored text-sm shrink-0" />,
-  mui: <i className="devicon-materialui-plain colored text-sm shrink-0" />,
-  // Testing
-  jest: <i className="devicon-jest-plain colored text-sm shrink-0" />,
-  playwright: <i className="devicon-playwright-plain colored text-sm shrink-0" />,
-};
-
-// Hierarchical visual directory tree interface
-interface TreeNode {
-  name: string;
-  path?: string;
-  isFolder: boolean;
-  children: TreeNode[];
-}
-
-// Visual Directory Tree builder
-const buildTree = (files: { path: string; label: string }[]): TreeNode[] => {
-  const root: TreeNode[] = [];
-  
-  files.forEach(file => {
-    const parts = file.path.split('/');
-    let currentLevel = root;
-    
-    parts.forEach((part, index) => {
-      const isLast = index === parts.length - 1;
-      let existing = currentLevel.find(node => node.name === part && node.isFolder === !isLast);
-      
-      if (!existing) {
-        existing = {
-          name: part,
-          isFolder: !isLast,
-          path: isLast ? file.path : undefined,
-          children: []
-        };
-        currentLevel.push(existing);
-      }
-      
-      if (!isLast && existing.children) {
-        currentLevel = existing.children;
-      }
-    });
-  });
-  
-  return root;
-};
-
-// High-fidelity rules content from .agent/rules/GEMINI.md for visual simulator
-const GEMINI_RULES_CONTENT = `---
-trigger: always_on
----
-
-# GEMINI.md - AG Kit
-
-> This file defines how the AI behaves in this workspace.
-
----
-
-## CRITICAL: AGENT & SKILL PROTOCOL (START HERE)
-
-> **MANDATORY:** You MUST read the appropriate agent file and its skills BEFORE performing any implementation. This is the highest priority rule.
-
-### 1. Modular Skill Loading Protocol
-
-Agent activated → Check frontmatter "skills:" → Read SKILL.md (INDEX) → Read specific sections.
-
-- **Selective Reading:** DO NOT read ALL files in a skill folder. Read \`SKILL.md\` first, then only read sections matching the user's request.
-- **Rule Priority:** P0 (GEMINI.md) > P1 (Agent .md) > P2 (SKILL.md). All rules are binding.
-
-### 2. Enforcement Protocol
-
-1. **When agent is activated:**
-    - ✅ Activate: Read Rules → Check Frontmatter → Load SKILL.md → Apply All.
-2. **Forbidden:** Never skip reading agent rules or skill instructions. "Read → Understand → Apply" is mandatory.
-
----
-
-## 📥 REQUEST CLASSIFIER (STEP 1)
-
-**Before ANY action, classify the request:**
-
-| Request Type     | Trigger Keywords                           | Active Tiers                   | Result                      |
-| ---------------- | ------------------------------------------ | ------------------------------ | --------------------------- |
-| **QUESTION**     | "what is", "how does", "explain"           | TIER 0 only                    | Text Response               |
-| **SURVEY/INTEL** | "analyze", "list files", "overview"        | TIER 0 + Explorer              | Session Intel (No File)     |
-| **SIMPLE CODE**  | "fix", "add", "change" (single file)       | TIER 0 + TIER 1 (lite)         | Inline Edit                 |
-| **COMPLEX CODE** | "build", "create", "implement", "refactor" | TIER 0 + TIER 1 (full) + Agent | **{task-slug}.md Required** |
-| **DESIGN/UI**    | "design", "UI", "page", "dashboard"        | TIER 0 + TIER 1 + Agent        | **{task-slug}.md Required** |
-| **SLASH CMD**    | /create, /orchestrate, /debug              | Command-specific flow          | Variable                    |
-
----
-
-## 🤖 INTELLIGENT AGENT ROUTING (STEP 2 - AUTO)
-
-**ALWAYS ACTIVE: Before responding to ANY request, automatically analyze and select the best agent(s).**
-
-> 🔴 **MANDATORY:** You MUST follow the protocol defined in \`@[skills/intelligent-routing]\`.
-
-### Auto-Selection Protocol
-
-1. **Analyze (Silent)**: Detect domains (Frontend, Backend, Security, etc.) from user request.
-2. **Select Agent(s)**: Choose the most appropriate specialist(s).
-3. **Inform User**: Concisely state which expertise is being applied.
-4. **Apply**: Generate response using the selected agent's persona and rules.
-
-### Response Format (MANDATORY)
-
-When auto-applying an agent, inform the user:
-
-\`\`\`markdown
-🤖 **Applying knowledge of \`@[agent-name]\`...**
-
-[Continue with specialized response]
-\`\`\`
-
-**Rules:**
-
-1. **Silent Analysis**: No verbose meta-commentary ("I am analyzing...").
-2. **Respect Overrides**: If user mentions \`@agent\`, use it.
-3. **Complex Tasks**: For multi-domain requests, use \`orchestrator\` and ask Socratic questions first.
-
-### ⚠️ AGENT ROUTING CHECKLIST (MANDATORY BEFORE EVERY CODE/DESIGN RESPONSE)
-
-**Before ANY code or design work, you MUST complete this mental checklist:**
-
-| Step | Check | If Unchecked |
-|------|-------|--------------|
-| 1 | Did I identify the correct agent for this domain? | → STOP. Analyze request domain first. |
-| 2 | Did I READ the agent's \`.md\` file (or recall its rules)? | → STOP. Open \`.agent/agents/{agent}.md\` |
-| 3 | Did I announce \`🤖 Applying knowledge of @[agent]...\`? | → STOP. Add announcement before response. |
-| 4 | Did I load required skills from agent's frontmatter? | → STOP. Check \`skills:\` field and read them. |
-
-**Failure Conditions:**
-
-- ❌ Writing code without identifying an agent = **PROTOCOL VIOLATION**
-- ❌ Skipping the announcement = **USER CANNOT VERIFY AGENT WAS USED**
-- ❌ Ignoring agent-specific rules (e.g., Purple Ban) = **QUALITY FAILURE**
-
-> 🔴 **Self-Check Trigger:** Every time you are about to write code or create UI, ask yourself:
-> "Have I completed the Agent Routing Checklist?" If NO → Complete it first.
-
----
-
-## TIER 0: UNIVERSAL RULES (Always Active)
-
-### 🌐 Language Handling
-
-When user's prompt is NOT in English:
-
-1. **Internally translate** for better comprehension
-2. **Respond in user's language** - match their communication
-3. **Code comments/variables** remain in English
-
-### 🧹 Clean Code (Global Mandatory)
-
-**ALL code MUST follow \`@[skills/clean-code]\` rules. No exceptions.**
-
-- **Code**: Concise, direct, no over-engineering. Self-documenting.
-- **Testing**: Mandatory. Pyramid (Unit > Int > E2E) + AAA Pattern.
-- **Performance**: Measure first. Adhere to 2025 standards (Core Web Vitals).
-- **Infra/Safety**: 5-Phase Deployment. Verify secrets security.
-
-### 📁 File Dependency Awareness
-
-**Before modifying ANY file:**
-
-1. Check \`CODEBASE.md\` → File Dependencies
-2. Identify dependent files
-3. Update ALL affected files together
-
-### 🗺️ System Map Read
-
-> 🔴 **MANDATORY:** Read \`ARCHITECTURE.md\` at session start to understand Agents, Skills, and Scripts.
-
-**Path Awareness:**
-
-- Agents: \`.agent/\` (Project)
-- Skills: \`.agent/skills/\` (Project)
-- Runtime Scripts: \`.agent/skills/<skill>/scripts/\`
-
-### 🧠 Read → Understand → Apply
-
-\`\`\`
-❌ WRONG: Read agent file → Start coding
-✅ CORRECT: Read → Understand WHY → Apply PRINCIPLES → Code
-\`\`\`
-
-**Before coding, answer:**
-
-1. What is the GOAL of this agent/skill?
-2. What PRINCIPLES must I apply?
-3. How does this DIFFER from generic output?
-`;
-
-// High-fidelity interactive VS Code workspace simulation with visual auto-gliding mouse pointer
-function VsCodeSimulator({ 
-  framework, 
-  language 
-}: { 
-  framework: string; 
-  language: string; 
-  database: string; 
-  styling: string; 
-  testing: string; 
-}) {
-  // Stepper completion and dynamic loop variables
-  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
-
-  // Stepper input text fields for character-by-character visual typing
-  const [folderInputVal, setFolderInputVal] = useState("");
-  const [fileInputVal, setFileInputVal] = useState("");
-  const [showFolderInput, setShowFolderInput] = useState(false);
-  const [showFileInput, setShowFileInput] = useState(false);
-
-  // Dynamic visual Mouse Cursor state controls
-  const [cursorX, setCursorX] = useState(250);
-  const [cursorY, setCursorY] = useState(150);
-  const [cursorAction, setCursorAction] = useState<"idle" | "clicking" | "moving">("idle");
-
-  // Laser editor compiling sweep state
-  const [editorText, setEditorText] = useState("");
-  const [showLaser, setShowLaser] = useState(false);
-
-  const editorContainerRef = useRef<HTMLDivElement>(null);
-
-  // Auto-scroll the typing visual terminal/editor panel
-  useEffect(() => {
-    const el = editorContainerRef.current;
-    if (el) {
-      el.scrollTop = el.scrollHeight;
-    }
-  }, [editorText]);
-
-  // Visual Autopilot sequence runner inside simulator
-  useEffect(() => {
-    let active = true;
-    let timerId: NodeJS.Timeout;
-
-    // Continuous loop executing the entire VS Code simulation lifecycle
-    const playSimulatorSequence = async () => {
-      if (!active) return;
-
-      // Phase 0: Reset states
-      setCompletedSteps([]);
-      setFolderInputVal("");
-      setFileInputVal("");
-      setShowFolderInput(false);
-      setShowFileInput(false);
-      setEditorText("");
-      setShowLaser(false);
-      setCursorX(280);
-      setCursorY(150);
-
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      if (!active) return;
-
-      // Phase 1: Glide mouse to "New Folder" Icon in mock Explorer top header
-      setCursorAction("moving");
-      setCursorX(124);
-      setCursorY(35);
-      await new Promise(resolve => setTimeout(resolve, 1300));
-      if (!active) return;
-
-      // Phase 2: Click New Folder Icon
-      setCursorAction("clicking");
-      await new Promise(resolve => setTimeout(resolve, 250));
-      setCursorAction("idle");
-      setShowFolderInput(true);
-      await new Promise(resolve => setTimeout(resolve, 350));
-      if (!active) return;
-
-      // Phase 3: Character-by-character typing ".agent"
-      const folderChars = ".agent".split("");
-      let folderTemp = "";
-      for (const char of folderChars) {
-        if (!active) return;
-        folderTemp += char;
-        setFolderInputVal(folderTemp);
-        await new Promise(resolve => setTimeout(resolve, 120));
-      }
-      await new Promise(resolve => setTimeout(resolve, 350));
-      if (!active) return;
-
-      // Phase 4: Submit folder creation
-      setShowFolderInput(false);
-      setCompletedSteps(prev => [...prev, 1]);
-      await new Promise(resolve => setTimeout(resolve, 900));
-      if (!active) return;
-
-      // Phase 5: Glide mouse to "New File" Icon
-      setCursorAction("moving");
-      setCursorX(146);
-      setCursorY(35);
-      await new Promise(resolve => setTimeout(resolve, 1300));
-      if (!active) return;
-
-      // Phase 6: Click New File Icon
-      setCursorAction("clicking");
-      await new Promise(resolve => setTimeout(resolve, 250));
-      setCursorAction("idle");
-      setShowFileInput(true);
-      await new Promise(resolve => setTimeout(resolve, 350));
-      if (!active) return;
-
-      // Phase 7: Character-by-character typing "GEMINI.md"
-      const fileChars = "GEMINI.md".split("");
-      let fileTemp = "";
-      for (const char of fileChars) {
-        if (!active) return;
-        fileTemp += char;
-        setFileInputVal(fileTemp);
-        await new Promise(resolve => setTimeout(resolve, 120));
-      }
-      await new Promise(resolve => setTimeout(resolve, 350));
-      if (!active) return;
-
-      // Phase 8: Submit rules file creation
-      setShowFileInput(false);
-      setCompletedSteps(prev => [...prev, 2, 3, 4]);
-      await new Promise(resolve => setTimeout(resolve, 900));
-      if (!active) return;
-
-      // Phase 9: Glide to main editor window
-      setCursorAction("moving");
-      setCursorX(360);
-      setCursorY(160);
-      await new Promise(resolve => setTimeout(resolve, 1200));
-      if (!active) return;
-
-      // Phase 10: Character-by-character typing with realistic human-like speed variation
-      setShowLaser(true);
-      const fullContent = GEMINI_RULES_CONTENT;
-      
-      let typedEditor = "";
-      for (let i = 0; i < fullContent.length; i++) {
-        if (!active) return;
-        const char = fullContent[i];
-        typedEditor += char;
-        setEditorText(typedEditor);
-
-        // Realistic speed: slower at newlines/punctuation, faster for normal chars
-        let delay: number;
-        if (char === "\n") {
-          delay = 80 + Math.random() * 100; // pause at line breaks
-        } else if (".,;:!?".includes(char)) {
-          delay = 60 + Math.random() * 80;  // slight pause after punctuation
-        } else if (char === " ") {
-          delay = 15 + Math.random() * 25;  // fast space
-        } else {
-          delay = 18 + Math.random() * 32;  // normal keystroke ~18-50ms
-        }
-        await new Promise(resolve => setTimeout(resolve, delay));
-      }
-      
-      await new Promise(resolve => setTimeout(resolve, 600));
-      setShowLaser(false);
-
-      // Loop cooldown delay before resetting
-      timerId = setTimeout(() => {
-        if (active) playSimulatorSequence();
-      }, 7000);
-    };
-
-    playSimulatorSequence();
-
-    return () => {
-      active = false;
-      clearTimeout(timerId);
-    };
-  }, [framework, language]);
-
-  const isStep1Done = completedSteps.includes(1);
-  const isStep2Done = completedSteps.includes(2);
-  const isStep3Done = completedSteps.includes(3);
-  const isStep4Done = completedSteps.includes(4);
-
-  return (
-    <div className="relative w-full flex flex-col bg-[#1e1e1e] border border-zinc-800 rounded-lg overflow-hidden font-sans text-xs select-none shadow-2xl h-full min-h-[500px]">
-      
-      {/* Dynamic Absolute Mouse Pointer element */}
-      <div 
-        style={{ 
-          transform: `translate(${cursorX}px, ${cursorY}px)`,
-          transition: "transform 1.1s cubic-bezier(0.25, 1, 0.5, 1)"
-        }}
-        className={`absolute pointer-events-none z-50 transition-all duration-150 ${
-          cursorAction === "clicking" ? "scale-90 opacity-80" : "scale-100"
-        }`}
-      >
-        <svg className="w-5 h-5 text-white filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M4.5 3v15.3l4.7-4.6 3.8 8.8 3.5-1.5-3.8-8.8 6-0.6L4.5 3z" />
-        </svg>
-      </div>
-
-      {/* VS Code Window Header */}
-      <div className="bg-[#2d2d2d] px-3 py-2 flex items-center justify-between border-b border-[#252526] z-10">
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
-          <span className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
-          <span className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
-          <span className="text-[10px] text-zinc-400 font-mono ml-2">Visual Studio Code - Simulator</span>
-        </div>
-        <div className="bg-[#3c3c3c] text-zinc-300 font-mono text-[9px] px-8 py-0.5 rounded border border-zinc-800 select-none">
-          my-project - Antigravity Configurator
-        </div>
-        <div className="w-12" />
-      </div>
-
-      {/* VS Code Editor Main Grid */}
-      <div className="flex-grow grid grid-cols-1 md:grid-cols-12 bg-[#1e1e1e] min-h-[380px] relative z-10">
-        
-        {/* Mock VS Code Explorer Sidebar */}
-        <div className="md:col-span-4 bg-[#252526] border-r border-[#1e1e1e] flex flex-col text-zinc-400 font-mono select-none">
-          <div className="px-3 py-2 text-[9px] uppercase tracking-wider font-extrabold text-zinc-500 border-b border-[#1e1e1e] flex items-center justify-between">
-            <span>Explorer: MY-PROJECT</span>
-            <div className="flex items-center gap-2 text-zinc-500 font-normal">
-              {/* Folder and File creation controls highlighted visually */}
-              <span className={`hover:text-zinc-200 transition-colors p-0.5 rounded ${showFolderInput ? "text-violet-400 bg-zinc-800" : ""}`}>📁⁺</span>
-              <span className={`hover:text-zinc-200 transition-colors p-0.5 rounded ${showFileInput ? "text-violet-400 bg-zinc-800" : ""}`}>📄⁺</span>
-            </div>
-          </div>
-          
-          <div className="p-3 space-y-1.5 text-[11px] overflow-y-hidden max-h-[220px]">
-            <div className="font-bold text-zinc-300">📁 MY-PROJECT</div>
-            
-            {/* .agent/ folder tree */}
-            <div className="pl-3 space-y-1.5 border-l border-zinc-800/80 ml-2">
-              
-              {/* Step 1 input folder typing */}
-              {showFolderInput && (
-                <div className="flex items-center gap-1.5 text-violet-400 font-bold bg-violet-950/20 py-0.5 px-1 rounded animate-pulse border border-violet-800/30">
-                  <span>📂</span>
-                  <span className="font-mono">{folderInputVal}</span>
-                  <span className="w-1 h-3.5 bg-violet-400 animate-ping" />
-                </div>
-              )}
-
-              {isStep1Done && (
-                <div className="flex items-center gap-1.5 transition-all duration-300 text-emerald-400 font-bold">
-                  <span>📂</span>
-                  <span>.agent</span>
-                </div>
-              )}
-
-              {!isStep1Done && !showFolderInput && (
-                <div className="flex items-center gap-1.5 text-zinc-650 opacity-40">
-                  <span>📂</span>
-                  <span>.agent</span>
-                </div>
-              )}
-
-              {/* rules/ subfolder */}
-              <div className="pl-3 space-y-1.5 border-l border-zinc-800/80 ml-2">
-                <div className={`flex items-center gap-1.5 transition-all duration-300 ${
-                  isStep2Done ? "text-emerald-400 font-bold" : "text-zinc-650 opacity-40"
-                }`}>
-                  <span>📂</span>
-                  <span>rules</span>
-                </div>
-                
-                {/* Step 2 input file typing */}
-                {showFileInput && (
-                  <div className="pl-4 flex items-center gap-1.5 text-violet-400 font-bold bg-violet-950/20 py-0.5 px-1 rounded animate-pulse border border-violet-800/30">
-                    <span>📄</span>
-                    <span className="font-mono">{fileInputVal}</span>
-                    <span className="w-1 h-3.5 bg-violet-400 animate-ping" />
-                  </div>
-                )}
-
-                {isStep2Done && (
-                  <div className="pl-4 flex items-center gap-1.5 transition-all duration-300 text-emerald-300">
-                    <span>📄</span>
-                    <span>GEMINI.md</span>
-                  </div>
-                )}
-
-                {!isStep2Done && !showFileInput && (
-                  <div className="pl-4 flex items-center gap-1.5 text-zinc-650 opacity-40">
-                    <span>📄</span>
-                    <span>GEMINI.md</span>
-                  </div>
-                )}
-              </div>
-
-              {/* skills/ subfolder */}
-              <div className="pl-3 space-y-1.5 border-l border-zinc-800/80 ml-2">
-                <div className={`flex items-center gap-1.5 transition-all duration-300 ${
-                  isStep3Done ? "text-emerald-400 font-bold" : "text-zinc-650 opacity-40"
-                }`}>
-                  <span>📂</span>
-                  <span>skills</span>
-                </div>
-                <div className={`pl-4 flex items-center gap-1.5 transition-all duration-300 ${
-                  isStep3Done ? "text-emerald-350" : "text-zinc-650 opacity-40"
-                }`}>
-                  <span>📂</span>
-                  <span>clean-code</span>
-                </div>
-                <div className={`pl-8 flex items-center gap-1.5 transition-all duration-300 ${
-                  isStep3Done ? "text-emerald-300" : "text-zinc-650 opacity-40"
-                }`}>
-                  <span>📄</span>
-                  <span>SKILL.md</span>
-                </div>
-              </div>
-
-              {/* agents/ subfolder */}
-              <div className="pl-3 space-y-1.5 border-l border-zinc-800/80 ml-2">
-                <div className={`flex items-center gap-1.5 transition-all duration-300 ${
-                  isStep3Done ? "text-emerald-400 font-bold" : "text-zinc-650 opacity-40"
-                }`}>
-                  <span>📂</span>
-                  <span>agents</span>
-                </div>
-                <div className={`pl-4 flex items-center gap-1.5 transition-all duration-300 ${
-                  isStep3Done ? "text-emerald-300" : "text-zinc-650 opacity-40"
-                }`}>
-                  <span>📄</span>
-                  <span>debugger.md</span>
-                </div>
-              </div>
-
-              {/* workflows/ subfolder */}
-              <div className="pl-3 space-y-1.5 border-l border-zinc-800/80 ml-2">
-                <div className={`flex items-center gap-1.5 transition-all duration-300 ${
-                  isStep4Done ? "text-emerald-400 font-bold" : "text-zinc-650 opacity-40"
-                }`}>
-                  <span>📂</span>
-                  <span>workflows</span>
-                </div>
-                <div className={`pl-4 flex items-center gap-1.5 transition-all duration-300 ${
-                  isStep4Done ? "text-emerald-300" : "text-zinc-650 opacity-40"
-                }`}>
-                  <span>📄</span>
-                  <span>debug.md</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Standard non-config workspace files */}
-            <div className="pl-3 space-y-1 ml-2 text-zinc-500 opacity-60">
-              <div className="flex items-center gap-1.5">
-                <span>⚙️</span>
-                <span>package.json</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span>⚙️</span>
-                <span>.env</span>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        {/* Dynamic code typing panel simulating developer writing */}
-        <div className="md:col-span-8 p-5 flex flex-col bg-[#1e1e1e] text-zinc-300 overflow-hidden relative">
-          
-          <div className="flex justify-between items-center border-b border-zinc-800 pb-2.5 select-none mb-3">
-            <div>
-              <h3 className="text-xs font-bold text-zinc-200 uppercase tracking-wider flex items-center gap-1.5">
-                <LightningIcon className="text-violet-400" />
-                WORKSPACE EDITOR: Rules Compiler
-              </h3>
-            </div>
-            {isStep4Done && (
-              <span className="text-[9px] bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold px-2 py-0.5 rounded animate-pulse select-none">
-                ĐỒNG BỘ THÀNH CÔNG
-              </span>
-            )}
-          </div>
-
-          {/* Interactive laser compilation sweep sweep block */}
-          <div 
-            ref={editorContainerRef}
-            className="flex-grow font-mono text-[11px] leading-relaxed text-zinc-300 overflow-y-auto max-h-[360px] whitespace-pre relative border border-zinc-900/60 rounded bg-[#151515] p-4 select-text scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent"
-          >
-            {showLaser && (
-              <div className="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-violet-500 to-transparent animate-pulse shadow-[0_0_15px_rgba(139,92,246,0.8)]" style={{ top: "35%" }} />
-            )}
-            
-            {editorText ? (
-              <>
-                {editorText}
-                {showLaser && (
-                  <span className="inline-block w-[2px] h-[14px] bg-zinc-200 align-middle animate-[blink_1s_step-end_infinite] ml-px" />
-                )}
-              </>
-            ) : (
-              <span className="text-zinc-600 italic select-none">Đang chờ khởi động quy chuẩn hành vi từ Explorer...</span>
-            )}
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-  );
-}
+import { TECH_ICONS } from "./constants/tech-icons";
+import { GEMINI_RULES_CONTENT } from "./constants/gemini-rules";
+import TerminalCmdSimulator from "./components/TerminalCmdSimulator";
+import VsCodeSimulator, { TreeNode, buildTree } from "./components/VsCodeSimulator";
 
 export default function AiConfigPage() {
   // Option selectors state
   const [ide, setIde] = useState("antigravity-ide");
   const [framework, setFramework] = useState("nextjs-app");
-  const [language, setLanguage] = useState("typescript");
+  const [languages, setLanguages] = useState<string[]>(["typescript"]);
   const [database, setDatabase] = useState("postgres");
   const [styling, setStyling] = useState("shadcn");
   const [testing, setTesting] = useState("jest");
+
+  const handleToggleLanguage = (key: string) => {
+    if (languages.includes(key)) {
+      if (languages.length > 1) {
+        setLanguages(languages.filter(l => l !== key));
+      }
+    } else {
+      setLanguages([...languages, key]);
+    }
+  };
 
   // Output format state: 'config' | 'rules' | 'cli' | 'skills' | 'workflows' | 'agents'
   const [outputTab, setOutputTab] = useState<"config" | "rules" | "cli" | "skills" | "workflows" | "agents">("config");
@@ -707,7 +97,7 @@ export default function AiConfigPage() {
       window.removeEventListener("resize", checkScroll);
       clearTimeout(timer);
     };
-  }, [outputTab, ide, language, database, framework, styling, testing]);
+  }, [outputTab, ide, languages, database, framework, styling, testing]);
 
   // File Explorer Database Map definition (Dynamic based on selected Tech Stack)
   const filesByTab = useMemo(() => {
@@ -796,9 +186,10 @@ export default function AiConfigPage() {
       dynamicRules.push({ path: `${prefix}${pluginPrefix}rules/clean-code.rules`, label: "clean-code.rules" });
       dynamicRules.push({ path: `${prefix}${pluginPrefix}rules/performance.rules`, label: "performance.rules" });
 
-      if (language === "typescript") {
-        dynamicRules.push({ path: `${prefix}${pluginPrefix}rules/typescript.rules`, label: "typescript.rules" });
-      }
+      languages.forEach(lang => {
+        dynamicRules.push({ path: `${prefix}${pluginPrefix}rules/${lang}.rules`, label: `${lang}.rules` });
+      });
+
       if (framework === "nextjs-app") {
         dynamicRules.push({ path: `${prefix}${pluginPrefix}rules/nextjs.rules`, label: "nextjs.rules" });
       }
@@ -847,7 +238,7 @@ export default function AiConfigPage() {
       agents: dynamicAgents,
       workflows: dynamicWorkflows
     };
-  }, [ide, language, database, framework, styling, testing]);
+  }, [ide, languages, database, framework, styling, testing]);
 
   // IDE/CLI Change Helper to switch states cleanly without breaking selection
   const handleIdeChange = (newIde: string) => {
@@ -889,14 +280,14 @@ export default function AiConfigPage() {
     return generateRulesContent({
       ide,
       framework,
-      language,
+      language: languages,
       database,
       styling,
       testing,
       activeFile,
       contentLanguage
     });
-  }, [ide, framework, language, database, styling, testing, activeFile, contentLanguage]);
+  }, [ide, framework, languages, database, styling, testing, activeFile, contentLanguage]);
 
   // Copy helper
   const handleCopy = async () => {
@@ -1071,31 +462,98 @@ export default function AiConfigPage() {
                 2. Tech Stack dự án
               </h3>
 
-              {/* Ngôn ngữ */}
-              <div className="space-y-2">
-                <label className="text-[10px] font-extrabold text-zinc-450 block">Ngôn ngữ:</label>
-                <div className="grid grid-cols-2 gap-1.5">
-                  {[
-                    { key: "typescript", label: "TypeScript" },
-                    { key: "javascript", label: "JavaScript" },
-                    { key: "python", label: "Python" },
-                    { key: "go", label: "Go" },
-                    { key: "rust", label: "Rust" },
-                    { key: "csharp", label: "C#" }
-                  ].map((item) => (
-                    <button
-                      key={item.key}
-                      onClick={() => setLanguage(item.key)}
-                      className={`py-1.5 px-1 rounded-md text-[10px] font-bold border transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                        language === item.key
-                          ? "border-violet-600/80 bg-violet-950/25 text-violet-300"
-                          : "border-zinc-800 bg-zinc-900/10 text-zinc-450 hover:border-zinc-700"
-                      }`}
-                    >
-                      {TECH_ICONS[item.key]}
-                      <span>{item.label}</span>
-                    </button>
-                  ))}
+              {/* Ngôn ngữ & Stack Toggles */}
+              <div className="space-y-3">
+                <label className="text-[10px] font-extrabold text-zinc-400 block uppercase tracking-wider">
+                  Ngôn ngữ & Stack (Multi-select)
+                </label>
+
+                {/* Core Languages */}
+                <div className="space-y-1.5">
+                  <span className="text-[9px] font-bold text-zinc-500 block uppercase tracking-wide">Ngôn ngữ cốt lõi</span>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {[
+                      { key: "typescript", label: "TypeScript" },
+                      { key: "javascript", label: "JavaScript" },
+                      { key: "python", label: "Python" },
+                      { key: "go", label: "Go" },
+                      { key: "rust", label: "Rust" },
+                      { key: "csharp", label: "C#" }
+                    ].map((item) => {
+                      const isActive = languages.includes(item.key);
+                      return (
+                        <button
+                          key={item.key}
+                          onClick={() => handleToggleLanguage(item.key)}
+                          className={`py-2.5 px-2 rounded-md text-[11px] font-bold border transition-all cursor-pointer flex items-center justify-center gap-1.5 hover:scale-[1.02] ${
+                            isActive
+                              ? "border-violet-600 bg-violet-950/20 text-violet-300 shadow-[0_0_10px_rgba(139,92,246,0.1)] scale-[0.98]"
+                              : "border-zinc-800 bg-zinc-900/10 text-zinc-450 hover:border-zinc-700 hover:text-zinc-300"
+                          }`}
+                        >
+                          {TECH_ICONS[item.key]}
+                          <span>{item.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Web & APIs */}
+                <div className="space-y-1.5">
+                  <span className="text-[9px] font-bold text-zinc-500 block uppercase tracking-wide">Web Frameworks & APIs</span>
+                  <div className="grid grid-cols-3 gap-1">
+                    {[
+                      { key: "react", label: "ReactJS" },
+                      { key: "java", label: "Spring" },
+                      { key: "php", label: "Laravel" }
+                    ].map((item) => {
+                      const isActive = languages.includes(item.key);
+                      return (
+                        <button
+                          key={item.key}
+                          onClick={() => handleToggleLanguage(item.key)}
+                          className={`py-2.5 px-2 rounded-md text-[10.5px] font-bold border transition-all cursor-pointer flex items-center justify-center gap-1.5 hover:scale-[1.02] ${
+                            isActive
+                              ? "border-violet-600 bg-violet-950/20 text-violet-300 shadow-[0_0_10px_rgba(139,92,246,0.1)] scale-[0.98]"
+                              : "border-zinc-800 bg-zinc-900/10 text-zinc-450 hover:border-zinc-700 hover:text-zinc-300"
+                          }`}
+                        >
+                          {TECH_ICONS[item.key]}
+                          <span>{item.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Mobile Frameworks */}
+                <div className="space-y-1.5">
+                  <span className="text-[9px] font-bold text-zinc-500 block uppercase tracking-wide">Mobile Frameworks</span>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {[
+                      { key: "react-native", label: "React Native" },
+                      { key: "flutter", label: "Flutter" },
+                      { key: "swift", label: "Swift" },
+                      { key: "kotlin", label: "Kotlin" }
+                    ].map((item) => {
+                      const isActive = languages.includes(item.key);
+                      return (
+                        <button
+                          key={item.key}
+                          onClick={() => handleToggleLanguage(item.key)}
+                          className={`py-2.5 px-2 rounded-md text-[10.5px] font-bold border transition-all cursor-pointer flex items-center justify-center gap-1.5 hover:scale-[1.02] ${
+                            isActive
+                              ? "border-violet-600 bg-violet-950/20 text-violet-300 shadow-[0_0_10px_rgba(139,92,246,0.1)] scale-[0.98]"
+                              : "border-zinc-800 bg-zinc-900/10 text-zinc-450 hover:border-zinc-700 hover:text-zinc-300"
+                          }`}
+                        >
+                          {TECH_ICONS[item.key]}
+                          <span>{item.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
 
@@ -1113,7 +571,7 @@ export default function AiConfigPage() {
                     <button
                       key={item.key}
                       onClick={() => setDatabase(item.key)}
-                      className={`py-1.5 px-1 rounded-md text-[10px] font-bold border transition-all cursor-pointer flex items-center justify-center gap-1 ${
+                      className={`py-2.5 px-2 rounded-md text-[11px] font-bold border transition-all cursor-pointer flex items-center justify-center gap-1.5 hover:scale-[1.02] ${
                         database === item.key
                           ? "border-violet-600/80 bg-violet-950/25 text-violet-300"
                           : "border-zinc-800 bg-zinc-900/10 text-zinc-450 hover:border-zinc-700"
@@ -1133,12 +591,14 @@ export default function AiConfigPage() {
                   {[
                     { key: "nextjs-app", label: "Next" },
                     { key: "react-vite", label: "Vite" },
-                    { key: "nodejs", label: "Node" }
+                    { key: "nodejs", label: "Node" },
+                    { key: "springboot", label: "Spring" },
+                    { key: "laravel", label: "Laravel" }
                   ].map((item) => (
                     <button
                       key={item.key}
                       onClick={() => setFramework(item.key)}
-                      className={`py-1.5 px-1 rounded-md text-[10px] font-bold border transition-all cursor-pointer flex items-center justify-center gap-1 ${
+                      className={`py-2.5 px-2 rounded-md text-[11px] font-bold border transition-all cursor-pointer flex items-center justify-center gap-1.5 hover:scale-[1.02] ${
                         framework === item.key
                           ? "border-violet-600/80 bg-violet-950/25 text-violet-300"
                           : "border-zinc-800 bg-zinc-900/10 text-zinc-455 hover:border-zinc-700"
@@ -1164,7 +624,7 @@ export default function AiConfigPage() {
                     <button
                       key={item.key}
                       onClick={() => setStyling(item.key)}
-                      className={`py-1.5 px-1 rounded-md text-[10px] font-bold border transition-all cursor-pointer flex items-center justify-center gap-1 ${
+                      className={`py-2.5 px-2 rounded-md text-[11px] font-bold border transition-all cursor-pointer flex items-center justify-center gap-1.5 hover:scale-[1.02] ${
                         styling === item.key
                           ? "border-violet-600/80 bg-violet-950/25 text-violet-300"
                           : "border-zinc-800 bg-zinc-900/10 text-zinc-455 hover:border-zinc-700"
@@ -1188,7 +648,7 @@ export default function AiConfigPage() {
                     <button
                       key={item.key}
                       onClick={() => setTesting(item.key)}
-                      className={`py-1.5 px-1 rounded-md text-[10px] font-bold border transition-all cursor-pointer flex items-center justify-center gap-1 ${
+                      className={`py-2.5 px-2 rounded-md text-[11px] font-bold border transition-all cursor-pointer flex items-center justify-center gap-1.5 hover:scale-[1.02] ${
                         testing === item.key
                           ? "border-violet-600/80 bg-violet-950/25 text-violet-300"
                           : "border-zinc-800 bg-zinc-900/10 text-zinc-455 hover:border-zinc-700"
@@ -1201,6 +661,7 @@ export default function AiConfigPage() {
                 </div>
               </div>
             </div>
+
           </div>
 
           {/* Right Presentation Screen (Expanded to lg:col-span-9) */}
@@ -1254,6 +715,63 @@ export default function AiConfigPage() {
                 </button>
               </div>
             </div>
+
+            {/* Selected Technology Summary Panel */}
+            <div className="bg-zinc-900/20 border border-zinc-900 rounded-xl p-4 space-y-3.5 relative overflow-hidden backdrop-blur shadow-md animate-fade-in">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-violet-600/5 rounded-full blur-xl pointer-events-none" />
+              <div className="flex items-center justify-between border-b border-zinc-900/60 pb-2">
+                <span className="text-[10px] font-extrabold text-zinc-350 flex items-center gap-1.5 uppercase tracking-wide">
+                  ✨ Các công nghệ đã chọn:
+                </span>
+                <span className="text-[9px] font-mono font-bold text-violet-400 bg-violet-950/20 border border-violet-900/30 px-2 py-0.5 rounded uppercase select-none tracking-wide animate-pulse">
+                  Syncing active
+                </span>
+              </div>
+              <div className="flex flex-wrap items-center gap-1.5">
+                {/* Languages */}
+                {languages.map(lang => (
+                  <span key={lang} className="inline-flex items-center gap-1 bg-violet-500/10 border border-violet-500/25 text-violet-300 px-2 py-1 rounded text-[9.5px] font-bold shadow-sm">
+                    {TECH_ICONS[lang]}
+                    <span className="capitalize">{lang}</span>
+                  </span>
+                ))}
+                {/* Framework */}
+                {framework !== "none" && (
+                  <span className="inline-flex items-center gap-1 bg-zinc-800/50 border border-zinc-800 text-zinc-300 px-2 py-1 rounded text-[9.5px] font-bold shadow-sm">
+                    {TECH_ICONS[framework]}
+                    <span className="capitalize">{framework === "nextjs-app" ? "Next.js" : framework === "react-vite" ? "React" : framework === "springboot" ? "Spring Boot" : framework === "laravel" ? "Laravel" : framework}</span>
+                  </span>
+                )}
+                {/* Database */}
+                {database !== "none" && (
+                  <span className="inline-flex items-center gap-1 bg-zinc-800/50 border border-zinc-800 text-zinc-300 px-2 py-1 rounded text-[9.5px] font-bold shadow-sm">
+                    {TECH_ICONS[database]}
+                    <span className="capitalize">{database}</span>
+                  </span>
+                )}
+                {/* Styling */}
+                {styling !== "none" && (
+                  <span className="inline-flex items-center gap-1 bg-zinc-800/50 border border-zinc-800 text-zinc-300 px-2 py-1 rounded text-[9.5px] font-bold shadow-sm">
+                    {TECH_ICONS[styling]}
+                    <span className="capitalize">{styling}</span>
+                  </span>
+                )}
+                {/* Testing */}
+                {testing !== "none" && (
+                  <span className="inline-flex items-center gap-1 bg-zinc-800/50 border border-zinc-800 text-zinc-300 px-2 py-1 rounded text-[9.5px] font-bold shadow-sm">
+                    {TECH_ICONS[testing]}
+                    <span className="capitalize">{testing}</span>
+                  </span>
+                )}
+              </div>
+              <div className="bg-violet-950/15 border border-violet-900/20 rounded-lg p-2.5 flex items-start gap-2 text-[10.5px] text-zinc-300 shadow-sm leading-relaxed">
+                <span className="text-sm shrink-0">💡</span>
+                <p>
+                  <strong className="text-violet-300">Tự động đồng bộ:</strong> Khi cài đặt bằng lệnh <code className="bg-zinc-950 px-1 py-0.5 rounded text-violet-400 font-mono font-bold select-all">npx @vanthiet/dev-vibe@latest</code>, Dev-Vibe CLI sẽ tự động phát hiện và khởi tạo bộ quy chuẩn chuyên biệt được tối ưu hóa riêng cho các công nghệ bạn đã chọn phía dưới!
+                </p>
+              </div>
+            </div>
+
 
             {/* Output File Switcher Tabs */}
             <div className="flex items-center gap-1.5 p-1 bg-zinc-900/60 border border-zinc-900 rounded-lg text-xs self-start overflow-x-auto max-w-full animate-fade-in">
@@ -1445,7 +963,7 @@ export default function AiConfigPage() {
             <div className="grid grid-cols-1 md:grid-cols-12 border border-zinc-900 rounded-b-xl overflow-hidden min-h-[500px] bg-zinc-950 shadow-2xl">
               
               {/* File Explorer Sidebar: Visual Nested Tree Directory Structure */}
-              <div className="relative md:col-span-4 bg-zinc-950/40 border-r border-zinc-900 p-4 select-none flex flex-col h-[500px] shrink-0">
+              <div className="relative md:col-span-3 bg-zinc-950/40 border-r border-zinc-900 p-4 select-none flex flex-col h-[500px] shrink-0">
                 <div className="text-[9px] font-extrabold text-zinc-500 uppercase tracking-widest flex items-center gap-1.5 mb-2 select-none shrink-0">
                   <span className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse" />
                   WORKSPACE TREE
@@ -1467,10 +985,10 @@ export default function AiConfigPage() {
                 {showScrollArrow && (
                   <div 
                     onClick={handleScrollDown}
-                    className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 bg-zinc-900/90 border border-violet-850/40 px-3 py-1.5 rounded-full text-[9px] font-extrabold text-violet-300 shadow-xl shadow-violet-950/50 animate-bounce cursor-pointer hover:bg-violet-900/20 transition-all select-none backdrop-blur-sm z-20"
+                    className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-zinc-900/90 border border-violet-850/40 p-2.5 rounded-full text-violet-300 shadow-xl shadow-violet-950/50 animate-bounce cursor-pointer hover:bg-violet-900/25 transition-all select-none backdrop-blur-sm z-20 hover:scale-105 flex items-center justify-center"
+                    title="Cuộn xuống"
                   >
-                    <span>Cuộn xuống</span>
-                    <svg className="w-2.5 h-2.5 text-violet-400 animate-pulse" fill="none" stroke="currentColor" strokeWidth="3.5" viewBox="0 0 24 24">
+                    <svg className="w-3 h-3 text-violet-400 animate-pulse" fill="none" stroke="currentColor" strokeWidth="3.5" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                     </svg>
                   </div>
@@ -1478,11 +996,11 @@ export default function AiConfigPage() {
               </div>
 
               {/* Code Preview or VS Code Simulator Pane */}
-              <div className="md:col-span-8 bg-[#1e1e1e] overflow-hidden flex flex-col min-h-[500px] border-t md:border-t-0 border-zinc-900">
+              <div className="md:col-span-9 bg-[#1e1e1e] overflow-hidden flex flex-col min-h-[500px] border-t md:border-t-0 border-zinc-900">
                 {ide === "antigravity-ide" && activeFile === ".agent/config-overview.md" ? (
                   <VsCodeSimulator 
                     framework={framework}
-                    language={language}
+                    languages={languages}
                     database={database}
                     styling={styling}
                     testing={testing}
@@ -1496,60 +1014,15 @@ export default function AiConfigPage() {
               
             </div>
 
-            {/* Step-by-step Directory installation walkthrough (Dynamic based on IDE vs CLI) */}
-            <div className="bg-zinc-900/10 border border-zinc-900 rounded-xl p-5 space-y-4 animate-fade-in">
-              <h3 className="text-xs font-extrabold text-zinc-200 uppercase tracking-widest flex items-center gap-2">
-                🚀 HƯỚNG DẪN MODULE CẤU TRÚC 3 BƯỚC:
-              </h3>
-              
-              {ide === "antigravity-cli" ? (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                  <div className="space-y-1.5 border-l-2 border-violet-600/40 pl-3">
-                    <h4 className="font-bold text-zinc-200">Bước 1: Khởi tạo thư mục gốc</h4>
-                    <p className="text-[11px] text-zinc-400 leading-normal">
-                      Bắt buộc tạo thư mục cấu hình toàn cục <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded">~/.gemini/antigravity-cli/</code> trên máy tính trước tiên.
-                    </p>
-                  </div>
-                  
-                  <div className="space-y-1.5 border-l-2 border-violet-600/40 pl-3">
-                    <h4 className="font-bold text-zinc-200">Bước 2: Tổ chức thư mục con</h4>
-                    <p className="text-[11px] text-zinc-400 leading-normal">
-                      Tạo tiếp thư mục plugin <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded">plugins/my-plugin/</code> và các folder con tương ứng: <code className="text-zinc-400 font-mono">skills/</code>, <code className="text-zinc-400 font-mono">agents/</code>, <code className="text-zinc-400 font-mono">rules/</code>.
-                    </p>
-                  </div>
-
-                  <div className="space-y-1.5 border-l-2 border-violet-600/40 pl-3">
-                    <h4 className="font-bold text-zinc-200">Bước 3: Lưu và kích hoạt</h4>
-                    <p className="text-[11px] text-zinc-400 leading-normal">
-                      Lưu tệp tin cấu hình (`plugin.json`, các file `.rules` và `.md` chỉ thị...) vào đúng vị trí cây thư mục của bạn để CLI tự động nhận dạng.
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                  <div className="space-y-1.5 border-l-2 border-violet-600/40 pl-3">
-                    <h4 className="font-bold text-zinc-200">Bước 1: Tạo thư mục .agent/</h4>
-                    <p className="text-[11px] text-zinc-400 leading-normal">
-                      Tạo thư mục tên là <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded">.agent/</code> trực tiếp tại thư mục gốc dự án của bạn làm phân khu làm việc của Agent.
-                    </p>
-                  </div>
-                  
-                  <div className="space-y-1.5 border-l-2 border-violet-600/40 pl-3">
-                    <h4 className="font-bold text-zinc-200">Bước 2: Lưu rules & GEMINI.md</h4>
-                    <p className="text-[11px] text-zinc-400 leading-normal">
-                      Tạo tiếp thư mục <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded">.agent/rules/</code> và lưu file quy tắc <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded">GEMINI.md</code> vào đó (<code className="text-violet-400">.agent/rules/GEMINI.md</code>).
-                    </p>
-                  </div>
-
-                  <div className="space-y-1.5 border-l-2 border-violet-600/40 pl-3">
-                    <h4 className="font-bold text-zinc-200">Bước 3: Phân chia Kỹ năng & Tác nhân</h4>
-                    <p className="text-[11px] text-zinc-400 leading-normal">
-                      Đặt các tệp kỹ năng của bạn vào folder riêng lẻ <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded">.agent/skills/&#123;tên_skill&#125;/SKILL.md</code> để AI Agent tải thông tin thông minh, tiết kiệm tối đa lượng token.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
+            {/* Interactive Command Simulator placed at the bottom */}
+            <TerminalCmdSimulator
+              languages={languages}
+              framework={framework}
+              database={database}
+              styling={styling}
+              testing={testing}
+              ide={ide}
+            />
 
           </div>
 

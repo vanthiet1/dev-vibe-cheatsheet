@@ -37,7 +37,8 @@ export default function TerminalSimulator({ script }: TerminalSimulatorProps) {
 
     const currentItem = script[currentLineIndex];
 
-    if (!currentItem) {
+    // Guard: undefined means we've gone past the end of the script
+    if (typeof currentItem !== "string") {
       Promise.resolve().then(() => {
         setIsFinished(true);
       });
@@ -54,26 +55,24 @@ export default function TerminalSimulator({ script }: TerminalSimulatorProps) {
       let charIndex = 0;
 
       const typingTimer = setInterval(() => {
-        const currentChar = commandText[charIndex];
-        setTypedCommand((prev) => prev + currentChar);
         charIndex++;
+        // Use slice to always get a valid substring – avoids undefined char
+        setTypedCommand(commandText.slice(0, charIndex));
 
         if (charIndex >= commandText.length) {
           clearInterval(typingTimer);
           setIsTyping(false);
-          // Add the completed command line to output list
           setLines((prev) => [...prev, `$ ${commandText}`]);
           setTypedCommand("");
-          // Move to next line after a small pause
           setTimeout(() => {
             setCurrentLineIndex((prev) => prev + 1);
           }, 600);
         }
-      }, 50); // Speed of typing
+      }, 50);
 
       return () => clearInterval(typingTimer);
     } else {
-      // It's command output, print it immediately or line-by-line
+      // It's command output, print it immediately or with a slight delay
       const delay = currentItem.includes("Waiting") || currentItem.includes("loading") ? 1200 : 350;
       const timer = setTimeout(() => {
         setLines((prev) => [...prev, currentItem]);
@@ -95,7 +94,7 @@ export default function TerminalSimulator({ script }: TerminalSimulatorProps) {
     return () => clearTimeout(timer);
   }, [isFinished]);
 
-  // Run on mount
+  // Reset animation whenever the script prop changes
   useEffect(() => {
     Promise.resolve().then(() => {
       startAnimation();
@@ -103,6 +102,7 @@ export default function TerminalSimulator({ script }: TerminalSimulatorProps) {
   }, [script]);
 
   const getLineColorClass = (line: string) => {
+    if (typeof line !== "string") return "text-zinc-400";
     if (line.startsWith("$ ")) return "text-zinc-100 font-semibold";
     const lower = line.toLowerCase();
     if (lower.includes("success") || lower.includes("succeeded") || lower.includes("done") || line.includes("✓")) {
@@ -129,7 +129,7 @@ export default function TerminalSimulator({ script }: TerminalSimulatorProps) {
           <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
           <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
         </div>
-        <span className="text-[11px] text-zinc-500 font-medium select-none">antigravity@terminal:~</span>
+        <span className="text-[11px] text-zinc-500 font-medium select-none">terminal:~</span>
         <button
           onClick={startAnimation}
           className="text-zinc-500 hover:text-zinc-300 transition-colors p-0.5 rounded cursor-pointer"

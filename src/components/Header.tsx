@@ -25,9 +25,47 @@ export default function Header({ seeding = false, onRunSeeding }: HeaderProps) {
   const pathname = usePathname();
   const [isDonateOpen, setIsDonateOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showBanner, setShowBanner] = useState(false);
 
   const accountNumber = "1026696842";
   const [isLocal, setIsLocal] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const closedTimeStr = localStorage.getItem("dev-vibe-banner-v1.1.2-closed-time");
+      
+      // If closed using the old permanent flag, clear it so they see it now as requested
+      const isClosedOld = localStorage.getItem("dev-vibe-banner-v1.1.2-closed");
+      if (isClosedOld) {
+        localStorage.removeItem("dev-vibe-banner-v1.1.2-closed");
+        Promise.resolve().then(() => {
+          setShowBanner(true);
+        });
+        return;
+      }
+
+      if (closedTimeStr) {
+        const closedTime = parseInt(closedTimeStr, 10);
+        const oneWeek = 7 * 24 * 60 * 60 * 1000;
+        if (Date.now() - closedTime > oneWeek) {
+          // 1 week has passed, show again
+          localStorage.removeItem("dev-vibe-banner-v1.1.2-closed-time");
+          Promise.resolve().then(() => {
+            setShowBanner(true);
+          });
+        }
+      } else {
+        Promise.resolve().then(() => {
+          setShowBanner(true);
+        });
+      }
+    }
+  }, []);
+
+  const handleCloseBanner = () => {
+    localStorage.setItem("dev-vibe-banner-v1.1.2-closed-time", Date.now().toString());
+    setShowBanner(false);
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -71,6 +109,37 @@ export default function Header({ seeding = false, onRunSeeding }: HeaderProps) {
 
   return (
     <>
+      {showBanner && (
+        <div className="bg-gradient-to-r from-violet-950/90 via-[#1b0c33]/95 to-zinc-950 border-b border-violet-900/30 text-zinc-200 relative overflow-hidden py-2 px-4 select-none backdrop-blur animate-fade-in z-50">
+          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-400 via-transparent to-transparent pointer-events-none" />
+          <div className="max-w-8xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left pr-8">
+            <div className="flex flex-col md:flex-row items-center gap-2 md:gap-3">
+              <span className="inline-flex items-center gap-1 bg-violet-500/20 text-violet-300 border border-violet-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider animate-pulse shrink-0">
+                <SparklesIcon className="text-xs shrink-0" /> Update v1.1.2
+              </span>
+              <p className="text-[11px] text-zinc-300 leading-relaxed font-semibold">
+                Đã ra mắt bản cập nhật <strong className="text-zinc-50 font-bold">Rules Compiler v1.1.2</strong>! Hỗ trợ Multiple Selection và mở rộng Tech Stack đa dạng: ReactJS, Spring Boot, Laravel, Mobile Frameworks (React Native, Flutter, Swift, Kotlin).
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Link 
+                href="/ai-config" 
+                className="text-[10px] font-bold text-violet-300 hover:text-violet-100 bg-violet-500/10 hover:bg-violet-500/20 border border-violet-500/20 rounded px-2.5 py-1 transition-all flex items-center gap-1 active:scale-95 shrink-0"
+              >
+                <span>Trải nghiệm ngay</span>
+                <span className="text-[10px]">→</span>
+              </Link>
+            </div>
+          </div>
+          <button
+            onClick={handleCloseBanner}
+            className="absolute top-1/2 -translate-y-1/2 right-3 text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800/30 p-1 rounded-md transition-all cursor-pointer"
+            title="Đóng thông báo"
+          >
+            <CloseIcon className="text-xs shrink-0" />
+          </button>
+        </div>
+      )}
       <header className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-40 px-3 md:px-6 py-2.5">
         <div className="max-w-8xl mx-auto flex items-center justify-between gap-2 md:gap-4">
           {/* Logo & Title */}
