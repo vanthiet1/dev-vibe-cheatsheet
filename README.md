@@ -6,7 +6,7 @@
     <img src="https://unikorn.vn/api/widgets/badge/dev-vibe-cheatsheet/rank?theme=light&type=daily" alt="Dev Vibe Agent - Hàng ngày" width="250" height="64" style="object-fit: contain;" />
   </a>
   <a href="https://launch.j2team.dev/products/dev-vibe-cheatsheet?utm_source=badge-launched&utm_medium=badge&utm_campaign=badge-dev-vibe-cheatsheet" target="_blank" rel="noopener noreferrer" style="display: flex;">
-    <img src="https://launch.j2team.dev/badge/dev-vibe-cheatsheet/light" alt="Dev Vibe CheatSheet - Launched on J2TEAM Launch" width="256" height="64" style="object-fit: contain;" />
+    <img src="https://launch.j2team.dev/badge/dev-vibe-cheatsheet/light" alt="Dev Vibe CheatSheet - Launched on J2TEAM Launch" width="256" height="54" style="object-fit: contain;" />
   </a>
 </div>
 
