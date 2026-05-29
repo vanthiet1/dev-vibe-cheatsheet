@@ -1,12 +1,12 @@
 <div style="display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
-  <a href="https://unikorn.vn/p/dev-vibe-cheatsheet?ref=embed-dev-vibe-cheatsheet" target="_blank" style="display: flex; align-items: center;">
-    <img src="https://unikorn.vn/api/widgets/badge/dev-vibe-cheatsheet?theme=light" alt="Dev Vibe CheatSheet trên Unikorn.vn" width="256" height="64" style="object-fit: contain;" />
+  <a href="https://unikorn.vn/p/dev-vibe-cheatsheet?ref=embed-dev-vibe-cheatsheet" target="_blank">
+    <img src="https://unikorn.vn/api/widgets/badge/dev-vibe-cheatsheet?theme=light" alt="Dev Vibe CheatSheet trên Unikorn.vn" height="54" />
   </a>
-  <a href="https://unikorn.vn/p/dev-vibe-cheatsheet?ref=embed-dev-vibe-cheatsheet" target="_blank" style="display: flex; align-items: center;">
-    <img src="https://unikorn.vn/api/widgets/badge/dev-vibe-cheatsheet/rank?theme=light&type=daily" alt="Dev Vibe Agent - Hàng ngày" width="250" height="64" style="object-fit: contain;" />
+  <a href="https://unikorn.vn/p/dev-vibe-cheatsheet?ref=embed-dev-vibe-cheatsheet" target="_blank">
+    <img src="https://unikorn.vn/api/widgets/badge/dev-vibe-cheatsheet/rank?theme=light&type=daily" alt="Dev Vibe Agent - Hàng ngày" height="54" />
   </a>
-  <a href="https://launch.j2team.dev/products/dev-vibe-cheatsheet?utm_source=badge-launched&utm_medium=badge&utm_campaign=badge-dev-vibe-cheatsheet" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center;">
-    <img src="https://launch.j2team.dev/badge/dev-vibe-cheatsheet/light" alt="Dev Vibe CheatSheet - Launched on J2TEAM Launch" width="256" height="54" style="object-fit: contain;" />
+  <a href="https://launch.j2team.dev/products/dev-vibe-cheatsheet?utm_source=badge-launched&utm_medium=badge&utm_campaign=badge-dev-vibe-cheatsheet" target="_blank" rel="noopener noreferrer">
+    <img src="https://launch.j2team.dev/badge/dev-vibe-cheatsheet/light" alt="Dev Vibe CheatSheet - Launched on J2TEAM Launch" height="54" />
   </a>
 </div>
 
