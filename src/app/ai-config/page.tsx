@@ -48,6 +48,11 @@ export default function AiConfigPage() {
   const [contentLanguage, setContentLanguage] = useState<"en" | "vi">("vi");
   const [copied, setCopied] = useState(false);
   const [cliCopied, setCliCopied] = useState(false);
+  const [macCopied, setMacCopied] = useState(false);
+  const [psCopied, setPsCopied] = useState(false);
+  const [cmdCopied, setCmdCopied] = useState(false);
+  const [dynamicContent, setDynamicContent] = useState<string | null>(null);
+  const [isLoadingContent, setIsLoadingContent] = useState(false);
 
   // Dynamic CLI initialisation command generation based on selections
   const cliCommand = useMemo(() => {
@@ -58,6 +63,24 @@ export default function AiConfigPage() {
     navigator.clipboard.writeText(cliCommand);
     setCliCopied(true);
     setTimeout(() => setCliCopied(false), 2000);
+  };
+
+  const handleCopyMac = () => {
+    navigator.clipboard.writeText("curl -fsSL https://antigravity.google/cli/install.sh | bash");
+    setMacCopied(true);
+    setTimeout(() => setMacCopied(false), 2000);
+  };
+
+  const handleCopyPs = () => {
+    navigator.clipboard.writeText("irm https://antigravity.google/cli/install.ps1 | iex");
+    setPsCopied(true);
+    setTimeout(() => setPsCopied(false), 2000);
+  };
+
+  const handleCopyCmd = () => {
+    navigator.clipboard.writeText("curl -fsSL https://antigravity.google/cli/install.cmd -o install.cmd && install.cmd && del install.cmd");
+    setCmdCopied(true);
+    setTimeout(() => setCmdCopied(false), 2000);
   };
 
   // Scroll variables for Workspace Tree sidebar
@@ -98,6 +121,45 @@ export default function AiConfigPage() {
       clearTimeout(timer);
     };
   }, [outputTab, ide, languages, database, framework, styling, testing]);
+
+  // Load dynamic content for active file (especially for Python scripts and Skills)
+  useEffect(() => {
+    const isSkillOrScript = 
+      activeFile.includes("skills/") || 
+      activeFile.includes("scripts/") || 
+      activeFile.endsWith(".py") ||
+      activeFile.includes(".antigravityrules") || 
+      activeFile.includes(".cursorrules") || 
+      activeFile.includes(".windsurfrules") || 
+      activeFile.includes("rules/") || 
+      activeFile.includes("workflows/") || 
+      activeFile.includes("agents/");
+
+    if (isSkillOrScript && activeFile !== ".agent/config-overview.md") {
+      setIsLoadingContent(true);
+      fetch(`/api/skills?path=${encodeURIComponent(activeFile)}`)
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to load");
+          return res.json();
+        })
+        .then((data) => {
+          if (data.success && data.content) {
+            setDynamicContent(data.content);
+          } else {
+            setDynamicContent(null);
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to load local skill/script dynamically, using static template:", err);
+          setDynamicContent(null);
+        })
+        .finally(() => {
+          setIsLoadingContent(false);
+        });
+    } else {
+      setDynamicContent(null);
+    }
+  }, [activeFile]);
 
   // File Explorer Database Map definition (Dynamic based on selected Tech Stack)
   const filesByTab = useMemo(() => {
@@ -159,11 +221,36 @@ export default function AiConfigPage() {
       "webapp-testing"
     ];
 
+    const PYTHON_SCRIPTS_MAP: Record<string, string[]> = {
+      "api-patterns": ["scripts/api_validator.py"],
+      "database-design": ["scripts/schema_validator.py"],
+      "frontend-design": ["scripts/accessibility_checker.py", "scripts/ux_audit.py"],
+      "geo-fundamentals": ["scripts/geo_checker.py"],
+      "i18n-localization": ["scripts/i18n_checker.py"],
+      "lint-and-validate": ["scripts/lint_runner.py", "scripts/type_coverage.py"],
+      "mobile-design": ["scripts/mobile_audit.py"],
+      "nextjs-react-expert": ["scripts/convert_rules.py", "scripts/react_performance_checker.py"],
+      "performance-profiling": ["scripts/lighthouse_audit.py"],
+      "seo-fundamentals": ["scripts/seo_checker.py"],
+      "testing-patterns": ["scripts/test_runner.py"],
+      "vulnerability-scanner": ["scripts/security_scan.py"],
+      "webapp-testing": ["scripts/playwright_runner.py"],
+    };
+
     allSkillsList.forEach((skill) => {
       dynamicSkills.push({
         path: `${prefix}${pluginPrefix}skills/${skill}/SKILL.md`,
         label: `${skill}/SKILL.md`
       });
+      const scripts = PYTHON_SCRIPTS_MAP[skill];
+      if (scripts) {
+        scripts.forEach(script => {
+          dynamicSkills.push({
+            path: `${prefix}${pluginPrefix}skills/${skill}/${script}`,
+            label: `${skill}/${script}`
+          });
+        });
+      }
     });
 
     // Base Agents (always present)
@@ -230,7 +317,11 @@ export default function AiConfigPage() {
 
     return {
       config: [
-        { path: ".agent/config-overview.md", label: "config-overview.md" }
+        { path: ".agent/config-overview.md", label: "config-overview.md" },
+        { path: ".agent/scripts/auto_preview.py", label: "scripts/auto_preview.py" },
+        { path: ".agent/scripts/checklist.py", label: "scripts/checklist.py" },
+        { path: ".agent/scripts/session_manager.py", label: "scripts/session_manager.py" },
+        { path: ".agent/scripts/verify_all.py", label: "scripts/verify_all.py" }
       ],
       rules: dynamicRules,
       cli: [], // Not used in IDE
@@ -292,7 +383,8 @@ export default function AiConfigPage() {
   // Copy helper
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(generatedData.content);
+      const textToCopy = dynamicContent || generatedData.content;
+      await navigator.clipboard.writeText(textToCopy);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -302,7 +394,8 @@ export default function AiConfigPage() {
 
   // Download helper
   const handleDownload = () => {
-    const blob = new Blob([generatedData.content], { type: "text/plain;charset=utf-8" });
+    const textToDownload = dynamicContent || generatedData.content;
+    const blob = new Blob([textToDownload], { type: "text/plain;charset=utf-8" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = generatedData.filename;
@@ -347,7 +440,7 @@ export default function AiConfigPage() {
         >
           <div className="flex items-center gap-1.5 truncate">
             <span className="text-xs group-hover:scale-110 transition-transform select-none shrink-0">
-              {node.path?.endsWith(".md") || node.path?.includes("structure") ? "📄" : "⚙️"}
+              {node.path?.endsWith(".py") ? "🐍" : node.path?.endsWith(".md") || node.path?.includes("structure") ? "📄" : "⚙️"}
             </span>
             <span className="font-semibold truncate">{node.name}</span>
           </div>
@@ -666,7 +759,125 @@ export default function AiConfigPage() {
 
           {/* Right Presentation Screen (Expanded to lg:col-span-9) */}
           <div className="lg:col-span-9 flex flex-col space-y-4">
-            
+
+            {ide === "antigravity-cli" && (
+              <div className="bg-zinc-950/80 border border-zinc-800/80 rounded-xl p-4 md:p-5 flex flex-col gap-4 shadow-[0_4px_30px_rgba(0,0,0,0.4)] backdrop-blur relative overflow-hidden group">
+                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-violet-500/0 via-violet-500/30 to-violet-500/0" />
+                
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 border-b border-zinc-900/60 pb-3">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-violet-400">🤖</span>
+                      <h4 className="text-xs font-extrabold text-zinc-200 uppercase tracking-wider">
+                        Bước 1: Cài đặt Google Antigravity CLI
+                      </h4>
+                    </div>
+                    <p className="text-[10px] text-zinc-450 leading-relaxed">
+                      Vui lòng chạy lệnh tương ứng với hệ điều hành của bạn để cài đặt Antigravity Engine trước khi gọi lệnh khởi tạo rules:
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  {/* macOS / Linux */}
+                  <div className="bg-zinc-900/30 border border-zinc-850 rounded-lg p-3 space-y-2 flex flex-col justify-between">
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-bold text-zinc-350 flex items-center gap-1">
+                        🍏 macOS & 🐧 Linux
+                      </span>
+                      <div className="bg-zinc-950 border border-zinc-900 rounded p-2 font-mono text-[9.5px] text-violet-300 overflow-x-auto select-all scrollbar-none whitespace-pre-wrap break-all relative group h-12">
+                        curl -fsSL https://antigravity.google/cli/install.sh | bash
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleCopyMac}
+                      className={`w-full mt-2 py-1.5 rounded transition-all font-semibold text-[9.5px] cursor-pointer text-center flex items-center justify-center gap-1 border ${
+                        macCopied
+                          ? "bg-emerald-950/60 border-emerald-800/40 text-emerald-300"
+                          : "bg-zinc-950 border-zinc-850 hover:border-zinc-700 text-zinc-400 hover:text-zinc-250"
+                      }`}
+                    >
+                      {macCopied ? (
+                        <>
+                          <CheckIcon className="text-xs" />
+                          <span>Đã copy</span>
+                        </>
+                      ) : (
+                        <>
+                          <CopyIcon className="text-xs" />
+                          <span>Sao chép lệnh</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Windows PowerShell */}
+                  <div className="bg-zinc-900/30 border border-zinc-850 rounded-lg p-3 space-y-2 flex flex-col justify-between">
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-bold text-zinc-350 flex items-center gap-1">
+                        🟦 Windows PowerShell
+                      </span>
+                      <div className="bg-zinc-950 border border-zinc-900 rounded p-2 font-mono text-[9.5px] text-violet-300 overflow-x-auto select-all scrollbar-none whitespace-pre-wrap break-all relative group h-12">
+                        irm https://antigravity.google/cli/install.ps1 | iex
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleCopyPs}
+                      className={`w-full mt-2 py-1.5 rounded transition-all font-semibold text-[9.5px] cursor-pointer text-center flex items-center justify-center gap-1 border ${
+                        psCopied
+                          ? "bg-emerald-950/60 border-emerald-800/40 text-emerald-300"
+                          : "bg-zinc-950 border-zinc-850 hover:border-zinc-700 text-zinc-400 hover:text-zinc-250"
+                      }`}
+                    >
+                      {psCopied ? (
+                        <>
+                          <CheckIcon className="text-xs" />
+                          <span>Đã copy</span>
+                        </>
+                      ) : (
+                        <>
+                          <CopyIcon className="text-xs" />
+                          <span>Sao chép lệnh</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Windows CMD */}
+                  <div className="bg-zinc-900/30 border border-zinc-850 rounded-lg p-3 space-y-2 flex flex-col justify-between">
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-bold text-zinc-350 flex items-center gap-1">
+                        ⬛ Windows CMD
+                      </span>
+                      <div className="bg-zinc-950 border border-zinc-900 rounded p-2 font-mono text-[9.5px] text-violet-300 overflow-x-auto select-all scrollbar-none whitespace-pre-wrap break-all relative group h-12">
+                        curl -fsSL https://antigravity.google/cli/install.cmd -o install.cmd && install.cmd && del install.cmd
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleCopyCmd}
+                      className={`w-full mt-2 py-1.5 rounded transition-all font-semibold text-[9.5px] cursor-pointer text-center flex items-center justify-center gap-1 border ${
+                        cmdCopied
+                          ? "bg-emerald-950/60 border-emerald-800/40 text-emerald-300"
+                          : "bg-zinc-950 border-zinc-850 hover:border-zinc-700 text-zinc-400 hover:text-zinc-250"
+                      }`}
+                    >
+                      {cmdCopied ? (
+                        <>
+                          <CheckIcon className="text-xs" />
+                          <span>Đã copy</span>
+                        </>
+                      ) : (
+                        <>
+                          <CopyIcon className="text-xs" />
+                          <span>Sao chép lệnh</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Dynamic Premium CLI Setup Command Block */}
             <div className="bg-zinc-950/80 border border-zinc-800/80 rounded-xl p-4 md:p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-[0_4px_30px_rgba(0,0,0,0.4)] backdrop-blur relative overflow-hidden group">
               {/* Inner glowing top-border */}
@@ -679,7 +890,7 @@ export default function AiConfigPage() {
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                   </span>
                   <h4 className="text-xs font-bold text-zinc-200 uppercase tracking-wider flex items-center gap-1.5">
-                    ⚡ Cài đặt nhanh qua CLI / NPX
+                    {ide === "antigravity-cli" ? "⚡ Bước 2: Khởi tạo Rules qua CLI / NPX" : "⚡ Cài đặt nhanh qua CLI / NPX"}
                   </h4>
                 </div>
                 <p className="text-[11px] text-zinc-450 leading-relaxed">
@@ -1006,8 +1217,14 @@ export default function AiConfigPage() {
                     testing={testing}
                   />
                 ) : (
-                  <div className="p-5 overflow-y-auto max-h-[500px] font-mono text-[11px] md:text-xs leading-relaxed text-zinc-300 shadow-inner select-text whitespace-pre-wrap flex-grow">
-                    {generatedData.content}
+                  <div className="p-5 overflow-y-auto max-h-[500px] font-mono text-[11px] md:text-xs leading-relaxed text-zinc-300 shadow-inner select-text whitespace-pre-wrap flex-grow relative">
+                    {isLoadingContent ? (
+                      <div className="absolute inset-0 bg-[#1e1e1e]/85 flex flex-col items-center justify-center gap-3 select-none backdrop-blur-sm z-30 animate-fade-in">
+                        <div className="w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full animate-spin" />
+                        <span className="text-zinc-400 font-bold font-sans text-xs tracking-wider">Đang tải cấu hình thực tế từ dự án...</span>
+                      </div>
+                    ) : null}
+                    {dynamicContent || generatedData.content}
                   </div>
                 )}
               </div>

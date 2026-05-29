@@ -91,6 +91,22 @@ const AVAILABLE_SKILLS = [
   { title: "Playwright WebApp Testing (webapp-testing)", value: "webapp-testing" }
 ];
 
+const PYTHON_SCRIPTS_MAP: Record<string, string[]> = {
+  "api-patterns": ["scripts/api_validator.py"],
+  "database-design": ["scripts/schema_validator.py"],
+  "frontend-design": ["scripts/accessibility_checker.py", "scripts/ux_audit.py"],
+  "geo-fundamentals": ["scripts/geo_checker.py"],
+  "i18n-localization": ["scripts/i18n_checker.py"],
+  "lint-and-validate": ["scripts/lint_runner.py", "scripts/type_coverage.py"],
+  "mobile-design": ["scripts/mobile_audit.py"],
+  "nextjs-react-expert": ["scripts/convert_rules.py", "scripts/react_performance_checker.py"],
+  "performance-profiling": ["scripts/lighthouse_audit.py"],
+  "seo-fundamentals": ["scripts/seo_checker.py"],
+  "testing-patterns": ["scripts/test_runner.py"],
+  "vulnerability-scanner": ["scripts/security_scan.py"],
+  "webapp-testing": ["scripts/playwright_runner.py"],
+};
+
 export async function initCommand(options: InitOptions) {
   console.log(chalk.bold.cyan("\n🔌 Khởi tạo Quy chuẩn Dev-Vibe Agent Initializer\n"));
 
@@ -153,10 +169,10 @@ export async function initCommand(options: InitOptions) {
     for (const skill of skills) {
       spinner.text = chalk.blue(`Đang tải skill quy chuẩn: ${chalk.bold(skill)}...`);
       const skillUrl = `${baseRepoUrl}/.agent/skills/${skill}/SKILL.md`;
+      const destinationFolder = path.join(skillsDir, skill);
       
       try {
         const fileContent = await fetchRawContent(skillUrl);
-        const destinationFolder = path.join(skillsDir, skill);
         if (!fs.existsSync(destinationFolder)) {
           fs.mkdirSync(destinationFolder, { recursive: true });
         }
@@ -164,6 +180,27 @@ export async function initCommand(options: InitOptions) {
         fs.writeFileSync(path.join(destinationFolder, "SKILL.md"), fileContent, "utf8");
       } catch (err: any) {
         spinner.warn(chalk.yellow(`Không thể tải mẫu cho skill: ${skill}. Bỏ qua.`));
+      }
+
+      // Automatically download corresponding Python scripts if any
+      const scripts = PYTHON_SCRIPTS_MAP[skill];
+      if (scripts) {
+        for (const script of scripts) {
+          spinner.text = chalk.blue(`Đang tải script bổ trợ: ${chalk.bold(script)} cho ${chalk.bold(skill)}...`);
+          const scriptUrl = `${baseRepoUrl}/.agent/skills/${skill}/${script}`;
+          
+          try {
+            const scriptContent = await fetchRawContent(scriptUrl);
+            const scriptDestPath = path.join(destinationFolder, script);
+            const scriptDestDir = path.dirname(scriptDestPath);
+            if (!fs.existsSync(scriptDestDir)) {
+              fs.mkdirSync(scriptDestDir, { recursive: true });
+            }
+            fs.writeFileSync(scriptDestPath, scriptContent, "utf8");
+          } catch (err: any) {
+            spinner.warn(chalk.yellow(`Không thể tải script ${script} cho skill: ${skill}. Bỏ qua.`));
+          }
+        }
       }
     }
 
@@ -428,6 +465,28 @@ Thư mục \`.agent/\` đặt tại gốc dự án là nơi lưu trữ toàn b�
       }
     }
 
+    // 5. Download 4 global python scripts to .agent/scripts/
+    const globalScripts = [
+      "auto_preview.py",
+      "checklist.py",
+      "session_manager.py",
+      "verify_all.py"
+    ];
+    const globalScriptsDir = path.join(targetDir, ".agent", "scripts");
+    if (!fs.existsSync(globalScriptsDir)) {
+      fs.mkdirSync(globalScriptsDir, { recursive: true });
+    }
+
+    for (const script of globalScripts) {
+      spinner.text = chalk.blue(`Đang tải global script: ${chalk.bold(script)}...`);
+      try {
+        const scriptContent = await fetchRawContent(`${baseRepoUrl}/.agent/scripts/${script}`);
+        fs.writeFileSync(path.join(globalScriptsDir, script), scriptContent, "utf8");
+      } catch (err) {
+        // ignore or fallback
+      }
+    }
+
     spinner.succeed(chalk.bold.green("Đã hoàn thành thiết lập Quy chuẩn Dev-Vibe thành công! 🎉"));
     
     console.log(chalk.cyan("\n📂 Thư mục dự án của bạn đã được cập nhật:"));
@@ -444,6 +503,7 @@ Thư mục \`.agent/\` đặt tại gốc dự án là nơi lưu trữ toàn b�
       });
       console.log(chalk.gray(`- [Tạo mới] .gemini/antigravity-cli/plugins/my-plugin/agents/`));
       console.log(chalk.gray(`- [Tạo mới] .gemini/antigravity-cli/workflows/ (feat, refactor, plan, debug, test, verify, ui-ux)`));
+      console.log(chalk.gray(`- [Tạo mới] .agent/scripts/ (auto_preview.py, checklist.py, session_manager.py, verify_all.py)`));
     } else {
       let rulesFilename = ".antigravityrules";
       if (ide === "cursor") rulesFilename = ".cursorrules";
@@ -453,6 +513,7 @@ Thư mục \`.agent/\` đặt tại gốc dự án là nơi lưu trữ toàn b�
       console.log(chalk.gray(`- [Tạo mới] ${rulesFilename}`));
       console.log(chalk.gray(`- [Tạo mới] .agent/config-overview.md`));
       console.log(chalk.gray(`- [Tạo mới] .agent/rules/GEMINI.md`));
+      console.log(chalk.gray(`- [Tạo mới] .agent/scripts/ (auto_preview.py, checklist.py, session_manager.py, verify_all.py)`));
       console.log(chalk.gray(`- [Tạo mới] .agent/skills/`));
       skills.forEach((s) => {
         console.log(chalk.gray(`  └── .agent/skills/${s}/SKILL.md`));

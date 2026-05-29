@@ -1,11 +1,48 @@
+import { getApiPatternsTemplate } from "./api-patterns";
+import { getAppBuilderTemplate } from "./app-builder";
+import { getArchitectureTemplate } from "./architecture";
+import { getBashLinuxTemplate } from "./bash-linux";
+import { getBatchOperationsTemplate } from "./batch-operations";
+import { getBehavioralModesTemplate } from "./behavioral-modes";
+import { getBrainstormingTemplate } from "./brainstorming";
 import { getCleanCodeTemplate } from "./clean-code";
+import { getCodeReviewChecklistTemplate } from "./code-review-checklist";
+import { getCodeReviewGraphTemplate } from "./code-review-graph";
+import { getContextCompressionTemplate } from "./context-compression";
+import { getCoordinatorModeTemplate } from "./coordinator-mode";
+import { getDatabaseDesignTemplate } from "./database-design";
+import { getDeploymentProceduresTemplate } from "./deployment-procedures";
+import { getDocumentationTemplatesTemplate } from "./documentation-templates";
+import { getFrontendDesignTemplate } from "./frontend-design";
+import { getGameDevelopmentTemplate } from "./game-development";
+import { getGeoFundamentalsTemplate } from "./geo-fundamentals";
+import { getGitWorkflowsTemplate } from "./git-workflows";
+import { getI18nLocalizationTemplate } from "./i18n-localization";
+import { getIntelligentRoutingTemplate } from "./intelligent-routing";
+import { getLintAndValidateTemplate } from "./lint-and-validate";
+import { getMcpBuilderTemplate } from "./mcp-builder";
+import { getMemorySystemTemplate } from "./memory-system";
+import { getMobileDesignTemplate } from "./mobile-design";
+import { getNextjsReactExpertTemplate } from "./nextjs-react-expert";
+import { getNodejsBestPracticesTemplate } from "./nodejs-best-practices";
+import { getParallelAgentsTemplate } from "./parallel-agents";
+import { getPerformanceProfilingTemplate } from "./performance-profiling";
+import { getPlanWritingTemplate } from "./plan-writing";
+import { getPowershellWindowsTemplate } from "./powershell-windows";
+import { getPythonPatternsTemplate } from "./python-patterns";
+import { getRedTeamTacticsTemplate } from "./red-team-tactics";
+import { getRustProTemplate } from "./rust-pro";
 import { getSecurityScannerTemplate } from "./security-scanner";
 import { getSeoFundamentalsTemplate } from "./seo-fundamentals";
-import { getI18nLocalizationTemplate } from "./i18n-localization";
-import { getPerformanceProfilingTemplate } from "./performance-profiling";
-import { getPowershellWindowsTemplate } from "./powershell-windows";
-import { getGitWorkflowsTemplate } from "./git-workflows";
-import { getCleanArchitectureTemplate } from "./clean-architecture";
+import { getServerManagementTemplate } from "./server-management";
+import { getSimplifyCodeTemplate } from "./simplify-code";
+import { getSkillifyTemplate } from "./skillify";
+import { getSystematicDebuggingTemplate } from "./systematic-debugging";
+import { getTailwindPatternsTemplate } from "./tailwind-patterns";
+import { getTddWorkflowTemplate } from "./tdd-workflow";
+import { getVerifyChangesTemplate } from "./verify-changes";
+import { getWebDesignGuidelinesTemplate } from "./web-design-guidelines";
+import { getWebappTestingTemplate } from "./webapp-testing";
 
 export function getSkillTemplate(
   skillSlug: string,
@@ -16,30 +53,96 @@ export function getSkillTemplate(
   isVi: boolean
 ): string {
   switch (skillSlug) {
+    case "api-patterns":
+      return getApiPatternsTemplate(formattedSlug, language, metadata, isVi);
+    case "app-builder":
+      return getAppBuilderTemplate(formattedSlug, language, metadata, isVi);
+    case "architecture":
+      return getArchitectureTemplate(formattedSlug, language, metadata, isVi);
+    case "bash-linux":
+      return getBashLinuxTemplate(formattedSlug, language, metadata, isVi);
+    case "batch-operations":
+      return getBatchOperationsTemplate(formattedSlug, language, metadata, isVi);
+    case "behavioral-modes":
+      return getBehavioralModesTemplate(formattedSlug, language, metadata, isVi);
+    case "brainstorming":
+      return getBrainstormingTemplate(formattedSlug, language, metadata, isVi);
     case "clean-code":
       return getCleanCodeTemplate(formattedSlug, languageLabel, language, metadata);
-    
-    case "security-scanner":
-      return getSecurityScannerTemplate(formattedSlug, language, metadata, isVi);
-    
-    case "seo-fundamentals":
-      return getSeoFundamentalsTemplate(formattedSlug, language, metadata, isVi);
-    
-    case "i18n-localization":
-      return getI18nLocalizationTemplate(formattedSlug, language, metadata, isVi);
-    
-    case "performance-profiling":
-      return getPerformanceProfilingTemplate(formattedSlug, language, metadata, isVi);
-    
-    case "powershell-windows":
-      return getPowershellWindowsTemplate(formattedSlug, languageLabel, isVi);
-    
+    case "code-review-checklist":
+      return getCodeReviewChecklistTemplate(formattedSlug, language, metadata, isVi);
+    case "code-review-graph":
+      return getCodeReviewGraphTemplate(formattedSlug, language, metadata, isVi);
+    case "context-compression":
+      return getContextCompressionTemplate(formattedSlug, language, metadata, isVi);
+    case "coordinator-mode":
+      return getCoordinatorModeTemplate(formattedSlug, language, metadata, isVi);
+    case "database-design":
+      return getDatabaseDesignTemplate(formattedSlug, language, metadata, isVi);
+    case "deployment-procedures":
+      return getDeploymentProceduresTemplate(formattedSlug, language, metadata, isVi);
+    case "documentation-templates":
+      return getDocumentationTemplatesTemplate(formattedSlug, language, metadata, isVi);
+    case "frontend-design":
+      return getFrontendDesignTemplate(formattedSlug, language, metadata, isVi);
+    case "game-development":
+      return getGameDevelopmentTemplate(formattedSlug, language, metadata, isVi);
+    case "geo-fundamentals":
+      return getGeoFundamentalsTemplate(formattedSlug, language, metadata, isVi);
     case "git-workflows":
       return getGitWorkflowsTemplate(formattedSlug, languageLabel, isVi);
-    
-    case "clean-architecture":
-      return getCleanArchitectureTemplate(formattedSlug, language, metadata, isVi);
-
+    case "i18n-localization":
+      return getI18nLocalizationTemplate(formattedSlug, language, metadata, isVi);
+    case "intelligent-routing":
+      return getIntelligentRoutingTemplate(formattedSlug, language, metadata, isVi);
+    case "lint-and-validate":
+      return getLintAndValidateTemplate(formattedSlug, language, metadata, isVi);
+    case "mcp-builder":
+      return getMcpBuilderTemplate(formattedSlug, language, metadata, isVi);
+    case "memory-system":
+      return getMemorySystemTemplate(formattedSlug, language, metadata, isVi);
+    case "mobile-design":
+      return getMobileDesignTemplate(formattedSlug, language, metadata, isVi);
+    case "nextjs-react-expert":
+      return getNextjsReactExpertTemplate(formattedSlug, language, metadata, isVi);
+    case "nodejs-best-practices":
+      return getNodejsBestPracticesTemplate(formattedSlug, language, metadata, isVi);
+    case "parallel-agents":
+      return getParallelAgentsTemplate(formattedSlug, language, metadata, isVi);
+    case "performance-profiling":
+      return getPerformanceProfilingTemplate(formattedSlug, language, metadata, isVi);
+    case "plan-writing":
+      return getPlanWritingTemplate(formattedSlug, language, metadata, isVi);
+    case "powershell-windows":
+      return getPowershellWindowsTemplate(formattedSlug, languageLabel, isVi);
+    case "python-patterns":
+      return getPythonPatternsTemplate(formattedSlug, language, metadata, isVi);
+    case "red-team-tactics":
+      return getRedTeamTacticsTemplate(formattedSlug, language, metadata, isVi);
+    case "rust-pro":
+      return getRustProTemplate(formattedSlug, language, metadata, isVi);
+    case "security-scanner":
+      return getSecurityScannerTemplate(formattedSlug, language, metadata, isVi);
+    case "seo-fundamentals":
+      return getSeoFundamentalsTemplate(formattedSlug, language, metadata, isVi);
+    case "server-management":
+      return getServerManagementTemplate(formattedSlug, language, metadata, isVi);
+    case "simplify-code":
+      return getSimplifyCodeTemplate(formattedSlug, language, metadata, isVi);
+    case "skillify":
+      return getSkillifyTemplate(formattedSlug, language, metadata, isVi);
+    case "systematic-debugging":
+      return getSystematicDebuggingTemplate(formattedSlug, language, metadata, isVi);
+    case "tailwind-patterns":
+      return getTailwindPatternsTemplate(formattedSlug, language, metadata, isVi);
+    case "tdd-workflow":
+      return getTddWorkflowTemplate(formattedSlug, language, metadata, isVi);
+    case "verify-changes":
+      return getVerifyChangesTemplate(formattedSlug, language, metadata, isVi);
+    case "web-design-guidelines":
+      return getWebDesignGuidelinesTemplate(formattedSlug, language, metadata, isVi);
+    case "webapp-testing":
+      return getWebappTestingTemplate(formattedSlug, language, metadata, isVi);
     default:
       if (isVi) {
         return metadata + `# Kỹ năng Agent Chuyên nghiệp (${formattedSlug})
@@ -75,7 +178,7 @@ export function getSkillTemplate(
   └── ...
   \`\`\`
 
-## 7. Mẫu Code Ví dụ Thực tế chuẩn Production
+## 7. Mẫu Code Ví tế chuẩn Production
 \`\`\`${language === "typescript" ? "typescript" : language === "python" ? "python" : language === "go" ? "go" : language === "csharp" ? "csharp" : "javascript"}
 // Đoạn code mẫu chuẩn hóa, an toàn dữ liệu và tối ưu hiệu năng
 export async function executeModuleTask(payload: any) {
@@ -108,7 +211,7 @@ export async function executeModuleTask(payload: any) {
   \`\`\`
 - Đồng bộ hóa các quy trình xác minh này trực tiếp vào hệ thống kiểm thử tự động CI/CD.`;
       } else {
-        return metadata + `# Professional Agent Skill Specification (${formattedSlug})
+        return metadata + `# Professional Agent Skill Specification (&{formattedSlug})
 
 ## 1. Core Design Principles
 - Guarantee clean, modular, and extensible software structures optimized for ${formattedSlug}.
