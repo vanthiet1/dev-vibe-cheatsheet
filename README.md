@@ -1,13 +1,13 @@
-<div style="display: flex; justify-content: center; align-items: center; gap: 15px;">
-  <a href="https://unikorn.vn/p/dev-vibe-cheatsheet?ref=embed-dev-vibe-cheatsheet" target="_blank">
-    <img src="https://unikorn.vn/api/widgets/badge/dev-vibe-cheatsheet?theme=light" alt="Dev Vibe CheatSheet trên Unikorn.vn" width="256" height="64" />
+<div style="display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
+  <a href="https://unikorn.vn/p/dev-vibe-cheatsheet?ref=embed-dev-vibe-cheatsheet" target="_blank" style="display: flex;">
+    <img src="https://unikorn.vn/api/widgets/badge/dev-vibe-cheatsheet?theme=light" alt="Dev Vibe CheatSheet trên Unikorn.vn" width="256" height="64" style="object-fit: contain;" />
   </a>
-  <a href="https://unikorn.vn/p/dev-vibe-cheatsheet?ref=embed-dev-vibe-cheatsheet" target="_blank">
-    <img src="https://unikorn.vn/api/widgets/badge/dev-vibe-cheatsheet/rank?theme=light&type=daily" alt="Dev Vibe Agent - Hàng ngày" width="250" height="64" />
+  <a href="https://unikorn.vn/p/dev-vibe-cheatsheet?ref=embed-dev-vibe-cheatsheet" target="_blank" style="display: flex;">
+    <img src="https://unikorn.vn/api/widgets/badge/dev-vibe-cheatsheet/rank?theme=light&type=daily" alt="Dev Vibe Agent - Hàng ngày" width="250" height="64" style="object-fit: contain;" />
   </a>
-  <a href="https://launch.j2team.dev/products/dev-vibe-cheatsheet?utm_source=badge-launched&utm_medium=badge&utm_campaign=badge-dev-vibe-cheatsheet" target="_blank" rel="noopener noreferrer">
-  <img src="https://launch.j2team.dev/badge/dev-vibe-cheatsheet/light" alt="Dev Vibe CheatSheet - Launched on J2TEAM Launch" width="250" height="54" loading="lazy" />
-</a>
+  <a href="https://launch.j2team.dev/products/dev-vibe-cheatsheet?utm_source=badge-launched&utm_medium=badge&utm_campaign=badge-dev-vibe-cheatsheet" target="_blank" rel="noopener noreferrer" style="display: flex;">
+    <img src="https://launch.j2team.dev/badge/dev-vibe-cheatsheet/light" alt="Dev Vibe CheatSheet - Launched on J2TEAM Launch" width="296" height="64" style="object-fit: contain;" />
+  </a>
 </div>
 
 # I. dev-vibe-cheatsheet
